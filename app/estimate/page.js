@@ -14,6 +14,9 @@ export default function Estimate() {
     remarks: ''        // 비고
   });
 
+  // 입력 폼 표시 여부를 관리하는 상태
+  const [showForm, setShowForm] = useState(false);
+
   // 다나와 일괄 입력 데이터를 관리하는 상태
   const [bulkData, setBulkData] = useState('');
   // 테이블에 표시될 모든 데이터를 관리하는 상태
@@ -227,162 +230,175 @@ export default function Estimate() {
           </div>
         </div>
 
-        {/* 기존 개별 입력 폼 */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">
-            {editingId ? '상품 정보 수정' : '상품 정보 입력'}
-          </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                분류
-              </label>
-              <textarea
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="분류를 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                상품명
-              </label>
-              <textarea
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="상품명을 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                수량
-              </label>
-              <textarea
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="수량을 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                현금가
-              </label>
-              <textarea
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="현금가를 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                상품코드
-              </label>
-              <textarea
-                name="productCode"
-                value={formData.productCode}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="상품코드를 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                총판
-              </label>
-              <textarea
-                name="distributor"
-                value={formData.distributor}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="총판을 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                재조사
-              </label>
-              <textarea
-                name="reconfirm"
-                value={formData.reconfirm}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="재조사 여부를 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                비고
-              </label>
-              <textarea
-                name="remarks"
-                value={formData.remarks}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                placeholder="비고를 입력하세요"
-                rows={1}
-              />
-            </div>
-
-            <div className="lg:col-span-4 flex justify-end gap-2">
-              {editingId && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingId(null);
-                    setFormData({
-                      category: '',
-                      productName: '',
-                      quantity: '',
-                      price: '',
-                      productCode: '',
-                      distributor: '',
-                      reconfirm: '',
-                      remarks: ''
-                    });
-                  }}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                >
-                  취소
-                </button>
-              )}
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                {editingId ? '수정' : '입력'}
-              </button>
-            </div>
-          </form>
+        {/* 상품 정보 입력창 토글 버튼 */}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
+          >
+            상품 정보 입력창 {showForm ? '-' : '+'}
+          </button>
         </div>
+
+        {/* 기존 개별 입력 폼 */}
+        {showForm && (
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingId ? '상품 정보 수정' : '상품 정보 입력'}
+            </h2>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  분류
+                </label>
+                <textarea
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="분류를 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  상품명
+                </label>
+                <textarea
+                  name="productName"
+                  value={formData.productName}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="상품명을 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  수량
+                </label>
+                <textarea
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="수량을 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  현금가
+                </label>
+                <textarea
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="현금가를 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  상품코드
+                </label>
+                <textarea
+                  name="productCode"
+                  value={formData.productCode}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="상품코드를 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  총판
+                </label>
+                <textarea
+                  name="distributor"
+                  value={formData.distributor}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="총판을 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  재조사
+                </label>
+                <textarea
+                  name="reconfirm"
+                  value={formData.reconfirm}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  required
+                  placeholder="재조사 여부를 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  비고
+                </label>
+                <textarea
+                  name="remarks"
+                  value={formData.remarks}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                  placeholder="비고를 입력하세요"
+                  rows={1}
+                />
+              </div>
+
+              <div className="lg:col-span-4 flex justify-end gap-2">
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingId(null);
+                      setFormData({
+                        category: '',
+                        productName: '',
+                        quantity: '',
+                        price: '',
+                        productCode: '',
+                        distributor: '',
+                        reconfirm: '',
+                        remarks: ''
+                      });
+                    }}
+                    className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                  >
+                    취소
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                >
+                  {editingId ? '수정' : '입력'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
         {/* 테이블 */}
         <div className="bg-white rounded-lg shadow">
