@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Estimate() {
   // 입력 폼의 상태를 관리하는 객체
@@ -45,6 +45,64 @@ export default function Estimate() {
   const [isCustomPurchaseType, setIsCustomPurchaseType] = useState(false);
   const [isCustomOs, setIsCustomOs] = useState(false);
   const [isCustomManager, setIsCustomManager] = useState(false);
+  const [isCustomLaborCost, setIsCustomLaborCost] = useState(false);
+  const [isCustomSetupCost, setIsCustomSetupCost] = useState(false);
+
+  // 결제 정보를 관리하는 상태
+  const [paymentInfo, setPaymentInfo] = useState({
+    laborCost: 0,         // 공임비
+    setupCost: 0,         // 세팅비
+    discount: 0,          // 할인
+    deposit: 0,           // 계약금
+    includeVat: false,    // VAT 포함 여부
+    vatRate: 10,          // VAT 비율 (기본 10%)
+    roundingType: '',     // 버림 타입 ('100', '1000', 또는 '')
+    paymentMethod: ''     // 결제 방법
+  });
+
+  // 모든 계산된 값들을 저장하는 상태
+  const [calculatedValues, setCalculatedValues] = useState({
+    productTotal: 0,      // 상품/부품 합 금액
+    totalPurchase: 0,     // 총 구입 금액
+    vatAmount: 0,         // VAT 금액
+    finalPayment: 0       // 최종 결제 금액
+  });
+
+  // 숫자를 한글로 변환하는 함수
+  const numberToKorean = (number) => {
+    const units = ['', '만', '억', '조'];
+    const smallUnits = ['', '십', '백', '천'];
+    const nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    if (number === 0) return '0원';
+
+    let result = '';
+    let unitIndex = 0;
+
+    while (number > 0) {
+      let part = number % 10000;
+      let partResult = '';
+      let smallUnitIndex = 0;
+
+      while (part > 0) {
+        const digit = part % 10;
+        if (digit > 0) {
+          partResult = nums[digit] + smallUnits[smallUnitIndex] + partResult;
+        }
+        smallUnitIndex++;
+        part = Math.floor(part / 10);
+      }
+
+      if (partResult) {
+        result = partResult + units[unitIndex] + result;
+      }
+
+      unitIndex++;
+      number = Math.floor(number / 10000);
+    }
+
+    return result + '원';
+  };
 
   // 고객 정보 입력값 변경 처리 함수
   const handleCustomerInfoChange = (e) => {
@@ -252,6 +310,95 @@ export default function Estimate() {
       textarea.style.height = '42px';  // min-h-[42px]와 동일한 높이로 초기화
     });
   };
+
+  // 상품/부품 합계 계산 함수
+  const calculateProductTotal = () => {
+    const total = tableData.reduce((sum, item) => {
+      const price = parseInt(item.price) || 0;
+      return sum + price;  // 수량을 곱하지 않고 현금가만 더함
+    }, 0);
+    return total;
+  };
+
+  // 총 구입 금액 계산 함수
+  const calculateTotalPurchase = () => {
+    const productTotal = calculateProductTotal();
+    const laborCost = parseInt(paymentInfo.laborCost) || 0;
+    const setupCost = parseInt(paymentInfo.setupCost) || 0;
+    const discount = parseInt(paymentInfo.discount) || 0;
+    
+    return productTotal + laborCost + setupCost - discount;
+  };
+
+  // VAT 금액 계산 함수
+  const calculateVatAmount = (totalPurchase) => {
+    if (!paymentInfo.includeVat) return 0;
+    const vatRate = parseInt(paymentInfo.vatRate) || 0;
+    return Math.floor(totalPurchase * vatRate / 100);
+  };
+
+  // 최종 결제 금액 계산 함수 (VAT 및 버림 적용)
+  const calculateFinalPayment = () => {
+    let total = calculateTotalPurchase();
+    const vatAmount = calculateVatAmount(total);
+    total += vatAmount;
+    
+    // 버림 적용
+    if (paymentInfo.roundingType === '100') {
+      total = Math.floor(total / 100) * 100;
+    } else if (paymentInfo.roundingType === '1000') {
+      total = Math.floor(total / 1000) * 1000;
+    }
+    
+    return total;
+  };
+
+  // 결제 정보 변경 처리 함수
+  const handlePaymentInfoChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setPaymentInfo(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  // 공임비 선택 처리 함수
+  const handleLaborCostSelect = (value) => {
+    setPaymentInfo(prev => ({
+      ...prev,
+      laborCost: value
+    }));
+    setIsCustomLaborCost(false);
+  };
+
+  // 세팅비 선택 처리 함수
+  const handleSetupCostSelect = (value) => {
+    setPaymentInfo(prev => ({
+      ...prev,
+      setupCost: value
+    }));
+    setIsCustomSetupCost(false);
+  };
+
+  // 모든 계산된 값들을 업데이트하는 함수
+  const updateCalculatedValues = () => {
+    const productTotal = calculateProductTotal();
+    const totalPurchase = calculateTotalPurchase();
+    const vatAmount = calculateVatAmount(totalPurchase);
+    const finalPayment = calculateFinalPayment();
+
+    setCalculatedValues({
+      productTotal,
+      totalPurchase,
+      vatAmount,
+      finalPayment
+    });
+  };
+
+  // 결제 정보가 변경될 때마다 계산된 값들을 업데이트
+  useEffect(() => {
+    updateCalculatedValues();
+  }, [paymentInfo, tableData]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -932,6 +1079,255 @@ export default function Estimate() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* 테이블 끝난 후 결제 정보 섹션 */}
+        <div className="bg-white rounded-lg shadow p-6 mt-6">
+          <h2 className="text-xl font-semibold mb-4">결제 정보</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 금액 정보 */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  상품/부품 합 금액
+                </label>
+                <div className="text-lg font-semibold text-gray-900">
+                  {calculatedValues.productTotal.toLocaleString()}원
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  공임비
+                </label>
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    {[10000, 20000, 30000, 40000, 50000].map((cost) => (
+                      <button
+                        key={cost}
+                        type="button"
+                        onClick={() => handleLaborCostSelect(cost)}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          paymentInfo.laborCost === cost && !isCustomLaborCost
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {(cost / 10000)}만원
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomLaborCost(true);
+                        setPaymentInfo(prev => ({ ...prev, laborCost: '' }));
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        isCustomLaborCost
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      직접입력
+                    </button>
+                  </div>
+                  {isCustomLaborCost && (
+                    <input
+                      type="number"
+                      name="laborCost"
+                      value={paymentInfo.laborCost}
+                      onChange={handlePaymentInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="공임비를 입력하세요"
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  세팅비
+                </label>
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    {[10000, 20000, 30000, 40000, 50000].map((cost) => (
+                      <button
+                        key={cost}
+                        type="button"
+                        onClick={() => handleSetupCostSelect(cost)}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          paymentInfo.setupCost === cost && !isCustomSetupCost
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {(cost / 10000)}만원
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomSetupCost(true);
+                        setPaymentInfo(prev => ({ ...prev, setupCost: '' }));
+                      }}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        isCustomSetupCost
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      직접입력
+                    </button>
+                  </div>
+                  {isCustomSetupCost && (
+                    <input
+                      type="number"
+                      name="setupCost"
+                      value={paymentInfo.setupCost}
+                      onChange={handlePaymentInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="세팅비를 입력하세요"
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  할인
+                </label>
+                <div className="flex flex-col items-start gap-2">
+                  <input
+                    type="number"
+                    name="discount"
+                    value={paymentInfo.discount}
+                    onChange={handlePaymentInfoChange}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="할인 금액을 입력하세요"
+                  />
+                  <span className="text-sm text-gray-700 whitespace-nowrap">
+                    {numberToKorean(parseInt(paymentInfo.discount) || 0)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 계약금 및 VAT 정보 */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  총 구입 금액 (상품/부품+공임비+세팅비-할인)
+                </label>
+                <div className="text-lg font-semibold text-gray-900">
+                  {calculatedValues.totalPurchase.toLocaleString()}원
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  계약금
+                </label>
+                <div className="flex flex-col items-start gap-2">
+                  <input
+                    type="number"
+                    name="deposit"
+                    value={paymentInfo.deposit}
+                    onChange={handlePaymentInfoChange}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="계약금을 입력하세요"
+                  />
+                  <span className="text-sm text-gray-700 whitespace-nowrap">
+                    {numberToKorean(parseInt(paymentInfo.deposit) || 0)}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="includeVat"
+                    checked={paymentInfo.includeVat}
+                    onChange={handlePaymentInfoChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label className="ml-2 block text-sm text-gray-900">
+                    VAT 포함
+                  </label>
+                </div>
+                {paymentInfo.includeVat && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      name="vatRate"
+                      value={paymentInfo.vatRate}
+                      onChange={handlePaymentInfoChange}
+                      className="w-20 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      min="0"
+                      max="100"
+                    />
+                    <span className="text-sm text-gray-700">%</span>
+                    <span className="text-sm text-gray-700">
+                      ({calculatedValues.vatAmount.toLocaleString()}원)
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 최종 결제 금액 및 버림 옵션 */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  최종 결제 금액
+                </label>
+                <div className="text-xl font-bold text-blue-600">
+                  {calculatedValues.finalPayment.toLocaleString()}원
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100' }))}
+                  className={`px-3 py-2 rounded-md text-sm ${
+                    paymentInfo.roundingType === '100'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  100 버림
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000' }))}
+                  className={`px-3 py-2 rounded-md text-sm ${
+                    paymentInfo.roundingType === '1000'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  1000 버림
+                </button>
+                {paymentInfo.roundingType && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '' }))}
+                    className="px-3 py-2 rounded-md text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  >
+                    버림 취소
+                  </button>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  결제 방법
+                </label>
+                <input
+                  type="text"
+                  name="paymentMethod"
+                  value={paymentInfo.paymentMethod}
+                  onChange={handlePaymentInfoChange}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="결제 방법을 입력하세요"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
