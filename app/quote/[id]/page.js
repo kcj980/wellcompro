@@ -65,7 +65,103 @@ export default function InvoicePage({ params }) {
   
   // 인쇄 함수
   const handlePrint = () => {
-    window.print();
+    // 1. 현재 페이지 내용 저장
+    const originalContent = document.body.innerHTML;
+    
+    // 2. 인쇄할 요소 가져오기
+    const printSection = document.querySelector('.print-this-section');
+    
+    if (printSection) {
+      // 3. 인쇄할 요소만 body에 표시
+      const printContent = `
+        <html>
+          <head>
+            <title>결제 정보</title>
+            <style>
+              body {
+                font-family: 'Noto Sans KR', sans-serif;
+                background-color: #f3f8ff;
+                padding: 20px;
+                margin: 0;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+              }
+              .container {
+                max-width: 800px;
+                margin: 0 auto;
+                background-color: #ebf5ff;
+                border: 1px solid #90caf9;
+                border-radius: 8px;
+                padding: 16px;
+              }
+              h2 {
+                font-size: 1.25rem;
+                font-weight: bold;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid #1e40af;
+                color: #1e40af;
+              }
+              .grid {
+                display: grid;
+                gap: 8px;
+              }
+              .grid-cols-1 { grid-template-columns: 1fr; }
+              .grid-cols-2 { grid-template-columns: 1fr 1fr; }
+              .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+              .flex {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              }
+              .bg-white {
+                background-color: white;
+                padding: 8px;
+                border-radius: 6px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+              }
+              .bg-blue-100 { background-color: #dbeafe; }
+              .bg-blue-200 { background-color: #bfdbfe; }
+              .text-xs { font-size: 0.75rem; }
+              .text-sm { font-size: 0.875rem; }
+              .text-base { font-size: 1rem; }
+              .font-medium { font-weight: 500; }
+              .font-semibold { font-weight: 600; }
+              .font-bold { font-weight: 700; }
+              .text-gray-500 { color: #6b7280; }
+              .text-gray-700 { color: #374151; }
+              .text-red-600 { color: #dc2626; }
+              .text-blue-900 { color: #1e3a8a; }
+              .mt-1 { margin-top: 4px; }
+              .p-2 { padding: 8px; }
+              .rounded-md { border-radius: 6px; }
+              .space-y-2 > * + * { margin-top: 8px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              ${printSection.innerHTML}
+            </div>
+          </body>
+        </html>
+      `;
+      
+      // 4. 새 창에서 인쇄
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      // 5. 인쇄 실행
+      printWindow.onload = function() {
+        printWindow.focus();
+        printWindow.print();
+        // 인쇄 후 창 닫기 (선택 사항)
+        printWindow.onafterprint = function() {
+          printWindow.close();
+        };
+      };
+    }
   };
   
   // 금액을 한글로 변환하는 함수
@@ -106,8 +202,52 @@ export default function InvoicePage({ params }) {
   };
 
   return (
-
     <div className="min-h-screen bg-gray-100 py-8 px-4 print:p-0 print:bg-white">
+      {/* 인쇄 시 특정 섹션만 표시하는 스타일 */}
+      <style jsx global>{`
+        @media print {
+          /* 인쇄 시 모든 요소 숨기기 */
+          body * {
+            display: none !important;
+          }
+          
+          /* 인쇄할 섹션과 그 자식 요소만 표시 */
+          .print-this-section,
+          .print-this-section * {
+            display: block !important;
+          }
+          
+          /* 테이블, 그리드 등 레이아웃 요소는 원래 표시 방식 유지 */
+          .print-this-section table {
+            display: table !important;
+          }
+          .print-this-section tr {
+            display: table-row !important;
+          }
+          .print-this-section td, .print-this-section th {
+            display: table-cell !important;
+          }
+          .print-this-section div[class*="grid"] {
+            display: grid !important;
+          }
+          .print-this-section div[class*="flex"] {
+            display: flex !important;
+          }
+          
+          /* 배경색 유지 */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+          
+          /* 페이지 여백 설정 */
+          @page {
+            size: auto;
+            margin: 1cm;
+          }
+        }
+      `}</style>
       <div className="max-w-4xl mx-auto print:max-w-none print:mx-0">
         {/* 뒤로 가기 버튼과 인쇄 버튼 */}
         <div className="flex justify-between items-center mb-6 no-print">
@@ -127,9 +267,12 @@ export default function InvoicePage({ params }) {
             <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
-            인쇄하기
+            인쇄
           </button>
         </div>
+        <p className="text-sm text-gray-500 text-right mb-4 no-print">
+          ※ 배경색이 인쇄되지 않을 경우 브라우저 인쇄 설정에서 '배경 그래픽' 옵션을 활성화해주세요.
+        </p>
         
         {/* 로딩 상태 표시 */}
         {loading && (
@@ -148,7 +291,7 @@ export default function InvoicePage({ params }) {
         
         {/* 견적서 내용 */}
         {!loading && !error && estimate && (
-          <div ref={invoiceRef} className="invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg print:shadow-none print:rounded-none">
+          <div ref={invoiceRef} className="print-this-section invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg print:shadow-none print:rounded-none">
             {/* 견적서 헤더 */}
             <div className="relative pt-6 px-4 mb-6">
               {/* 임시 로고 (빨간 동그라미) */}
@@ -173,7 +316,7 @@ export default function InvoicePage({ params }) {
             {/* 공급자/공급받는자 정보 */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               {/* 공급자 정보 (회사 정보) */}
-              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginLeft: '16px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '6', border: '1px solid #93c5fd', padding: '8px', marginLeft: '4px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -200,7 +343,7 @@ export default function InvoicePage({ params }) {
               </div>
               
               {/* 공급받는자 정보 (고객 정보) */}
-              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginRight: '16px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '4', border: '1px solid #93c5fd', padding: '8px', marginRight: '4px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급받는자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -233,12 +376,12 @@ export default function InvoicePage({ params }) {
                 <table className="min-w-full divide-y divide-blue-300 border border-blue-300">
                   <thead>
                     <tr className="bg-blue-100">
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[5%]">No.</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[5%] t ext-center">No.</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[12%]">분류</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[48%]">상품명</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[7%]">수량</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%]">단가</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%]">금액</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[7%] text-center">수량</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%] text-center">단가</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%] text-center">금액</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -249,12 +392,12 @@ export default function InvoicePage({ params }) {
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm">{item.category || '-'}</td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm">{item.productName || '-'}</td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">{item.quantity || '-'}</td>
-                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-right">
+                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">
                             {item.price && item.quantity ? 
                               Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : 
                               '-'}원
                           </td>
-                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-right">
+                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">
                             {item.price ? parseInt(item.price).toLocaleString() : '-'}원
                           </td>
                         </tr>
@@ -270,9 +413,9 @@ export default function InvoicePage({ params }) {
                     ))}
                     
                     {/* 상품 합계만 표시 */}
-                    <tr className="bg-blue-100 font-bold">
+                    <tr className="bg-blue-100 font-medium">
                       <td colSpan="4" className="px-1.5 py-0.5 border border-blue-300 text-right">상품 소계</td>
-                      <td colSpan="2" className="px-1.5 py-0.5 border border-blue-300 text-right">
+                      <td colSpan="2" className="px-1.5 py-0.5 border border-blue-300 text-center">
                         {estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원
                       </td>
                     </tr>
