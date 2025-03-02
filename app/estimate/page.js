@@ -68,6 +68,13 @@ export default function Estimate() {
     finalPayment: 0       // 최종 결제 금액
   });
 
+  // 저장 처리 상태를 관리하는 상태
+  const [saveStatus, setSaveStatus] = useState({
+    loading: false,
+    success: false,
+    error: null
+  });
+
   // 숫자를 한글로 변환하는 함수
   const numberToKorean = (number) => {
     const units = ['', '만', '억', '조'];
@@ -395,6 +402,89 @@ export default function Estimate() {
     });
   };
 
+  // 견적을 MongoDB에 저장하는 함수
+  const saveEstimate = async () => {
+    try {
+      // 저장 중 상태로 설정
+      setSaveStatus({ loading: true, success: false, error: null });
+
+      // 부족한 데이터 검증
+      if (!customerInfo.name) {
+        setSaveStatus({ 
+          loading: false, 
+          success: false, 
+          error: '고객 이름을 입력해주세요.' 
+        });
+        return;
+      }
+
+      if (tableData.length === 0) {
+        setSaveStatus({ 
+          loading: false, 
+          success: false, 
+          error: '최소 하나 이상의 상품을 추가해주세요.' 
+        });
+        return;
+      }
+
+      // MongoDB에 저장할 데이터 구성
+      const estimateData = {
+        customerInfo,
+        tableData,
+        paymentInfo,
+        calculatedValues
+      };
+
+      console.log('Sending data to server:', estimateData);
+
+      // API를 통해 데이터 저장 요청
+      const response = await fetch('/api/estimates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(estimateData),
+        cache: 'no-store'
+      });
+
+      // 응답이 JSON이 아닐 경우를 대비한 처리
+      let result;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        result = await response.json();
+      } else {
+        const text = await response.text();
+        result = { message: text || '응답 형식 오류' };
+      }
+
+      if (!response.ok) {
+        throw new Error(result.message || `서버 오류: ${response.status}`);
+      }
+
+      console.log('Save success:', result);
+
+      // 성공 상태로 설정
+      setSaveStatus({ 
+        loading: false, 
+        success: true, 
+        error: null 
+      });
+
+      // 3초 후 성공 메시지 초기화
+      setTimeout(() => {
+        setSaveStatus(prev => ({ ...prev, success: false }));
+      }, 3000);
+
+    } catch (error) {
+      console.error('Error saving estimate:', error);
+      setSaveStatus({ 
+        loading: false, 
+        success: false, 
+        error: `저장 오류: ${error.message}` 
+      });
+    }
+  };
+
   // 결제 정보가 변경될 때마다 계산된 값들을 업데이트
   useEffect(() => {
     updateCalculatedValues();
@@ -403,6 +493,21 @@ export default function Estimate() {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* 상태 알림 메시지 */}
+        {saveStatus.error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <strong className="font-bold">오류! </strong>
+            <span className="block sm:inline">{saveStatus.error}</span>
+          </div>
+        )}
+        
+        {saveStatus.success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <strong className="font-bold">성공! </strong>
+            <span className="block sm:inline">견적이 성공적으로 저장되었습니다.</span>
+          </div>
+        )}
+
         {/* 고객 정보 입력 섹션 */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">고객 정보</h2>
@@ -1326,6 +1431,22 @@ export default function Estimate() {
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="결제 방법을 입력하세요"
                 />
+              </div>
+
+              {/* 저장 버튼 추가 */}
+              <div className="mt-6">
+                <button
+                  type="button"
+                  onClick={saveEstimate}
+                  disabled={saveStatus.loading}
+                  className={`w-full px-4 py-3 rounded-md text-white font-medium ${
+                    saveStatus.loading
+                      ? 'bg-blue-400 cursor-not-allowed'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
+                >
+                  {saveStatus.loading ? '저장 중...' : '견적 저장하기'}
+                </button>
               </div>
             </div>
           </div>
