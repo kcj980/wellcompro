@@ -90,17 +90,38 @@ export async function POST(request) {
 }
 
 // GET 요청을 처리하는 함수 (모든 견적 조회)
-export async function GET() {
+export async function GET(request) {
   try {
     console.log('견적 목록 조회 API 요청 수신');
     
-    // DB 연결
-    console.log('MongoDB에 연결 시도...');
-    await connectToDatabase();
-    console.log('MongoDB 연결 완료');
+    // 쿼리 파라미터 가져오기
+    const { searchParams } = new URL(request.url);
+    const sortParam = searchParams.get('sort');
     
-    // 모든 견적 가져오기 (최신순으로 정렬)
-    const estimates = await Estimate.find({}).sort({ createdAt: -1 });
+    // DB 연결
+    console.log('(api/estimates/route.js)MongoDB에 연결 시도...');
+    await connectToDatabase();
+    console.log('(api/estimates/route.js)MongoDB 연결 완료');
+    
+    // 정렬 옵션 결정
+    let sortOption = { createdAt: -1 }; // 기본값: 최신순
+    
+    if (sortParam === 'oldest') {
+      sortOption = { createdAt: 1 }; // 오래된순
+    } else if (sortParam === 'nameAsc') {
+      sortOption = { 'customerInfo.name': 1 }; // 이름 오름차순
+    } else if (sortParam === 'nameDesc') {
+      sortOption = { 'customerInfo.name': -1 }; // 이름 내림차순
+    } else if (sortParam === 'priceAsc') {
+      sortOption = { 'calculatedValues.finalPayment': 1 }; // 가격 오름차순
+    } else if (sortParam === 'priceDesc') {
+      sortOption = { 'calculatedValues.finalPayment': -1 }; // 가격 내림차순
+    }
+    
+    console.log(`정렬 옵션: ${JSON.stringify(sortOption)}`);
+    
+    // 모든 견적 가져오기 (지정된 정렬 방식으로)
+    const estimates = await Estimate.find({}).sort(sortOption);
     console.log(`${estimates.length}개의 견적을 조회했습니다.`);
     
     // 성공 응답 반환
