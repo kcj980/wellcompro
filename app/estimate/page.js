@@ -188,6 +188,28 @@ export default function Estimate() {
     e.target.style.height = e.target.scrollHeight + 'px';
   };
 
+  // 현금가에 수량을 곱하는 함수
+  const multiplyPriceByQuantity = () => {
+    // 입력된 현금가와 수량 가져오기
+    const price = parseInt(formData.price) || 0;
+    const quantity = parseInt(formData.quantity) || 0;
+    
+    // 수량이 0인 경우 계산하지 않음
+    if (quantity === 0) {
+      alert('수량이 입력되지 않았거나 0입니다.');
+      return;
+    }
+    
+    // 현금가와 수량을 곱한 결과 계산
+    const multipliedPrice = price * quantity;
+    
+    // 계산된 값으로 현금가 업데이트
+    setFormData(prev => ({
+      ...prev,
+      price: multipliedPrice.toString()
+    }));
+  };
+
   // 다나와 일괄 입력 텍스트가 변경될 때 실행되는 함수
   const handleBulkDataChange = (e) => {
     setBulkData(e.target.value);
@@ -284,6 +306,8 @@ export default function Estimate() {
       reconfirm: row.reconfirm,
       remarks: row.remarks
     });
+    // 상품 정보 입력창이 보이도록 설정
+    setShowForm(true);
   };
 
   // 폼 제출을 처리하는 함수 (새로운 항목 추가 또는 기존 항목 수정)
@@ -999,15 +1023,24 @@ export default function Estimate() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   현금가
                 </label>
-                <textarea
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                  required
-                  placeholder="현금가를 입력하세요"
-                  rows={1}
-                />
+                <div className="flex items-center gap-2">
+                  <textarea
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
+                    required
+                    placeholder="현금가를 입력하세요"
+                    rows={1}
+                  />
+                  <button
+                    type="button"
+                    onClick={multiplyPriceByQuantity}
+                    className="bg-blue-600 text-white px-2 py-2 rounded-md hover:bg-blue-700 whitespace-nowrap text-sm"
+                  >
+                    수량 곱하기
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -1019,7 +1052,6 @@ export default function Estimate() {
                   value={formData.productCode}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                  required
                   placeholder="상품코드를 입력하세요"
                   rows={1}
                 />
@@ -1034,7 +1066,6 @@ export default function Estimate() {
                   value={formData.distributor}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                  required
                   placeholder="총판을 입력하세요"
                   rows={1}
                 />
@@ -1049,7 +1080,6 @@ export default function Estimate() {
                   value={formData.reconfirm}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                  required
                   placeholder="재조사 여부를 입력하세요"
                   rows={1}
                 />
