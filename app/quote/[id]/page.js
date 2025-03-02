@@ -65,98 +65,265 @@ export default function InvoicePage({ params }) {
   
   // 인쇄 함수
   const handlePrint = () => {
-    // 1. 현재 페이지 내용 저장
-    const originalContent = document.body.innerHTML;
-    
-    // 2. 인쇄할 요소 가져오기
+    // 인쇄할 요소 가져오기
     const printSection = document.querySelector('.print-this-section');
     
     if (printSection) {
-      // 3. 인쇄할 요소만 body에 표시
+      // 인쇄할 요소만 표시하는 HTML 생성
       const printContent = `
         <html>
           <head>
-            <title>결제 정보</title>
+            <title>견적서</title>
             <style>
               body {
                 font-family: 'Noto Sans KR', sans-serif;
-                background-color: #f3f8ff;
+                background-color: #ffffff;
                 padding: 20px;
                 margin: 0;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
               }
-              .container {
-                max-width: 800px;
-                margin: 0 auto;
-                background-color: #ebf5ff;
-                border: 1px solid #90caf9;
-                border-radius: 8px;
-                padding: 16px;
+              
+              /* 테이블 스타일 */
+              table {
+                width: 650px; /* 테이블 고정 너비 지정 */
+                margin-left: -13px; /* 테이블을 왼쪽으로 5px 이동 */
+                border-collapse: collapse;
+                border: 1px solid #93c5fd !important;
               }
-              h2 {
-                font-size: 1.25rem;
-                font-weight: bold;
-                margin-bottom: 12px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid #1e40af;
-                color: #1e40af;
+              
+              th, td {
+                border: 1px solid #93c5fd !important;
+                padding: 2px 6px;
+                font-size: 0.875rem;
               }
-              .grid {
-                display: grid;
-                gap: 8px;
+              
+              thead tr {
+                background-color: #dbeafe !important;
               }
-              .grid-cols-1 { grid-template-columns: 1fr; }
-              .grid-cols-2 { grid-template-columns: 1fr 1fr; }
-              .grid-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+              
+              tbody tr:nth-child(even) {
+                background-color: #f0f7ff !important;
+              }
+              
+              tbody tr:nth-child(odd) {
+                background-color: #ffffff !important;
+              }
+              
+              .text-center {
+                text-align: center;
+              }
+              
+              .text-right {
+                text-align: right;
+              }
+              
+              /* 컨테이너 스타일 */
+              .bg-blue-50, .bg-blue-50-print {
+                background-color: #f0f7ff !important;
+              }
+              
+              .bg-blue-100, .bg-blue-100-print {
+                background-color: #dbeafe !important;
+              }
+              
+              .bg-white, .bg-white-print {
+                background-color: #ffffff !important;
+              }
+              
+              /* 테두리 스타일 */
+              .border, .border-print {
+                border-width: 1px !important;
+                border-style: solid !important;
+              }
+              
+              .border-blue-300, .border-blue-300-print {
+                border-color: #93c5fd !important;
+              }
+              
+              .rounded-lg, .rounded-lg-print {
+                border-radius: 0.5rem !important;
+              }
+              
+              /* 레이아웃 스타일 */
               .flex {
                 display: flex;
+              }
+              
+              .grid {
+                display: grid;
+              }
+              
+              .grid-cols-1 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+              }
+              
+              .grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+              }
+              
+              .font-semibold {
+                font-weight: 600;
+              }
+              
+              .font-bold {
+                font-weight: 700;
+              }
+              
+              .justify-between {
                 justify-content: space-between;
-                align-items: center;
               }
-              .bg-white {
-                background-color: white;
-                padding: 8px;
-                border-radius: 6px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+              
+              /* 여백 스타일 */
+              .mx-4 {
+                margin-left: 1rem;
+                margin-right: 1rem;
               }
-              .bg-blue-100 { background-color: #dbeafe; }
-              .bg-blue-200 { background-color: #bfdbfe; }
-              .text-xs { font-size: 0.75rem; }
-              .text-sm { font-size: 0.875rem; }
-              .text-base { font-size: 1rem; }
-              .font-medium { font-weight: 500; }
-              .font-semibold { font-weight: 600; }
-              .font-bold { font-weight: 700; }
-              .text-gray-500 { color: #6b7280; }
-              .text-gray-700 { color: #374151; }
-              .text-red-600 { color: #dc2626; }
-              .text-blue-900 { color: #1e3a8a; }
-              .mt-1 { margin-top: 4px; }
-              .p-2 { padding: 8px; }
-              .rounded-md { border-radius: 6px; }
-              .space-y-2 > * + * { margin-top: 8px; }
+              
+              .mb-1 {
+                margin-bottom: 0.25rem;
+              }
+              
+              .mb-2 {
+                margin-bottom: 0.5rem;
+              }
+              
+              .mb-3 {
+                margin-bottom: 0.75rem;
+              }
+              
+              .mb-4 {
+                margin-bottom: 1rem;
+              }
+              
+              .mb-6 {
+                margin-bottom: 1.5rem;
+              }
+              
+              .mt-4 {
+                margin-top: 1rem;
+              }
+              
+              .p-2 {
+                padding: 0.5rem;
+              }
+              
+              .p-4 {
+                padding: 1rem;
+              }
+              
+              .pt-2 {
+                padding-top: 0.5rem;
+              }
+              
+              .pb-2 {
+                padding-bottom: 0.5rem;
+              }
+              
+              /* 테두리 스타일 */
+              .border-t {
+                border-top-width: 1px !important;
+                border-top-style: solid !important;
+              }
+              
+              .border-b {
+                border-bottom-width: 1px !important;
+                border-bottom-style: solid !important;
+              }
+              
+              /* 추가적인 레이아웃 스타일 */
+              .gap-4 {
+                gap: 1rem;
+              }
+              
+              /* 미디어 쿼리를 사용하여 2열 레이아웃 구현 */
+              @media (min-width: 768px) {
+                .md\\:grid-cols-2 {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+              }
+              
+              /* 인쇄 설정 */
+              @page {
+                size: auto;
+                margin: 1cm;
+              }
+              
+              /* 결제 정보와 참고사항 섹션 스타일 */
+              .payment-info-container, .reference-container {
+                border: 1px solid #93c5fd !important;
+                border-radius: 0.5rem !important;
+                padding: 1rem !important;
+                background-color: #f0f7ff !important;
+                margin-left: 1rem !important;
+                margin-right: 1rem !important;
+                margin-bottom: 1.5rem !important;
+              }
+              
+              .section-title {
+                font-size: 1.125rem !important;
+                font-weight: 600 !important;
+                margin-bottom: 0.75rem !important;
+                border-bottom: 1px solid #93c5fd !important;
+                padding-bottom: 0.5rem !important;
+              }
             </style>
           </head>
           <body>
-            <div class="container">
+            <!-- 인쇄 콘텐츠 시작 -->
+            <div style="background-color: #ffffff; padding: 10px; border: 2px solid #93c5fd; border-radius: 8px;">
               ${printSection.innerHTML}
             </div>
+            <!-- 인쇄 콘텐츠 끝 -->
           </body>
         </html>
       `;
       
-      // 4. 새 창에서 인쇄
+      // 새 창에서 인쇄
       const printWindow = window.open('', '_blank');
       printWindow.document.write(printContent);
       printWindow.document.close();
       
-      // 5. 인쇄 실행
+      // 인쇄 실행
       printWindow.onload = function() {
+        // DOM이 로드된 후 추가 스타일 적용
+        const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4');
+        paymentInfoContainers.forEach(container => {
+          container.classList.add('payment-info-container');
+        });
+        
+        // 테이블 스타일 추가 적용
+        const tables = printWindow.document.querySelectorAll('table');
+        tables.forEach(table => {
+          table.style.borderCollapse = 'collapse';
+          table.style.border = '1px solid #93c5fd';
+          table.style.width = '650px'; // 테이블 가로 크기 지정
+          table.style.marginLeft = '-13px'; // 테이블을 왼쪽으로 5px 이동
+          
+          // 테이블 셀에 스타일 적용
+          const cells = table.querySelectorAll('th, td');
+          cells.forEach(cell => {
+            cell.style.border = '1px solid #93c5fd';
+            cell.style.padding = '2px 6px';
+          });
+          
+          // 헤더 행 스타일
+          const headerRows = table.querySelectorAll('thead tr');
+          headerRows.forEach(row => {
+            row.style.backgroundColor = '#dbeafe';
+          });
+          
+          // 짝수/홀수 행 스타일
+          const bodyRows = table.querySelectorAll('tbody tr');
+          bodyRows.forEach((row, index) => {
+            row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f0f7ff';
+          });
+        });
+        
         printWindow.focus();
         printWindow.print();
-        // 인쇄 후 창 닫기 (선택 사항)
+        // 인쇄 후 창 닫기
         printWindow.onafterprint = function() {
           printWindow.close();
         };
@@ -291,7 +458,7 @@ export default function InvoicePage({ params }) {
         
         {/* 견적서 내용 */}
         {!loading && !error && estimate && (
-          <div ref={invoiceRef} className="print-this-section invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg print:shadow-none print:rounded-none">
+          <div ref={invoiceRef} className="print-this-section invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg">
             {/* 견적서 헤더 */}
             <div className="relative pt-6 px-4 mb-6">
               {/* 임시 로고 (빨간 동그라미) */}
@@ -316,7 +483,7 @@ export default function InvoicePage({ params }) {
             {/* 공급자/공급받는자 정보 */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               {/* 공급자 정보 (회사 정보) */}
-              <div style={{ flex: '6', border: '1px solid #93c5fd', padding: '8px', marginLeft: '4px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '6', border: '1px solid #93c5fd', padding: '8px', marginLeft: '0px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -343,7 +510,7 @@ export default function InvoicePage({ params }) {
               </div>
               
               {/* 공급받는자 정보 (고객 정보) */}
-              <div style={{ flex: '4', border: '1px solid #93c5fd', padding: '8px', marginRight: '4px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '4', border: '1px solid #93c5fd', padding: '8px', marginRight: '0px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급받는자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -379,9 +546,9 @@ export default function InvoicePage({ params }) {
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[5%] t ext-center">No.</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[12%]">분류</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[48%]">상품명</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[7%] text-center">수량</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%] text-center">단가</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[14%] text-center">금액</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[9%] text-center">수량</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[13%] text-center">단가</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[13%] text-center">금액</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -414,7 +581,7 @@ export default function InvoicePage({ params }) {
                     
                     {/* 상품 합계만 표시 */}
                     <tr className="bg-blue-100 font-medium">
-                      <td colSpan="4" className="px-1.5 py-0.5 border border-blue-300 text-right">상품 소계</td>
+                      <td colSpan="4" className="px-1.5 py-0.5 border border-blue-300 text-right">상품/부품 합계</td>
                       <td colSpan="2" className="px-1.5 py-0.5 border border-blue-300 text-center">
                         {estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원
                       </td>
@@ -425,7 +592,7 @@ export default function InvoicePage({ params }) {
             </div>
             
             {/* 결제 정보 요약 - 별도 섹션으로 분리 */}
-            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-4">
+            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-1">
               <h2 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">결제 정보</h2>
               <div className="space-y-2">
                 {/* 상품/부품 합계 - 그대로 유지 */}
@@ -515,7 +682,7 @@ export default function InvoicePage({ params }) {
             </div>
             
             {/* 참고사항 */}
-            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-4">
+            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-1">
               <h3 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">참고사항</h3>
               <div className="bg-white p-2 rounded-md shadow-sm">
                 <ul className="list-disc pl-5 space-y-1 text-sm">
