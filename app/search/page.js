@@ -85,6 +85,12 @@ export default function SearchPage() {
     router.push(`/estimate/${id}`);
   };
   
+  // 견적서 페이지로 이동하는 함수
+  const handleQuoteClick = (id, e) => {
+    e.stopPropagation(); // 상위 요소의 클릭 이벤트 전파 방지
+    router.push(`/quote/${id}`);
+  };
+  
   // 날짜 형식 변환 함수
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -546,6 +552,9 @@ export default function SearchPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       견적담당
                     </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      견적서
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -569,6 +578,17 @@ export default function SearchPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {estimate.customerInfo?.manager || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <button
+                          onClick={(e) => handleQuoteClick(estimate._id, e)}
+                          className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 inline-flex items-center"
+                        >
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                          </svg>
+                          견적서
+                        </button>
                       </td>
                     </tr>
                   ))}
