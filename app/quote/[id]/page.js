@@ -65,31 +65,30 @@ export default function InvoicePage({ params }) {
   
   // 인쇄 함수
   const handlePrint = () => {
-    // 인쇄할 요소 가져오기
-    const printSection = document.querySelector('.print-this-section');
+    const content = document.querySelector('.print-this-section');
     
-    if (printSection) {
+    if (content) {
       // 인쇄할 요소만 표시하는 HTML 생성
       const printContent = `
+        <!DOCTYPE html>
         <html>
           <head>
-            <title>견적서</title>
+            <title>견적서 인쇄</title>
             <style>
+              /* 기본 스타일 */
               body {
-                font-family: 'Noto Sans KR', sans-serif;
-                background-color: #ffffff;
-                padding: 20px;
+                font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
                 margin: 0;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                color-adjust: exact !important;
+                padding: 10px;
+                background-color: #ffffff;
+                color: #333333;
               }
               
               /* 테이블 스타일 */
               table {
-                width: 650px; /* 테이블 고정 너비 지정 */
-                margin-left: -13px; /* 테이블을 왼쪽으로 5px 이동 */
-                border-collapse: collapse;
+                width: 650px !important;
+                margin-left: -5px !important;
+                border-collapse: collapse !important;
                 border: 1px solid #93c5fd !important;
               }
               
@@ -116,7 +115,7 @@ export default function InvoicePage({ params }) {
               }
               
               .text-right {
-                text-align: right;
+                text-align: right !important;
               }
               
               /* 컨테이너 스타일 */
@@ -148,7 +147,7 @@ export default function InvoicePage({ params }) {
               
               /* 레이아웃 스타일 */
               .flex {
-                display: flex;
+                display: flex !important;
               }
               
               .grid {
@@ -172,7 +171,8 @@ export default function InvoicePage({ params }) {
               }
               
               .justify-between {
-                justify-content: space-between;
+                display: flex !important;
+                justify-content: space-between !important;
               }
               
               /* 여백 스타일 */
@@ -268,12 +268,200 @@ export default function InvoicePage({ params }) {
                 border-bottom: 1px solid #93c5fd !important;
                 padding-bottom: 0.5rem !important;
               }
+              
+              /* 결제 정보 스타일 */
+              .bg-blue-200, .bg-blue-200-print {
+                background-color: #bfdbfe !important;
+              }
+              
+              .bg-gray-50, .bg-gray-50-print {
+                background-color: #f9fafb !important;
+              }
+              
+              .text-blue-900, .text-blue-900-print {
+                color: #1e3a8a !important;
+              }
+              
+              .text-gray-600, .text-gray-600-print {
+                color: #4b5563 !important;
+              }
+              
+              .rounded-md, .rounded-md-print {
+                border-radius: 0.375rem !important;
+              }
+              
+              .shadow-sm, .shadow-sm-print {
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+              }
+              
+              .space-y-1 > * + * {
+                margin-top: 0.25rem !important;
+              }
+              
+              .list-disc {
+                list-style-type: disc !important;
+                padding-left: 1.25rem !important;
+              }
+              
+              .inline-block {
+                display: inline-block !important;
+              }
+              
+              .mt-1 {
+                margin-top: 0.25rem !important;
+              }
+              
+              .px-2 {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+              }
+              
+              .text-xs {
+                font-size: 0.75rem !important;
+              }
+              
+              .text-sm {
+                font-size: 0.875rem !important;
+              }
+              
+              .text-base {
+                font-size: 1rem !important;
+              }
+              
+              .items-center {
+                align-items: center !important;
+              }
+              
+              /* 테두리 추가 스타일 */
+              .border-b {
+                border-bottom-width: 1px !important;
+                border-bottom-style: solid !important;
+              }
+              
+              .border-blue-200 {
+                border-color: #bfdbfe !important;
+              }
+              
+              /* 마진 추가 스타일 */
+              .mb-3 {
+                margin-bottom: 0.75rem !important;
+              }
+              
+              .space-y-2 > * + * {
+                margin-top: 0.5rem !important;
+              }
+              
+              /* 패딩 추가 스타일 */
+              .p-1 {
+                padding: 0.25rem !important;
+              }
+              
+              .p-2 {
+                padding: 0.5rem !important;
+              }
+              
+              .pb-2 {
+                padding-bottom: 0.5rem !important;
+              }
+              
+              /* 정렬 클래스 */
+              .justify-end {
+                display: flex !important;
+                justify-content: flex-end !important;
+              }
+              
+              .justify-between {
+                display: flex !important;
+                justify-content: space-between !important;
+              }
+              
+              .text-right {
+                text-align: right !important;
+              }
+              
+              .items-center {
+                align-items: center !important;
+              }
+              
+              /* 헤더 스타일 향상 */
+              .invoice-header {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                width: 100% !important;
+                margin-bottom: 1rem !important;
+              }
+              
+              .invoice-title-container {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex: 1 !important;
+              }
+              
+              .logo-container {
+                display: flex !important;
+                align-items: center !important;
+                width: 33% !important;
+              }
+              
+              .date-container {
+                display: flex !important;
+                justify-content: flex-end !important;
+                align-items: center !important;
+                width: 33% !important;
+                text-align: right !important;
+              }
+              
+              /* 로고 이미지 스타일 */
+              .logo {
+                max-height: 50px !important;
+                max-width: 100px !important;
+                object-fit: contain !important;
+              }
+              
+              /* 헤더 컨테이너 */
+              .header-container {
+                position: relative !important;
+                padding-top: 5px !important; /* 상단 패딩 5px로 설정 */
+                margin-bottom: 15px !important; /* 하단 마진 15px로 설정 */
+              }
+              
+              /* 견적서 제목 요소 */
+              .title-element {
+                margin-top: 5px !important; /* 상단 마진 5px로 설정 */
+                margin-bottom: 15px !important; /* 하단 마진 15px로 설정 */
+              }
+              
+              /* 견적일자 요소 */
+              .date-element {
+                position: absolute !important;
+                top: 0px !important; /* -5px에서 0px로 변경 (5px 더 낮춤) */
+                right: 15px !important;
+                text-align: right !important;
+                font-size: 14px !important;
+                display: block !important;
+                visibility: visible !important;
+                z-index: 999 !important;
+              }
+              
+              @media print {
+                .date-element {
+                  position: absolute !important;
+                  top: 0px !important; /* -5px에서 0px로 변경 (5px 더 낮춤) */
+                  right: 15px !important;
+                  display: block !important;
+                  visibility: visible !important;
+                  z-index: 999 !important;
+                }
+              }
             </style>
           </head>
           <body>
             <!-- 인쇄 콘텐츠 시작 -->
             <div style="background-color: #ffffff; padding: 10px; border: 2px solid #93c5fd; border-radius: 8px;">
-              ${printSection.innerHTML}
+              ${content.innerHTML}
             </div>
             <!-- 인쇄 콘텐츠 끝 -->
           </body>
@@ -291,6 +479,78 @@ export default function InvoicePage({ params }) {
         const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4');
         paymentInfoContainers.forEach(container => {
           container.classList.add('payment-info-container');
+          
+          // 결제 정보 내 요소들 스타일 적용
+          const blueBoxes = container.querySelectorAll('.bg-blue-200');
+          blueBoxes.forEach(box => {
+            box.style.backgroundColor = '#bfdbfe';
+            box.style.borderRadius = '0.375rem';
+            box.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+            box.style.padding = '0.5rem';
+            box.style.margin = '0.25rem 0';
+            box.style.border = '1px solid #93c5fd';
+          });
+          
+          const grayBoxes = container.querySelectorAll('.bg-gray-50');
+          grayBoxes.forEach(box => {
+            box.style.backgroundColor = '#f9fafb';
+            box.style.borderRadius = '0.375rem';
+            box.style.padding = '0.25rem 0.5rem';
+            box.style.margin = '0.25rem 0';
+            box.style.border = '1px solid #e5e7eb';
+          });
+          
+          // 하위 섹션 스타일 적용
+          const sections = container.querySelectorAll('.space-y-2');
+          sections.forEach(section => {
+            const children = section.children;
+            for(let i = 1; i < children.length; i++) {
+              children[i].style.marginTop = '0.5rem';
+            }
+          });
+          
+          // 테두리 있는 요소 스타일 적용
+          const borderedElements = container.querySelectorAll('.border-b');
+          borderedElements.forEach(element => {
+            element.style.borderBottomWidth = '1px';
+            element.style.borderBottomStyle = 'solid';
+            element.style.borderBottomColor = '#bfdbfe';
+            element.style.paddingBottom = '0.5rem';
+            element.style.marginBottom = '0.75rem';
+          });
+          
+          // 텍스트 색상 적용
+          const blueTexts = container.querySelectorAll('.text-blue-900');
+          blueTexts.forEach(text => {
+            text.style.color = '#1e3a8a';
+          });
+          
+          const grayTexts = container.querySelectorAll('.text-gray-600');
+          grayTexts.forEach(text => {
+            text.style.color = '#4b5563';
+          });
+        });
+        
+        // 참고사항 섹션 스타일 적용
+        const referenceContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-1');
+        referenceContainers.forEach(container => {
+          container.classList.add('reference-container');
+          
+          // 흰색 배경 박스 스타일 적용
+          const whiteBoxes = container.querySelectorAll('.bg-white');
+          whiteBoxes.forEach(box => {
+            box.style.backgroundColor = '#ffffff';
+            box.style.borderRadius = '0.375rem';
+            box.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+            box.style.padding = '0.5rem';
+          });
+          
+          // 목록 스타일 적용
+          const lists = container.querySelectorAll('.list-disc');
+          lists.forEach(list => {
+            list.style.listStyleType = 'disc';
+            list.style.paddingLeft = '1.25rem';
+          });
         });
         
         // 테이블 스타일 추가 적용
@@ -319,6 +579,59 @@ export default function InvoicePage({ params }) {
           bodyRows.forEach((row, index) => {
             row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f0f7ff';
           });
+        });
+        
+        // 택시비 별도 텍스트 오른쪽 정렬 적용
+        const taxiNoteElements = printWindow.document.querySelectorAll('.flex.justify-end');
+        taxiNoteElements.forEach(element => {
+          element.style.display = 'flex';
+          element.style.justifyContent = 'flex-end';
+          element.style.width = '100%';
+          element.style.textAlign = 'right';
+        });
+        
+        // 헤더 스타일 적용
+        const headerContainers = printWindow.document.querySelectorAll('.relative, .flex.justify-between, .flex.items-center');
+        headerContainers.forEach(header => {
+          if (header.querySelector('h1')) {
+            // 헤더 컨테이너 스타일
+            header.classList.add('header-container');
+            header.style.margin = "0";
+            header.style.padding = "0";
+            header.style.position = 'relative';
+            
+            // 견적서 제목 스타일 (가운데 정렬)
+            const title = header.querySelector('h1');
+            if (title) {
+              title.classList.add('title-element');
+              title.style.display = 'block';
+              title.style.width = '100%';
+              title.style.textAlign = 'center';
+              title.style.margin = '5px auto 15px'; // 상단 마진 5px, 하단 마진 15px로 설정
+              title.style.padding = '0';
+              title.style.fontSize = '24px';
+              title.style.fontWeight = 'bold';
+              title.style.letterSpacing = '0.5em';
+            }
+            
+            // 견적일자 스타일 (오른쪽 맨 위에 배치)
+            const dateElement = header.querySelector('p');
+            if (dateElement) {
+              dateElement.classList.add('date-element');
+              dateElement.style.position = 'absolute';
+              dateElement.style.top = '0px'; // -5px에서 0px로 변경 (5px 더 낮춤)
+              dateElement.style.right = '15px';
+              dateElement.style.textAlign = 'right';
+              dateElement.style.margin = '0';
+              dateElement.style.padding = '0';
+              dateElement.style.fontSize = '14px';
+              dateElement.style.color = '#4b5563';
+              dateElement.style.fontWeight = 'normal';
+              dateElement.style.display = 'block';
+              dateElement.style.visibility = 'visible';
+              dateElement.style.zIndex = '999';
+            }
+          }
         });
         
         printWindow.focus();
@@ -461,10 +774,7 @@ export default function InvoicePage({ params }) {
           <div ref={invoiceRef} className="print-this-section invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg">
             {/* 견적서 헤더 */}
             <div className="relative pt-6 px-4 mb-6">
-              {/* 임시 로고 (빨간 동그라미) */}
-              <div className="absolute left-4 top-8 w-16 h-16 rounded-full bg-red-600 flex items-center justify-center" style={{ top: '10px' }}>
-                <span className="text-white font-bold">LOGO</span>
-              </div>
+              {/* 로고 삭제 */}
               
               {/* 견적서 제목 */}
               <h1 
@@ -474,8 +784,8 @@ export default function InvoicePage({ params }) {
                 견 적 서
               </h1>
               
-              {/* 견적일자 */}
-              <p className="absolute right-4 top-10 text-gray-600 text-sm" style={{ letterSpacing: '-0.09em', top: '31px' }}>
+              {/* 견적일자 - 오른쪽 맨 위로 위치 조정 */}
+              <p className="absolute right-4 text-gray-600 text-sm" style={{ letterSpacing: '-0.09em', top: '10px' }}>
                 견적일자: {formatDate(estimate.createdAt)}
               </p>
             </div>
