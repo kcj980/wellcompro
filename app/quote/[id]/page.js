@@ -115,19 +115,63 @@ export default function InvoicePage({ params }) {
             }
             @page {
               size: A4;
-              margin: 10mm;
+              margin: 0;
             }
             body {
               padding: 0;
               margin: 0;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
+              color-adjust: exact;
+            }
+            .invoice-container {
+              width: 210mm;
+              min-height: 297mm;
+              padding: 15mm;
+              margin: 0 auto;
+              background-color: white;
+              box-shadow: none;
+              border: none;
+            }
+            table {
+              page-break-inside: auto;
+            }
+            tr {
+              page-break-inside: avoid;
+              page-break-after: auto;
+            }
+            .table-container {
+              overflow-x: visible;
+            }
+            .grid-cols-2 {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+            }
+            .border, .border-gray-300, .border-2 {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .bg-gray-50, .bg-gray-100, .bg-white {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+          
+          /* 화면에서 볼 때의 A4 미리보기 스타일 */
+          @media screen {
+            .invoice-container {
+              width: 210mm;
+              min-height: 297mm;
+              padding: 15mm;
+              margin: 0 auto;
+              background-color: white;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
           }
         `}</style>
       </Head>
-      <div className="min-h-screen bg-white py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gray-100 py-8 px-4 print:p-0 print:bg-white">
+        <div className="max-w-4xl mx-auto print:max-w-none print:mx-0">
           {/* 뒤로 가기 버튼과 인쇄 버튼 */}
           <div className="flex justify-between items-center mb-6 no-print">
             <button
@@ -167,7 +211,7 @@ export default function InvoicePage({ params }) {
           
           {/* 견적서 내용 */}
           {!loading && !error && estimate && (
-            <div ref={invoiceRef} className="bg-white border-2 border-gray-300 p-8 rounded-lg shadow-lg">
+            <div ref={invoiceRef} className="invoice-container bg-white border-2 border-gray-300 rounded-lg shadow-lg print:shadow-none print:rounded-none">
               {/* 견적서 헤더 */}
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold mb-2">견 적 서</h1>
@@ -182,23 +226,23 @@ export default function InvoicePage({ params }) {
                   <div className="space-y-2">
                     <div className="flex">
                       <span className="font-semibold w-24">상호명:</span>
-                      <span>웰컴프로</span>
+                      <span>웰컴 시스템</span>
                     </div>
                     <div className="flex">
                       <span className="font-semibold w-24">대표자:</span>
-                      <span>000</span>
+                      <span>김선식</span>
                     </div>
                     <div className="flex">
                       <span className="font-semibold w-24">사업자번호:</span>
-                      <span>000-00-00000</span>
+                      <span>607-02-70320</span>
                     </div>
                     <div className="flex">
                       <span className="font-semibold w-24">주소:</span>
-                      <span>서울시 00구 00로 00</span>
+                      <span>부산시 동래구 온천동 456-29</span>
                     </div>
                     <div className="flex">
                       <span className="font-semibold w-24">전화번호:</span>
-                      <span>02-000-0000</span>
+                      <span>051-926-6604 (대표전화)</span>
                     </div>
                   </div>
                 </div>
@@ -251,45 +295,52 @@ export default function InvoicePage({ params }) {
               {/* 상품 목록 */}
               <div className="mb-6">
                 <h2 className="text-xl font-bold mb-4">상세 내역</h2>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto table-container">
                   <table className="min-w-full divide-y divide-gray-200 border border-gray-300">
                     <thead>
                       <tr className="bg-gray-100">
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">No.</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">분류</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">상품명</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">수량</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">단가</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">금액</th>
-                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium">비고</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[5%]">No.</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[12%]">분류</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[48%]">상품명</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[5%]">수량</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[15%]">단가</th>
+                        <th className="px-4 py-2 border border-gray-300 text-sm font-medium w-[15%]">금액</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {estimate.tableData?.map((item, index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-4 py-2 border border-gray-300 text-sm text-center">{index + 1}</td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm">{item.category || '-'}</td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm">{item.productName || '-'}</td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm text-center">{item.quantity || '-'}</td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm text-right">
-                            {item.price && item.quantity ? 
-                              Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : 
-                              '-'}
-                          </td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm text-right">
-                            {item.price ? parseInt(item.price).toLocaleString() : '-'}
-                          </td>
-                          <td className="px-4 py-2 border border-gray-300 text-sm">{item.remarks || '-'}</td>
-                        </tr>
+                        <>
+                          <tr key={`product-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-4 py-2 border border-gray-300 text-sm text-center">{index + 1}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-sm">{item.category || '-'}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-sm">{item.productName || '-'}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-sm text-center">{item.quantity || '-'}</td>
+                            <td className="px-4 py-2 border border-gray-300 text-sm text-right">
+                              {item.price && item.quantity ? 
+                                Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : 
+                                '-'}원
+                            </td>
+                            <td className="px-4 py-2 border border-gray-300 text-sm text-right">
+                              {item.price ? parseInt(item.price).toLocaleString() : '-'}원
+                            </td>
+                          </tr>
+                          {/* 비고가 있는 경우에만 표시 */}
+                          {item.remarks && (
+                            <tr key={`remarks-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td colSpan="6" className="px-4 py-2 border border-gray-300 text-sm bg-gray-50">
+                                <span className="font-medium">비고: </span>{item.remarks}
+                              </td>
+                            </tr>
+                          )}
+                        </>
                       ))}
                       
                       {/* 상품 합계만 표시 */}
                       <tr className="bg-gray-100 font-bold">
                         <td colSpan="5" className="px-4 py-2 border border-gray-300 text-right">상품/부품 합계</td>
                         <td className="px-4 py-2 border border-gray-300 text-right">
-                          {estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}
+                          {estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원
                         </td>
-                        <td colSpan="2" className="px-4 py-2 border border-gray-300"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -299,40 +350,46 @@ export default function InvoicePage({ params }) {
               {/* 결제 정보 요약 - 별도 섹션으로 분리 */}
               <div className="mb-6 border border-gray-300 rounded-lg p-5 bg-gray-50">
                 <h2 className="text-xl font-bold mb-4">결제 정보</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 print:gap-2">
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">상품/부품 합계:</span>
-                    <span className="text-right">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
+                    <span className="font-medium print:text-sm">상품/부품 합계:</span>
+                    <span className="text-right print:text-sm">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
                   </div>
                   
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">공임비:</span>
-                    <span className="text-right">{estimate.paymentInfo?.laborCost?.toLocaleString() || '0'}원</span>
+                    <span className="font-medium print:text-sm">공임비:</span>
+                    <span className="text-right print:text-sm">{estimate.paymentInfo?.laborCost?.toLocaleString() || '0'}원</span>
                   </div>
                   
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">세팅비:</span>
-                    <span className="text-right">{estimate.paymentInfo?.setupCost?.toLocaleString() || '0'}원</span>
+                    <span className="font-medium print:text-sm">세팅비:</span>
+                    <span className="text-right print:text-sm">{estimate.paymentInfo?.setupCost?.toLocaleString() || '0'}원</span>
                   </div>
                   
-                  <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">할인:</span>
-                    <span className="text-right">-{estimate.paymentInfo?.discount?.toLocaleString() || '0'}원</span>
-                  </div>
+                  {/* 할인이 있을 경우에만 표시 */}
+                  {estimate.paymentInfo?.discount > 0 && (
+                    <div className="flex justify-between items-center border-b pb-2">
+                      <span className="font-medium print:text-sm">할인:</span>
+                      <span className="text-right print:text-sm">-{estimate.paymentInfo?.discount?.toLocaleString()}원</span>
+                    </div>
+                  )}
                   
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">총 구입 금액:</span>
-                    <span className="text-right font-semibold">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
+                    <span className="font-medium print:text-sm">총 구입 금액:</span>
+                    <span className="text-right font-semibold print:text-sm">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
                   </div>
                   
-                  <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">계약금:</span>
-                    <span className="text-right">{estimate.paymentInfo?.deposit?.toLocaleString() || '0'}원</span>
-                  </div>
+                  {/* 계약금이 있을 경우에만 표시 */}
+                  {estimate.paymentInfo?.deposit > 0 && (
+                    <div className="flex justify-between items-center border-b pb-2">
+                      <span className="font-medium print:text-sm">계약금:</span>
+                      <span className="text-right print:text-sm">{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
+                    </div>
+                  )}
                   
                   <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium">부가세(VAT):</span>
-                    <span className="text-right">
+                    <span className="font-medium print:text-sm">부가세(VAT):</span>
+                    <span className="text-right print:text-sm">
                       {estimate.paymentInfo?.includeVat ? 
                         `${estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 (${estimate.paymentInfo.vatRate || 10}%)` : 
                         '별도'}
@@ -340,17 +397,17 @@ export default function InvoicePage({ params }) {
                   </div>
                   
                   <div className="col-span-2 flex justify-between items-center pt-2">
-                    <span className="font-bold text-lg">최종 결제 금액:</span>
-                    <span className="text-right font-bold text-lg text-blue-600">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
+                    <span className="font-bold text-lg print:text-base">최종 결제 금액:</span>
+                    <span className="text-right font-bold text-lg text-blue-600 print:text-base">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
                   </div>
                 </div>
               </div>
               
               {/* 참고사항 */}
-              <div className="mb-8">
+              <div className="mb-8 print:mb-4">
                 <h3 className="text-lg font-bold mb-2">참고사항</h3>
                 <div className="border border-gray-300 p-4 rounded bg-gray-50">
-                  <ul className="list-disc pl-5 space-y-1">
+                  <ul className="list-disc pl-5 space-y-1 print:text-sm">
                     <li>본 견적서의 유효기간은 견적일로부터 7일입니다.</li>
                     <li>상기 견적은 제품 수급 상황에 따라 변동될 수 있습니다.</li>
                     <li>모든 가격은 부가세 {estimate.paymentInfo?.includeVat ? '포함' : '별도'} 금액입니다.</li>
@@ -360,7 +417,7 @@ export default function InvoicePage({ params }) {
               </div>
               
               {/* 회사 서명 */}
-              <div className="text-center mt-12">
+              <div className="text-center mt-12 print:mt-6 print:page-break-inside-avoid">
                 <div className="inline-block border-t-2 border-gray-800 pt-2">
                   <h3 className="text-xl font-bold">웰컴프로</h3>
                   <p className="mt-1">대표: 000</p>
