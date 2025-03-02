@@ -37,7 +37,8 @@ const EstimateSchema = new mongoose.Schema({
     includeVat: Boolean,       // VAT 포함 여부
     vatRate: Number,           // VAT 비율
     roundingType: String,      // 버림 타입
-    paymentMethod: String      // 결제 방법
+    paymentMethod: String,     // 결제 방법
+    shippingCost: Number       // 택배비
   },
   
   // 계산된 값들

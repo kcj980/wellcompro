@@ -118,10 +118,11 @@ export default function Estimate() {
     setupCost: 0,         // 세팅비
     discount: 0,          // 할인
     deposit: 0,           // 계약금
-    includeVat: false,    // VAT 포함 여부
+    includeVat: true,     // VAT 포함 여부 (기본 활성화)
     vatRate: 10,          // VAT 비율 (기본 10%)
-    roundingType: '',     // 버림 타입 ('100', '1000', 또는 '')
-    paymentMethod: ''     // 결제 방법
+    roundingType: 'none',  // 버림 타입 (기본 없음)
+    paymentMethod: '',     // 결제 방법
+    shippingCost: 0        // 택배비
   });
 
   /**
@@ -1702,6 +1703,24 @@ export default function Estimate() {
                     />
                     <span className="text-sm text-gray-700 whitespace-nowrap">
                       {numberToKorean(parseInt(paymentInfo.deposit) || 0)}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    택배비
+                  </label>
+                  <div className="flex flex-col items-start gap-2">
+                    <input
+                      type="number"
+                      name="shippingCost"
+                      value={paymentInfo.shippingCost}
+                      onChange={handlePaymentInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="택배비를 입력하세요"
+                    />
+                    <span className="text-sm text-gray-700 whitespace-nowrap">
+                      {numberToKorean(parseInt(paymentInfo.shippingCost) || 0)}
                     </span>
                   </div>
                 </div>

@@ -293,6 +293,10 @@ export default function EstimateDetail({ params }) {
                   <div className="mt-1">{estimate.paymentInfo?.deposit?.toLocaleString() || 0}원</div>
                 </div>
                 <div>
+                  <div className="text-sm font-medium text-gray-500">택배비</div>
+                  <div className="mt-1">{estimate.paymentInfo?.shippingCost?.toLocaleString() || 0}원</div>
+                </div>
+                <div>
                   <div className="text-sm font-medium text-gray-500">VAT 정보</div>
                   <div className="mt-1">
                     {estimate.paymentInfo?.includeVat ? (

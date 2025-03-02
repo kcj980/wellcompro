@@ -173,7 +173,7 @@ export default function InvoicePage({ params }) {
             {/* 공급자/공급받는자 정보 */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
               {/* 공급자 정보 (회사 정보) */}
-              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginLeft: '10px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginLeft: '16px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -200,7 +200,7 @@ export default function InvoicePage({ params }) {
               </div>
               
               {/* 공급받는자 정보 (고객 정보) */}
-              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginRight: '10px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
+              <div style={{ flex: '1', border: '1px solid #93c5fd', padding: '8px', marginRight: '16px', borderRadius: '0.25rem', backgroundColor: '#f0f8ff' }}>
                 <h2 className="text-lg font-bold mb-1 text-center border-b border-blue-200 pb-1">공급받는자</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1px' }}>
                   <div className="flex">
@@ -229,7 +229,7 @@ export default function InvoicePage({ params }) {
 
             {/* 상품 목록 */}
             <div className="mb-6">
-              <div className="table-container">
+              <div className="table-container mx-4">
                 <table className="min-w-full divide-y divide-blue-300 border border-blue-300">
                   <thead>
                     <tr className="bg-blue-100">
@@ -282,65 +282,99 @@ export default function InvoicePage({ params }) {
             </div>
             
             {/* 결제 정보 요약 - 별도 섹션으로 분리 */}
-            <div className="mb-6 border border-blue-300 rounded-lg p-5 bg-blue-50">
-              <h2 className="text-xl font-bold mb-4">결제 정보</h2>
-              <div className="payment-info-grid">
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-sm">상품/부품 합계:</span>
-                  <span className="text-right text-sm">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
+            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-4">
+              <h2 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">결제 정보</h2>
+              <div className="space-y-2">
+                {/* 상품/부품 합계 - 그대로 유지 */}
+                <div className="flex justify-between items-center bg-white p-2 rounded-md shadow-sm">
+                  <span className="font-semibold text-sm text-gray-700">상품/부품 합계:</span>
+                  <span className="text-right font-medium text-sm">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
                 </div>
                 
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-sm">공임비:</span>
-                  <span className="text-right text-sm">{estimate.paymentInfo?.laborCost?.toLocaleString() || '0'}원</span>
-                </div>
-                
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-sm">세팅비:</span>
-                  <span className="text-right text-sm">{estimate.paymentInfo?.setupCost?.toLocaleString() || '0'}원</span>
-                </div>
-                
-                {/* 할인이 있을 경우에만 표시 */}
-                {estimate.paymentInfo?.discount > 0 && (
-                  <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium text-sm">할인:</span>
-                    <span className="text-right text-sm">-{estimate.paymentInfo?.discount?.toLocaleString()}원</span>
+                {/* 공임비, 세팅비, 계약금 영역 */}
+                {(estimate.paymentInfo?.laborCost > 0 || estimate.paymentInfo?.setupCost > 0 || estimate.paymentInfo?.deposit > 0) && (
+                  <div className={`grid gap-2 ${
+                    (estimate.paymentInfo?.laborCost > 0 ? 1 : 0) + 
+                    (estimate.paymentInfo?.setupCost > 0 ? 1 : 0) + 
+                    (estimate.paymentInfo?.deposit > 0 ? 1 : 0) === 1 ? 'grid-cols-1' : 
+                    (estimate.paymentInfo?.laborCost > 0 ? 1 : 0) + 
+                    (estimate.paymentInfo?.setupCost > 0 ? 1 : 0) + 
+                    (estimate.paymentInfo?.deposit > 0 ? 1 : 0) === 2 ? 'grid-cols-2' : 'grid-cols-3'
+                  }`}>
+                    {estimate.paymentInfo?.laborCost > 0 && (
+                      <div className="bg-white p-2 rounded-md shadow-sm">
+                        <div className="text-xs text-gray-500">공임비</div>
+                        <div className="font-medium text-sm">{estimate.paymentInfo?.laborCost?.toLocaleString()}원</div>
+                      </div>
+                    )}
+                    
+                    {estimate.paymentInfo?.setupCost > 0 && (
+                      <div className="bg-white p-2 rounded-md shadow-sm">
+                        <div className="text-xs text-gray-500">세팅비</div>
+                        <div className="font-medium text-sm">{estimate.paymentInfo?.setupCost?.toLocaleString()}원</div>
+                      </div>
+                    )}
+                    
+                    {estimate.paymentInfo?.deposit > 0 && (
+                      <div className="bg-white p-2 rounded-md shadow-sm">
+                        <div className="text-xs text-gray-500">계약금</div>
+                        <div className="font-medium text-sm">{estimate.paymentInfo?.deposit?.toLocaleString()}원</div>
+                      </div>
+                    )}
                   </div>
                 )}
                 
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-sm">총 구입 금액:</span>
+                {/* 총 구입 금액 */}
+                <div className="flex justify-between items-center bg-blue-100 p-2 rounded-md shadow-sm">
+                  <span className="font-semibold text-sm text-gray-700">총 구입 금액:</span>
                   <span className="text-right font-semibold text-sm">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
                 </div>
                 
-                {/* 계약금이 있을 경우에만 표시 */}
-                {estimate.paymentInfo?.deposit > 0 && (
-                  <div className="flex justify-between items-center border-b pb-2">
-                    <span className="font-medium text-sm">계약금:</span>
-                    <span className="text-right text-sm">{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
+                {/* 할인, 부가세(VAT) 영역 */}
+                {(estimate.paymentInfo?.discount > 0 || (estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0)) && (
+                  <div className={`grid gap-2 ${
+                    (estimate.paymentInfo?.discount > 0 ? 1 : 0) + 
+                    (estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0 ? 1 : 0) === 1 ? 'grid-cols-1' : 'grid-cols-2'
+                  }`}>
+                    {estimate.paymentInfo?.discount > 0 && (
+                      <div className="bg-white p-2 rounded-md shadow-sm">
+                        <div className="text-xs text-gray-500">할인</div>
+                        <div className="font-medium text-sm text-red-600">-{estimate.paymentInfo?.discount?.toLocaleString()}원</div>
+                      </div>
+                    )}
+                    
+                    {estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0 && (
+                      <div className="bg-white p-2 rounded-md shadow-sm">
+                        <div className="text-xs text-gray-500">부가세(VAT)</div>
+                        <div className="font-medium text-sm">
+                          {estimate.calculatedValues?.vatAmount?.toLocaleString()}원 ({estimate.paymentInfo.vatRate || 10}%)
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span className="font-medium text-sm">부가세(VAT):</span>
-                  <span className="text-right text-sm">
-                    {estimate.paymentInfo?.includeVat ? 
-                      `${estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 (${estimate.paymentInfo.vatRate || 10}%)` : 
-                      '별도'}
-                  </span>
+                {/* 최종 결제 금액 */}
+                <div className="flex justify-between items-center bg-blue-200 p-2 rounded-md shadow-sm mt-1">
+                  <span className="font-bold text-sm text-blue-900">최종 결제 금액:</span>
+                  <span className="text-right font-bold text-base text-blue-900">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
                 </div>
                 
-                <div className="col-span-2 flex justify-between items-center pt-2">
-                  <span className="font-bold text-base">최종 결제 금액:</span>
-                  <span className="text-right font-bold text-base text-blue-600">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
-                </div>
+                {/* 택배비 - 작게 표시 */}
+                {estimate.paymentInfo?.shippingCost > 0 && (
+                  <div className="flex justify-end">
+                    <div className="inline-block bg-gray-50 p-1 px-2 rounded-md">
+                      <span className="text-xs text-gray-600">※택배비 별도: {estimate.paymentInfo?.shippingCost?.toLocaleString()}원※</span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
             {/* 참고사항 */}
-            <div className="mb-8">
-              <h3 className="text-lg font-bold mb-2">참고사항</h3>
-              <div className="border border-blue-300 p-4 rounded bg-blue-50">
+            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-4">
+              <h3 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">참고사항</h3>
+              <div className="bg-white p-2 rounded-md shadow-sm">
                 <ul className="list-disc pl-5 space-y-1 text-sm">
                   <li>본 견적서의 유효기간은 견적일로부터 7일입니다.</li>
                   <li>상기 견적은 제품 수급 상황에 따라 변동될 수 있습니다.</li>
