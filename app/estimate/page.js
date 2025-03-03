@@ -606,6 +606,7 @@ export default function Estimate() {
           success: false, 
           error: '고객 이름을 입력해주세요.' 
         });
+        alert('고객 이름을 입력해주세요.');
         return;
       }
 
@@ -615,6 +616,7 @@ export default function Estimate() {
           success: false, 
           error: '최소 하나 이상의 상품을 추가해주세요.' 
         });
+        alert('최소 하나 이상의 상품을 추가해주세요.');
         return;
       }
 
@@ -700,6 +702,7 @@ export default function Estimate() {
         success: false, 
         error: `저장 오류: ${error.message}` 
       });
+      alert(`저장 오류: ${error.message}`);
     }
   };
 
@@ -789,6 +792,14 @@ export default function Estimate() {
   useEffect(() => {
     updateCalculatedValues();
   }, [paymentInfo, tableData]);
+
+  // 오류 상태가 변경될 때 alert로 표시하는 효과
+  useEffect(() => {
+    if (saveStatus.error) {
+      // 페이지 최상단으로 스크롤
+      window.scrollTo(0, 0);
+    }
+  }, [saveStatus.error]);
 
   // JSX 렌더링 시작
   return (
