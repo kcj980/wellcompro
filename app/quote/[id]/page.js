@@ -456,6 +456,34 @@ export default function InvoicePage({ params }) {
                   z-index: 999 !important;
                 }
               }
+              
+              /* 공급자/공급받는자 제목 스타일 */
+              div[style*="flex: 6"] h2, 
+              div[style*="flex: 4"] h2 {
+                font-size: 1.125rem !important;
+                font-weight: bold !important;
+                margin-top: 0px !important; /* 상단 마진 0px로 변경 */
+                margin-bottom: 0.25rem !important;
+                text-align: center !important;
+                border-bottom: 1px solid #bfdbfe !important;
+                padding-bottom: 0.25rem !important;
+              }
+              
+              /* 공급자/공급받는자 키-값 스타일 */
+              .flex .font-semibold.w-24 {
+                width: 6rem !important;
+                min-width: 6rem !important;
+                display: inline-block !important;
+                font-weight: 600 !important;
+                text-align: left !important;
+              }
+              
+              .flex {
+                display: flex !important;
+                align-items: center !important;
+                line-height: 1.5 !important;
+                margin-bottom: 0.125rem !important;
+              }
             </style>
           </head>
           <body>
@@ -633,6 +661,62 @@ export default function InvoicePage({ params }) {
             }
           }
         });
+        
+        // 공급자/공급받는자 컨테이너 스타일 적용
+        const supplierReceiverContainer = printWindow.document.querySelector('div[style*="display: flex"][style*="gap: 10px"]');
+        if (supplierReceiverContainer) {
+          supplierReceiverContainer.style.display = 'flex';
+          supplierReceiverContainer.style.gap = '10px';
+          supplierReceiverContainer.style.marginTop = '5px'; // 상단 마진 5px 추가
+          supplierReceiverContainer.style.marginBottom = '20px';
+          supplierReceiverContainer.style.width = '100%';
+          
+          // 공급자 및 공급받는자 박스 스타일 적용
+          const boxes = supplierReceiverContainer.querySelectorAll('div[style*="border: 1px solid"]');
+          boxes.forEach(box => {
+            box.style.border = '1px solid #93c5fd';
+            box.style.padding = '8px';
+            box.style.borderRadius = '0.25rem';
+            
+            // 공급자/공급받는자 제목(h2) 스타일 적용
+            const title = box.querySelector('h2');
+            if (title) {
+              title.style.fontSize = '1.125rem';
+              title.style.fontWeight = 'bold';
+              title.style.marginTop = '0px'; // 상단 마진 0px로 변경
+              title.style.marginBottom = '0.25rem';
+              title.style.textAlign = 'center';
+              title.style.borderBottom = '1px solid #bfdbfe';
+              title.style.paddingBottom = '0.25rem';
+            }
+            
+            // 키-값 쌍 스타일 적용
+            const infoRows = box.querySelectorAll('.flex');
+            infoRows.forEach(row => {
+              row.style.display = 'flex';
+              row.style.alignItems = 'center';
+              row.style.marginBottom = '2px';
+              row.style.lineHeight = '1.5';
+              
+              // 키(라벨) 스타일 적용
+              const keyLabel = row.querySelector('.font-semibold.w-24');
+              if (keyLabel) {
+                keyLabel.style.width = '6rem';
+                keyLabel.style.minWidth = '6rem';
+                keyLabel.style.display = 'inline-block';
+                keyLabel.style.fontWeight = '600';
+                keyLabel.style.textAlign = 'left';
+              }
+              
+              // 값 스타일 적용
+              const valueLabel = row.querySelector('span:not(.font-semibold)');
+              if (valueLabel) {
+                valueLabel.style.display = 'inline-block';
+                valueLabel.style.flex = '1';
+              }
+            });
+          });
+        }
         
         printWindow.focus();
         printWindow.print();
