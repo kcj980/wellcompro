@@ -86,10 +86,35 @@ export default function InvoicePage({ params }) {
               
               /* 테이블 스타일 */
               table {
-                width: 650px !important;
-                margin-left: -5px !important;
+                width: 670px !important;
+                margin-left: -15px !important;
                 border-collapse: collapse !important;
                 border: 1px solid #93c5fd !important;
+              }
+              
+              /* 테이블 열 너비 설정 */
+              table th:nth-child(1), table td:nth-child(1) {
+                width: 4% !important; /* No. */
+              }
+              
+              table th:nth-child(2), table td:nth-child(2) {
+                width: 13% !important; /* 분류 */
+              }
+              
+              table th:nth-child(3), table td:nth-child(3) {
+                width: 50% !important; /* 상품명 */
+              }
+              
+              table th:nth-child(4), table td:nth-child(4) {
+                width: 7% !important; /* 수량 */
+              }
+              
+              table th:nth-child(5), table td:nth-child(5) {
+                width: 13% !important; /* 단가 */
+              }
+              
+              table th:nth-child(6), table td:nth-child(6) {
+                width: 13% !important; /* 금액 */
               }
               
               th, td {
@@ -256,17 +281,50 @@ export default function InvoicePage({ params }) {
                 border-radius: 0.5rem !important;
                 padding: 1rem !important;
                 background-color: #f0f7ff !important;
-                margin-left: 1rem !important;
-                margin-right: 1rem !important;
-                margin-bottom: 1.5rem !important;
+                margin-left: 0.25rem !important;
+                margin-right: 0.25rem !important;
+                margin-bottom: 1.25rem !important; /* 마진 증가 */
+                margin-top: 1rem !important; /* 마진 추가 */
               }
               
-              .section-title {
-                font-size: 1.125rem !important;
-                font-weight: 600 !important;
-                margin-bottom: 0.75rem !important;
+              /* 참고사항 컨테이너 특별 스타일 */
+              .reference-container {
+                padding: 0.75rem !important; /* 패딩 줄임 */
+                margin-bottom: 3px !important; /* 아래 마진 3px으로 설정 */
+              }
+              
+              /* 참고사항 제목 스타일 */
+              .reference-container h3 {
+                margin-top: 0 !important;
+                margin-bottom: 0.1875rem !important; /* 3px */
+                font-size: 1.25rem !important;
+                font-weight: bold !important;
+                color: #1e40af !important; /* text-blue-800 */
                 border-bottom: 1px solid #93c5fd !important;
-                padding-bottom: 0.5rem !important;
+                padding-bottom: 0.25rem !important;
+              }
+              
+              /* 마진 클래스 명시적으로 정의 */
+              .mb-5 {
+                margin-bottom: 1.25rem !important;
+              }
+              
+              .mx-1 {
+                margin-left: 0.25rem !important;
+                margin-right: 0.25rem !important;
+              }
+              
+              .px-4 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+              }
+              
+              .pb-0 {
+                padding-bottom: 0 !important;
+              }
+              
+              .pt-3 {
+                padding-top: 0.75rem !important;
               }
               
               /* 결제 정보 스타일 */
@@ -551,6 +609,26 @@ export default function InvoicePage({ params }) {
                 grid-template-columns: 1fr 1fr !important;
                 width: 100% !important;
               }
+
+              /* 테이블 열 정렬 스타일 */
+              table th:nth-child(1), table td:nth-child(1),
+              table th:nth-child(2), table td:nth-child(2),
+              table th:nth-child(4), table td:nth-child(4),
+              table th:nth-child(5), table td:nth-child(5),
+              table th:nth-child(6), table td:nth-child(6) {
+                text-align: center !important;
+              }
+
+              /* 테이블 합계 행 특별 스타일 */
+              table tbody tr.bg-blue-100.font-medium td[colspan="4"] {
+                text-align: right !important;
+                font-weight: bold !important;
+              }
+              
+              table tbody tr.bg-blue-100.font-medium td[colspan="2"] {
+                text-align: center !important;
+                font-weight: bold !important;
+              }
             </style>
           </head>
           <body>
@@ -571,9 +649,19 @@ export default function InvoicePage({ params }) {
       // 인쇄 실행
       printWindow.onload = function() {
         // DOM이 로드된 후 추가 스타일 적용
-        const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4, .mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-1');
+        const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-5.border.border-blue-300.rounded-lg.px-4.pb-0.pt-3.bg-blue-50.mx-1, .mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-1, .mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4');
         paymentInfoContainers.forEach(container => {
           container.classList.add('payment-info-container');
+          
+          // 마진 및 패딩 명시적 적용
+          container.style.marginBottom = '1.25rem';
+          container.style.marginTop = '1rem';
+          container.style.marginLeft = '0.25rem';
+          container.style.marginRight = '0.25rem';
+          container.style.paddingLeft = '1rem';
+          container.style.paddingRight = '1rem';
+          container.style.paddingBottom = '0';
+          container.style.paddingTop = '0.75rem';
           
           // 결제 정보 타이틀 스타일 적용
           const paymentTitle = container.querySelector('h2, h3');
@@ -739,6 +827,22 @@ export default function InvoicePage({ params }) {
         referenceContainers.forEach(container => {
           container.classList.add('reference-container');
           
+          // 패딩과 마진 직접 적용
+          container.style.padding = '0.75rem'; // 패딩 줄임
+          container.style.marginBottom = '3px'; // 아래 마진 3px
+          
+          // 참고사항 제목(h3) 스타일 적용
+          const referenceTitle = container.querySelector('h3');
+          if (referenceTitle) {
+            referenceTitle.style.marginTop = '0px';
+            referenceTitle.style.marginBottom = '3px'; // 아래 마진 3px
+            referenceTitle.style.fontSize = '1.25rem';
+            referenceTitle.style.fontWeight = 'bold';
+            referenceTitle.style.color = '#1e40af'; // text-blue-800
+            referenceTitle.style.borderBottom = '1px solid #93c5fd';
+            referenceTitle.style.paddingBottom = '0.25rem';
+          }
+          
           // 결제 정보 제목(h2) 스타일 적용
           const paymentTitle = container.querySelector('h2');
           if (paymentTitle) {
@@ -773,8 +877,21 @@ export default function InvoicePage({ params }) {
         tables.forEach(table => {
           table.style.borderCollapse = 'collapse';
           table.style.border = '1px solid #93c5fd';
-          table.style.width = '650px'; // 테이블 가로 크기 지정
-          table.style.marginLeft = '-13px'; // 테이블을 왼쪽으로 5px 이동
+          table.style.width = '670px'; // 테이블 가로 크기 지정
+          table.style.marginLeft = '-15px'; // 테이블을 왼쪽으로 15px 이동
+          table.style.tableLayout = 'fixed'; // 고정 테이블 레이아웃 적용
+          
+          // 테이블 헤더에 열 너비 적용
+          const headerCells = table.querySelectorAll('thead th');
+          if (headerCells.length >= 6) {
+            // 각 열의 너비 설정
+            headerCells[0].style.width = '4%';  // No.
+            headerCells[1].style.width = '13%'; // 분류
+            headerCells[2].style.width = '50%'; // 상품명
+            headerCells[3].style.width = '7%';  // 수량
+            headerCells[4].style.width = '13%'; // 단가
+            headerCells[5].style.width = '13%'; // 금액
+          }
           
           // 테이블 셀에 스타일 적용
           const cells = table.querySelectorAll('th, td');
@@ -783,16 +900,25 @@ export default function InvoicePage({ params }) {
             cell.style.padding = '2px 6px';
           });
           
+          // 특정 열에 가운데 정렬 적용
+          const alignCenterColumns = [0, 1, 3, 4, 5]; // 1번, 2번(분류), 4번, 5번, 6번 열
+          alignCenterColumns.forEach(colIndex => {
+            const thCells = table.querySelectorAll(`thead th:nth-child(${colIndex + 1})`);
+            const tdCells = table.querySelectorAll(`tbody td:nth-child(${colIndex + 1})`);
+            
+            thCells.forEach(cell => {
+              cell.style.textAlign = 'center';
+            });
+            
+            tdCells.forEach(cell => {
+              cell.style.textAlign = 'center';
+            });
+          });
+          
           // 헤더 행 스타일
           const headerRows = table.querySelectorAll('thead tr');
           headerRows.forEach(row => {
             row.style.backgroundColor = '#dbeafe';
-          });
-          
-          // 짝수/홀수 행 스타일
-          const bodyRows = table.querySelectorAll('tbody tr');
-          bodyRows.forEach((row, index) => {
-            row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f0f7ff';
           });
           
           // 상품/부품 합계 행 스타일 적용
@@ -801,11 +927,27 @@ export default function InvoicePage({ params }) {
             totalRow.style.backgroundColor = '#dbeafe'; // 배경색 설정
             
             const totalCells = totalRow.querySelectorAll('td');
-            totalCells.forEach(cell => {
+            totalCells.forEach((cell, idx) => {
               cell.style.fontWeight = '700'; // bold 설정
               cell.style.fontSize = '0.9rem'; // 글자 크기 설정
+              
+              // 첫 번째 셀(상품/부품 합계 텍스트가 있는 셀)
+              if (idx === 0) {
+                cell.style.textAlign = 'right'; // 오른쪽 정렬
+              }
+              
+              // 두 번째 셀(합계 금액이 있는 셀)
+              if (idx === 1) {
+                cell.style.textAlign = 'center'; // 가운데 정렬
+              }
             });
           }
+          
+          // 짝수/홀수 행 스타일
+          const bodyRows = table.querySelectorAll('tbody tr');
+          bodyRows.forEach((row, index) => {
+            row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f0f7ff';
+          });
         });
         
         // 택시비 별도 텍스트 오른쪽 정렬 적용
@@ -1136,10 +1278,10 @@ export default function InvoicePage({ params }) {
                 <table className="min-w-full divide-y divide-blue-300 border border-blue-300">
                   <thead>
                     <tr className="bg-blue-100">
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[5%] t ext-center">No.</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[12%]">분류</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[48%]">상품명</th>
-                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[9%] text-center">수량</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[4%] t ext-center">No.</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[13%] text-center">분류</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[50%]">상품명</th>
+                      <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[7%] text-center">수량</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[13%] text-center">단가</th>
                       <th className="px-1.5 py-0.5 border border-blue-300 text-sm font-medium w-[13%] text-center">금액</th>
                     </tr>
@@ -1149,23 +1291,23 @@ export default function InvoicePage({ params }) {
                       <>
                         <tr key={`product-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-blue-50'}>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">{index + 1}</td>
-                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm">{item.category || '-'}</td>
+                          <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">{item.category || '-'}</td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm">{item.productName || '-'}</td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">{item.quantity || '-'}</td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">
                             {item.price && item.quantity ? 
                               Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : 
-                              '-'}원
+                              '-'}
                           </td>
                           <td className="px-1.5 py-0.5 border border-blue-300 text-sm text-center">
-                            {item.price ? parseInt(item.price).toLocaleString() : '-'}원
+                            {item.price ? parseInt(item.price).toLocaleString() : '-'}
                           </td>
                         </tr>
                         {/* 비고가 있는 경우에만 표시 */}
                         {item.remarks && (
                           <tr key={`remarks-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-blue-50'}>
                             <td colSpan="6" className="px-1.5 py-0.5 border border-blue-300 text-sm bg-blue-50">
-                              <span className="font-medium">비고: </span>{item.remarks}
+                              <span className="font-medium">비고 : </span>{item.remarks}
                             </td>
                           </tr>
                         )}
@@ -1185,7 +1327,7 @@ export default function InvoicePage({ params }) {
             </div>
             
             {/* 결제 정보 요약 - 별도 섹션으로 분리 */}
-            <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-1">
+            <div className="mb-5 border border-blue-300 rounded-lg px-4 pb-0 pt-3 bg-blue-50 mx-1">
               <h2 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">결제 정보</h2>
               <div className="space-y-2">
                 {/* 상품/부품 합계 - 그대로 유지 */}
@@ -1194,38 +1336,32 @@ export default function InvoicePage({ params }) {
                   <span className="text-right font-medium text-sm">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
                 </div>
                 
-                {/* 공임비, 세팅비, 계약금 영역 */}
-                {(estimate.paymentInfo?.laborCost > 0 || estimate.paymentInfo?.setupCost > 0 || estimate.paymentInfo?.deposit > 0) && (
-                  <div className={`grid gap-2 ${
-                    (estimate.paymentInfo?.laborCost > 0 ? 1 : 0) + 
-                    (estimate.paymentInfo?.setupCost > 0 ? 1 : 0) + 
-                    (estimate.paymentInfo?.deposit > 0 ? 1 : 0) === 1 ? 'grid-cols-1' : 
-                    (estimate.paymentInfo?.laborCost > 0 ? 1 : 0) + 
-                    (estimate.paymentInfo?.setupCost > 0 ? 1 : 0) + 
-                    (estimate.paymentInfo?.deposit > 0 ? 1 : 0) === 2 ? 'grid-cols-2' : 'grid-cols-3'
-                  }`}>
-                    {estimate.paymentInfo?.laborCost > 0 && (
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        <div className="text-xs text-gray-500">공임비</div>
-                        <div className="font-medium text-sm">{estimate.paymentInfo?.laborCost?.toLocaleString()}원</div>
-                      </div>
-                    )}
-                    
-                    {estimate.paymentInfo?.setupCost > 0 && (
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        <div className="text-xs text-gray-500">세팅비</div>
-                        <div className="font-medium text-sm">{estimate.paymentInfo?.setupCost?.toLocaleString()}원</div>
-                      </div>
-                    )}
-                    
-                    {estimate.paymentInfo?.deposit > 0 && (
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        <div className="text-xs text-gray-500">계약금</div>
-                        <div className="font-medium text-sm">{estimate.paymentInfo?.deposit?.toLocaleString()}원</div>
-                      </div>
-                    )}
+                {/* 공임비, 세팅비, 계약금 영역 - 항상 표시 */}
+                <div className="grid gap-2 grid-cols-3">
+                  <div className="bg-white p-2 rounded-md shadow-sm">
+                    <div className="font-medium text-sm">
+                      공임비 : {estimate.paymentInfo?.laborCost > 0 
+                        ? `${estimate.paymentInfo?.laborCost?.toLocaleString()}원` 
+                        : "----"}
+                    </div>
                   </div>
-                )}
+                  
+                  <div className="bg-white p-2 rounded-md shadow-sm">
+                    <div className="font-medium text-sm">
+                      세팅비 : {estimate.paymentInfo?.setupCost > 0 
+                        ? `${estimate.paymentInfo?.setupCost?.toLocaleString()}원` 
+                        : "----"}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white p-2 rounded-md shadow-sm">
+                    <div className="font-medium text-sm">
+                      계약금 : {estimate.paymentInfo?.deposit > 0 
+                        ? `${estimate.paymentInfo?.deposit?.toLocaleString()}원` 
+                        : "----"}
+                    </div>
+                  </div>
+                </div>
                 
                 {/* 총 구입 금액 */}
                 <div className="flex justify-between items-center bg-blue-100 p-2 rounded-md shadow-sm">
@@ -1233,29 +1369,24 @@ export default function InvoicePage({ params }) {
                   <span className="text-right font-semibold text-sm">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
                 </div>
                 
-                {/* 할인, 부가세(VAT) 영역 */}
-                {(estimate.paymentInfo?.discount > 0 || (estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0)) && (
-                  <div className={`grid gap-2 ${
-                    (estimate.paymentInfo?.discount > 0 ? 1 : 0) + 
-                    (estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0 ? 1 : 0) === 1 ? 'grid-cols-1' : 'grid-cols-2'
-                  }`}>
-                    {estimate.paymentInfo?.discount > 0 && (
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        <div className="text-xs text-gray-500">할인</div>
-                        <div className="font-medium text-sm text-red-600">-{estimate.paymentInfo?.discount?.toLocaleString()}원</div>
-                      </div>
-                    )}
-                    
-                    {estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0 && (
-                      <div className="bg-white p-2 rounded-md shadow-sm">
-                        <div className="text-xs text-gray-500">부가세(VAT)</div>
-                        <div className="font-medium text-sm">
-                          {estimate.calculatedValues?.vatAmount?.toLocaleString()}원 ({estimate.paymentInfo.vatRate || 10}%)
-                        </div>
-                      </div>
-                    )}
+                {/* 할인, 부가세(VAT) 영역 - 항상 표시 */}
+                <div className="grid gap-2 grid-cols-2">
+                  <div className="bg-white p-2 rounded-md shadow-sm">
+                    <div className="font-medium text-sm">
+                      할인 : {estimate.paymentInfo?.discount > 0 
+                        ? `-${estimate.paymentInfo?.discount?.toLocaleString()}원` 
+                        : "----"}
+                    </div>
                   </div>
-                )}
+                  
+                  <div className="bg-white p-2 rounded-md shadow-sm">
+                    <div className="font-medium text-sm">
+                      부가세(VAT) : {estimate.paymentInfo?.includeVat && estimate.calculatedValues?.vatAmount > 0 
+                        ? `${estimate.calculatedValues?.vatAmount?.toLocaleString()}원 (${estimate.paymentInfo.vatRate || 10}%)` 
+                        : "----"}
+                    </div>
+                  </div>
+                </div>
                 
                 {/* 최종 결제 금액 */}
                 <div className="flex justify-between items-center bg-blue-200 p-2 rounded-md shadow-sm mt-1">
