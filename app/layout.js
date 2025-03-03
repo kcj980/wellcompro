@@ -1,5 +1,6 @@
 import './globals.css';
 import Navigation from './components/Navigation';
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: 'Wellcom',
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <Navigation />
         {children}
+        <Analytics />
       </body>
     </html>
   );
