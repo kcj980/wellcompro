@@ -15,11 +15,20 @@
  * URL에 id 파라미터가 있으면 해당 견적을 수정하는 모드로 작동하며,
  * 없으면 새로운 견적을 작성하는 모드로 작동합니다.
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-// 견적서 작성 및 수정 페이지 컴포넌트
+// 메인 컴포넌트
 export default function Estimate() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <EstimateContent />
+    </Suspense>
+  );
+}
+
+// 견적서 작성 및 수정 페이지 컴포넌트
+function EstimateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // URL에서 견적 ID를 가져와 수정 모드 여부 결정
