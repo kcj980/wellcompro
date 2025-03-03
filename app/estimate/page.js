@@ -120,7 +120,7 @@ export default function Estimate() {
     deposit: 0,           // 계약금
     includeVat: true,     // VAT 포함 여부 (기본 활성화)
     vatRate: 10,          // VAT 비율 (기본 10%)
-    roundingType: 'none',  // 버림 타입 (기본 없음)
+    roundingType: '',     // 버림/올림 타입 (기본 없음)
     paymentMethod: '',     // 결제 방법
     shippingCost: 0        // 택배비
   });
@@ -517,8 +517,8 @@ export default function Estimate() {
   };
 
   /**
-   * 최종 결제 금액 계산 함수 (VAT 및 버림 적용)
-   * 총 구입 금액에 VAT를 더하고 필요시 100원/1000원 단위 버림 적용
+   * 최종 결제 금액 계산 함수 (VAT 및 버림/올림 적용)
+   * 총 구입 금액에 VAT를 더하고 필요시 100원/1000원 단위 버림/올림 적용
    * @returns {number} 최종 결제 금액
    */
   const calculateFinalPayment = () => {
@@ -526,11 +526,15 @@ export default function Estimate() {
     const vatAmount = calculateVatAmount(total);
     total += vatAmount;
     
-    // 버림 적용 (100원 또는 1000원 단위)
+    // 버림/올림 적용 (100원 또는 1000원 단위)
     if (paymentInfo.roundingType === '100') {
       total = Math.floor(total / 100) * 100;
     } else if (paymentInfo.roundingType === '1000') {
       total = Math.floor(total / 1000) * 1000;
+    } else if (paymentInfo.roundingType === '100up') {
+      total = Math.ceil(total / 100) * 100;
+    } else if (paymentInfo.roundingType === '1000up') {
+      total = Math.ceil(total / 1000) * 1000;
     }
     
     return total;
@@ -1776,13 +1780,35 @@ export default function Estimate() {
                   >
                     1000 버림
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100up' }))}
+                    className={`px-3 py-2 rounded-md text-sm ${
+                      paymentInfo.roundingType === '100up'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    100 올림
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000up' }))}
+                    className={`px-3 py-2 rounded-md text-sm ${
+                      paymentInfo.roundingType === '1000up'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    1000 올림
+                  </button>
                   {paymentInfo.roundingType && (
                     <button
                       type="button"
                       onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '' }))}
                       className="px-3 py-2 rounded-md text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
                     >
-                      버림 취소
+                      버림/올림 취소
                     </button>
                   )}
                 </div>
