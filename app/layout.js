@@ -1,6 +1,7 @@
 import './globals.css';
 import Navigation from './components/Navigation';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
   title: 'Wellcom',
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
         <Navigation />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
