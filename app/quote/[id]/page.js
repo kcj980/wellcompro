@@ -484,6 +484,73 @@ export default function InvoicePage({ params }) {
                 line-height: 1.5 !important;
                 margin-bottom: 0.125rem !important;
               }
+              
+              /* 테이블 합계 행 스타일 */
+              .bg-blue-100.font-medium td {
+                font-weight: 700 !important; /* bold 처리 */
+                font-size: 0.9rem !important; /* 글자 크기 약간 크게 */
+              }
+              
+              /* 결제 정보 제목 스타일 */
+              .mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50 h2 {
+                margin-top: 0px !important;
+              }
+              
+              /* 결제 정보 섹션 내부 요소 스타일 강화 */
+              .payment-info-container > h2 {
+                margin-top: 0px !important;
+                margin-bottom: 0.75rem !important;
+              }
+              
+              .payment-info-container > div {
+                margin-top: 0 !important;
+              }
+              
+              .payment-info-container > div > div {
+                margin-top: 0.25rem !important;
+                margin-bottom: 0.25rem !important;
+              }
+              
+              .payment-info-container .bg-white {
+                margin-bottom: 0.25rem !important;
+              }
+              
+              /* 인쇄 시 비용 항목 가로 배치 */
+              .payment-info-container .grid {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 0.5rem !important;
+                justify-content: flex-start !important;
+              }
+              
+              .payment-info-container .bg-blue-200 {
+                margin-top: 0.5rem !important;
+                margin-bottom: 0.25rem !important;
+              }
+              
+              .payment-info-container .flex.justify-end {
+                margin-top: 0.25rem !important;
+              }
+              
+              /* 인쇄 시 할인/부가세 항목 가로 너비 강화 */
+              .payment-info-container div[class*="grid"] div.bg-white {
+                width: 100% !important;
+                box-sizing: border-box !important;
+              }
+              
+              /* 인쇄 시 할인/부가세 그리드 레이아웃 강화 */
+              .payment-info-container div[class*="grid-cols-1"] {
+                display: grid !important;
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+              }
+              
+              .payment-info-container div[class*="grid-cols-2"] {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                width: 100% !important;
+              }
             </style>
           </head>
           <body>
@@ -504,11 +571,142 @@ export default function InvoicePage({ params }) {
       // 인쇄 실행
       printWindow.onload = function() {
         // DOM이 로드된 후 추가 스타일 적용
-        const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4');
+        const paymentInfoContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-4, .mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-1');
         paymentInfoContainers.forEach(container => {
           container.classList.add('payment-info-container');
           
-          // 결제 정보 내 요소들 스타일 적용
+          // 결제 정보 타이틀 스타일 적용
+          const paymentTitle = container.querySelector('h2, h3');
+          if (paymentTitle) {
+            paymentTitle.style.marginTop = '0px';
+            paymentTitle.style.marginBottom = '0.75rem';
+            paymentTitle.style.fontSize = '1.25rem';
+            paymentTitle.style.fontWeight = 'bold';
+            paymentTitle.style.color = '#1e40af'; // text-blue-800
+            paymentTitle.style.borderBottom = '1px solid #93c5fd';
+            paymentTitle.style.paddingBottom = '0.5rem';
+          }
+          
+          // 결제 정보 내 모든 요소들 선택
+          const contentDiv = container.querySelector('div.space-y-2');
+          if (contentDiv) {
+            contentDiv.style.marginTop = '0';
+            
+            // 모든 직계 자식 div 요소에 마진 적용
+            const directChildDivs = contentDiv.querySelectorAll(':scope > div');
+            directChildDivs.forEach((div, index) => {
+              // 첫번째 자식 요소는 위 마진 없음
+              if (index === 0) {
+                div.style.marginTop = '0';
+              } else {
+                div.style.marginTop = '0.5rem';
+              }
+              div.style.marginBottom = '0.25rem';
+            });
+            
+            // 상품/부품 합계 박스
+            const productTotalBox = contentDiv.querySelector('div.flex.justify-between.items-center.bg-white');
+            if (productTotalBox) {
+              productTotalBox.style.marginTop = '0';
+              productTotalBox.style.marginBottom = '0.5rem';
+              productTotalBox.style.padding = '0.5rem';
+              productTotalBox.style.backgroundColor = '#ffffff';
+              productTotalBox.style.borderRadius = '0.375rem';
+            }
+            
+            // 공임비, 세팅비, 계약금 그리드
+            const costGrid = contentDiv.querySelector('.grid');
+            if (costGrid) {
+              costGrid.style.display = 'flex'; // 그리드에서 플렉스로 변경
+              costGrid.style.flexDirection = 'row';
+              costGrid.style.flexWrap = 'nowrap';
+              costGrid.style.justifyContent = 'flex-start';
+              costGrid.style.marginTop = '0.5rem';
+              costGrid.style.marginBottom = '0.5rem';
+              costGrid.style.gap = '0.5rem';
+              
+              // 그리드 내부 항목들에 마진과 너비 적용
+              const gridItems = costGrid.querySelectorAll('div.bg-white, div.flex.justify-between');
+              gridItems.forEach(item => {
+                item.style.margin = '0.25rem 0';
+                item.style.padding = '0.5rem';
+                item.style.borderRadius = '0.375rem';
+                item.style.flex = '1'; // 동일한 너비로 설정
+                item.style.minWidth = 'fit-content'; // 내용에 맞는 최소 너비
+                item.style.maxWidth = '33%'; // 최대 너비 제한
+              });
+            }
+            
+            // 할인 및 부가세 그리드 (두 번째 그리드)
+            const discountVatGrids = contentDiv.querySelectorAll('div[class*="grid"]');
+            if (discountVatGrids.length > 1) {
+              const discountVatGrid = discountVatGrids[1]; // 두 번째 그리드
+              if (discountVatGrid) {
+                discountVatGrid.style.display = 'grid';
+                discountVatGrid.style.width = '100%';
+                discountVatGrid.style.marginTop = '0.5rem';
+                discountVatGrid.style.marginBottom = '0.5rem';
+                discountVatGrid.style.gap = '0.5rem';
+                
+                // 그리드 레이아웃 명시적 설정
+                if (discountVatGrid.classList.contains('grid-cols-1')) {
+                  discountVatGrid.style.gridTemplateColumns = '1fr';
+                } else if (discountVatGrid.classList.contains('grid-cols-2')) {
+                  discountVatGrid.style.gridTemplateColumns = '1fr 1fr';
+                }
+                
+                // 그리드 내부 항목들에 마진과 너비 적용
+                const discountVatItems = discountVatGrid.querySelectorAll('div.bg-white');
+                discountVatItems.forEach(item => {
+                  item.style.margin = '0.25rem 0';
+                  item.style.padding = '0.5rem';
+                  item.style.borderRadius = '0.375rem';
+                  item.style.width = '100%'; // 가로 전체 너비로 설정
+                  item.style.boxSizing = 'border-box';
+                  item.style.minWidth = '100%'; // 최소 너비 강제 설정
+                  item.style.maxWidth = '100%'; // 최대 너비 강제 설정
+                });
+              }
+            }
+            
+            // 부가세 영역
+            const vatContainer = contentDiv.querySelector('div.bg-gray-50');
+            if (vatContainer) {
+              vatContainer.style.marginTop = '0.5rem';
+              vatContainer.style.marginBottom = '0.5rem';
+              vatContainer.style.padding = '0.5rem';
+              vatContainer.style.backgroundColor = '#f9fafb';
+              vatContainer.style.borderRadius = '0.375rem';
+            }
+            
+            // 최종 결제 금액
+            const finalPayment = contentDiv.querySelector('.bg-blue-200, .flex.justify-between.items-center.bg-blue-200');
+            if (finalPayment) {
+              finalPayment.style.marginTop = '0.75rem';
+              finalPayment.style.marginBottom = '0.25rem';
+              finalPayment.style.padding = '0.5rem';
+              finalPayment.style.backgroundColor = '#bfdbfe';
+              finalPayment.style.borderRadius = '0.375rem';
+              finalPayment.style.fontWeight = 'bold';
+            }
+            
+            // 택배비 영역
+            const shippingCost = contentDiv.querySelector('.flex.justify-end');
+            if (shippingCost) {
+              shippingCost.style.marginTop = '0.25rem';
+              shippingCost.style.display = 'flex';
+              shippingCost.style.justifyContent = 'flex-end';
+              
+              const shippingBox = shippingCost.querySelector('.inline-block');
+              if (shippingBox) {
+                shippingBox.style.backgroundColor = '#f9fafb';
+                shippingBox.style.padding = '0.25rem 0.5rem';
+                shippingBox.style.borderRadius = '0.375rem';
+              }
+            }
+          }
+          
+          // 결제 정보 내 요소들 스타일 적용 (기존 코드)
           const blueBoxes = container.querySelectorAll('.bg-blue-200');
           blueBoxes.forEach(box => {
             box.style.backgroundColor = '#bfdbfe';
@@ -519,43 +717,20 @@ export default function InvoicePage({ params }) {
             box.style.border = '1px solid #93c5fd';
           });
           
-          const grayBoxes = container.querySelectorAll('.bg-gray-50');
-          grayBoxes.forEach(box => {
-            box.style.backgroundColor = '#f9fafb';
+          // 흰색 배경 박스 스타일 적용
+          const whiteBoxes = container.querySelectorAll('.bg-white');
+          whiteBoxes.forEach(box => {
+            box.style.backgroundColor = '#ffffff';
             box.style.borderRadius = '0.375rem';
-            box.style.padding = '0.25rem 0.5rem';
-            box.style.margin = '0.25rem 0';
-            box.style.border = '1px solid #e5e7eb';
+            box.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+            box.style.padding = '0.5rem';
           });
           
-          // 하위 섹션 스타일 적용
-          const sections = container.querySelectorAll('.space-y-2');
-          sections.forEach(section => {
-            const children = section.children;
-            for(let i = 1; i < children.length; i++) {
-              children[i].style.marginTop = '0.5rem';
-            }
-          });
-          
-          // 테두리 있는 요소 스타일 적용
-          const borderedElements = container.querySelectorAll('.border-b');
-          borderedElements.forEach(element => {
-            element.style.borderBottomWidth = '1px';
-            element.style.borderBottomStyle = 'solid';
-            element.style.borderBottomColor = '#bfdbfe';
-            element.style.paddingBottom = '0.5rem';
-            element.style.marginBottom = '0.75rem';
-          });
-          
-          // 텍스트 색상 적용
-          const blueTexts = container.querySelectorAll('.text-blue-900');
-          blueTexts.forEach(text => {
-            text.style.color = '#1e3a8a';
-          });
-          
-          const grayTexts = container.querySelectorAll('.text-gray-600');
-          grayTexts.forEach(text => {
-            text.style.color = '#4b5563';
+          // 목록 스타일 적용
+          const lists = container.querySelectorAll('.list-disc');
+          lists.forEach(list => {
+            list.style.listStyleType = 'disc';
+            list.style.paddingLeft = '1.25rem';
           });
         });
         
@@ -563,6 +738,18 @@ export default function InvoicePage({ params }) {
         const referenceContainers = printWindow.document.querySelectorAll('.mb-6.border.border-blue-300.rounded-lg.p-4.bg-blue-50.mx-1');
         referenceContainers.forEach(container => {
           container.classList.add('reference-container');
+          
+          // 결제 정보 제목(h2) 스타일 적용
+          const paymentTitle = container.querySelector('h2');
+          if (paymentTitle) {
+            paymentTitle.style.marginTop = '0px';
+            paymentTitle.style.fontSize = '1.25rem';
+            paymentTitle.style.fontWeight = 'bold';
+            paymentTitle.style.marginBottom = '0.75rem';
+            paymentTitle.style.color = '#1e40af'; // text-blue-800
+            paymentTitle.style.borderBottom = '1px solid #93c5fd';
+            paymentTitle.style.paddingBottom = '0.5rem';
+          }
           
           // 흰색 배경 박스 스타일 적용
           const whiteBoxes = container.querySelectorAll('.bg-white');
@@ -607,6 +794,18 @@ export default function InvoicePage({ params }) {
           bodyRows.forEach((row, index) => {
             row.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#f0f7ff';
           });
+          
+          // 상품/부품 합계 행 스타일 적용
+          const totalRow = table.querySelector('tbody tr.bg-blue-100.font-medium');
+          if (totalRow) {
+            totalRow.style.backgroundColor = '#dbeafe'; // 배경색 설정
+            
+            const totalCells = totalRow.querySelectorAll('td');
+            totalCells.forEach(cell => {
+              cell.style.fontWeight = '700'; // bold 설정
+              cell.style.fontSize = '0.9rem'; // 글자 크기 설정
+            });
+          }
         });
         
         // 택시비 별도 텍스트 오른쪽 정렬 적용
@@ -1068,7 +1267,7 @@ export default function InvoicePage({ params }) {
                 {estimate.paymentInfo?.shippingCost > 0 && (
                   <div className="flex justify-end">
                     <div className="inline-block bg-gray-50 p-1 px-2 rounded-md">
-                      <span className="text-xs text-gray-600">※택배비 별도: {estimate.paymentInfo?.shippingCost?.toLocaleString()}원※</span>
+                      <span className="text-xs text-gray-600">※택배비 별도 추가: {estimate.paymentInfo?.shippingCost?.toLocaleString()}원※</span>
                     </div>
                   </div>
                 )}
@@ -1077,13 +1276,11 @@ export default function InvoicePage({ params }) {
             
             {/* 참고사항 */}
             <div className="mb-6 border border-blue-300 rounded-lg p-4 bg-blue-50 mx-1">
-              <h3 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">참고사항</h3>
+              <h3 className="text-xl font-bold mb-3 text-blue-800 border-b pb-2">공지-참고-사항(꼭 읽으세요)</h3>
               <div className="bg-white p-2 rounded-md shadow-sm">
                 <ul className="list-disc pl-5 space-y-1 text-sm">
-                  <li>본 견적서의 유효기간은 견적일로부터 7일입니다.</li>
-                  <li>상기 견적은 제품 수급 상황에 따라 변동될 수 있습니다.</li>
-                  <li>모든 가격은 부가세 {estimate.paymentInfo?.includeVat ? '포함' : '별도'} 금액입니다.</li>
                   <li>계약금 입금 후 주문이 확정됩니다.</li>
+                  <li>다른 공지사항 적을 거 있으면 말해줘!</li>
                 </ul>
               </div>
             </div>
