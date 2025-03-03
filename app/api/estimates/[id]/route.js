@@ -99,12 +99,24 @@ export async function PUT(request, { params }) {
     // 수정 시간 업데이트
     data.updatedAt = Date.now();
     
+    // 업데이트할 데이터 로깅
+    console.log('업데이트할 데이터:', JSON.stringify({
+      customerInfo: data.customerInfo,
+      tableDataCount: data.tableData.length,
+      paymentInfo: data.paymentInfo,
+      calculatedValues: data.calculatedValues,
+      notes: data.notes,
+      hasNotes: !!data.notes
+    }, null, 2));
+    
     // ID로 견적 찾아서 업데이트
     const updatedEstimate = await Estimate.findByIdAndUpdate(
       id, 
       data,
       { new: true, runValidators: true }
     );
+    
+    console.log('업데이트된 견적의 notes 필드:', updatedEstimate.notes);
     
     // 성공 응답 반환
     return NextResponse.json({ 

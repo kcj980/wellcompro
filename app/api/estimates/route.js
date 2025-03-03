@@ -44,8 +44,18 @@ export async function POST(request) {
     
     // 새 견적 생성
     console.log('견적 데이터 저장 시도...');
+    console.log('저장할 데이터:', JSON.stringify({
+      customerInfo: data.customerInfo,
+      tableDataCount: data.tableData.length,
+      paymentInfo: data.paymentInfo,
+      calculatedValues: data.calculatedValues,
+      notes: data.notes,
+      hasNotes: !!data.notes
+    }, null, 2));
+    
     const estimate = await Estimate.create(data);
     console.log('견적 저장 완료:', estimate._id);
+    console.log('저장된 견적의 notes 필드:', estimate.notes);
     
     // 성공 응답 반환
     return NextResponse.json({ 

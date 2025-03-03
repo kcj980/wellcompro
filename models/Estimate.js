@@ -49,6 +49,9 @@ const EstimateSchema = new mongoose.Schema({
     finalPayment: Number       // 최종 결제 금액
   },
   
+  // 참고사항
+  notes: String,
+  
   // 생성 및 수정 시간
   createdAt: {
     type: Date,

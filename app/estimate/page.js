@@ -154,6 +154,9 @@ export default function Estimate() {
   // 수정 모드일 경우 데이터 로딩 중임을 표시하는 상태
   const [isLoading, setIsLoading] = useState(isEditMode);
 
+  // 참고사항을 관리하는 상태
+  const [notes, setNotes] = useState('');
+
   /**
    * 숫자를 한글 금액 표기로 변환하는 함수
    * 예: 10000 -> 일만원, 1250000 -> 일백이십오만원
@@ -450,7 +453,8 @@ export default function Estimate() {
       setEditingId(null);
     } else {
       // 새로운 항목 추가 모드
-    setTableData(prev => [...prev, { ...formData, id: Date.now() }]);
+      // 임시 ID 생성 - 'temp-' 접두사를 붙여 MongoDB ObjectId와 구분되게 함
+      setTableData(prev => [...prev, { ...formData, id: `temp-${Date.now()}` }]);
     }
 
     // 폼 초기화
@@ -534,12 +538,16 @@ export default function Estimate() {
 
   // 결제 정보 변경 시 호출되는 함수
   const handlePaymentInfoChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setPaymentInfo(prev => ({
       ...prev,
-      // checkbox인 경우 checked 값, 그 외에는 입력 값 사용
-      [name]: type === 'checkbox' ? checked : value
+      [name]: name === 'includeVat' ? e.target.checked : value
     }));
+  };
+
+  // 참고사항 변경 시 호출되는 함수
+  const handleNotesChange = (e) => {
+    setNotes(e.target.value);
   };
 
   // 공임비 선택 버튼 클릭 시 호출되는 함수
@@ -613,13 +621,16 @@ export default function Estimate() {
       // MongoDB에 저장할 테이블 데이터 정리
       // 클라이언트 ID를 MongoDB _id로 변환하거나 제거하여 서버에서 처리할 수 있게 함
       const processedTableData = tableData.map(item => {
-        // id가 MongoDB ID 형식이면 그대로 유지, 아니면 제거 (서버에서 새로 생성)
+        // 클라이언트에서 생성된 ID는 제거하고 MongoDB가 자동으로 생성하도록 함
         const { id, ...rest } = item;
-        // MongoDB ID 형식인 경우 _id로 추가, 아니면 없이 전송
-        if (id && typeof id === 'string' && id.startsWith('imported-')) {
-          return rest; // 클라이언트에서 생성한 ID는 제거
+        
+        // MongoDB ObjectId 형식(24자 hex 문자열)인 경우에만 _id로 설정
+        if (id && typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)) {
+          return { ...rest, _id: id };
         }
-        return { ...rest, _id: id }; // 서버에서 가져온 ID는 _id로 변환
+        
+        // 그 외의 경우는 ID 제거하고 MongoDB가 생성하도록 함
+        return rest;
       });
       
       // MongoDB에 저장할 데이터 구성
@@ -627,7 +638,8 @@ export default function Estimate() {
         customerInfo,
         tableData: processedTableData,
         paymentInfo,
-        calculatedValues
+        calculatedValues,
+        notes
       };
 
       console.log('Sending data to server:', estimateData);
@@ -675,10 +687,10 @@ export default function Estimate() {
           router.push(`/estimate/${estimateId}`);
         }, 1500);
       } else {
-        // 3초 후 성공 메시지 초기화 (새 견적 생성 모드)
+        // 성공 메시지 표시 후 1.5초 후 검색 페이지로 리다이렉트
         setTimeout(() => {
-          setSaveStatus(prev => ({ ...prev, success: false }));
-        }, 3000);
+          router.push('/search');
+        }, 1500);
       }
 
     } catch (error) {
@@ -734,6 +746,9 @@ export default function Estimate() {
               finalPayment: 0
             });
             
+            // 참고사항 로드
+            setNotes(data.estimate.notes || '');
+            
             // 공임비, 세팅비의 직접 입력 상태 설정
             if (data.estimate.paymentInfo) {
               // 공임비가 기본값 중 하나인지 체크
@@ -778,51 +793,11 @@ export default function Estimate() {
   // JSX 렌더링 시작
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* 페이지 제목과 저장 버튼 영역 */}
+      {/* 페이지 제목 영역 */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
           {isEditMode ? '견적서 수정' : '견적서 작성'}
         </h1>
-        <button
-          type="button"
-          onClick={saveEstimate}
-          disabled={saveStatus.loading}
-          className={`px-4 py-2 rounded-md text-white ${
-            saveStatus.loading
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          {saveStatus.loading ? (
-            <span className="flex items-center">
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              저장중...
-            </span>
-          ) : isEditMode ? (
-            '수정하기'
-          ) : (
-            '저장하기'
-          )}
-        </button>
       </div>
 
       {/* 로딩 중일 때 표시되는 로딩 스피너 */}
@@ -1816,8 +1791,68 @@ export default function Estimate() {
               </div>
             </div>
           </div>
+
+          {/* 참고사항 섹션 */}
+          <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              참고사항
+            </h2>
+            <div className="text-sm text-gray-500 mb-3">
+              * 참고사항은 내부용으로 견적서에는 표시되지 않습니다.
+            </div>
+            <textarea
+              value={notes}
+              onChange={handleNotesChange}
+              className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="견적에 대한 참고사항을 입력하세요. (선택사항)"
+            ></textarea>
+          </div>
         </>
       )}
+
+      {/* 저장하기/수정하기 버튼 영역 */}
+      <div className="mt-8 flex justify-center">
+        <button
+          type="button"
+          onClick={saveEstimate}
+          disabled={saveStatus.loading}
+          className={`px-6 py-3 rounded-md text-white text-lg ${
+            saveStatus.loading
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+          }`}
+        >
+          {saveStatus.loading ? (
+            <span className="flex items-center">
+              <svg
+                className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              저장중...
+            </span>
+          ) : isEditMode ? (
+            '수정하기'
+          ) : (
+            '저장하기'
+          )}
+        </button>
+      </div>
     </div>
   );
 }
