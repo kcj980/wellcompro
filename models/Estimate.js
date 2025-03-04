@@ -28,6 +28,14 @@ const EstimateSchema = new mongoose.Schema({
     remarks: String        // 비고
   }],
   
+  // 서비스 물품 데이터
+  serviceData: [{
+    id: String,           // 고유 ID
+    productName: String,   // 상품명
+    quantity: Number,      // 수량
+    remarks: String        // 비고
+  }],
+  
   // 결제 정보
   paymentInfo: {
     laborCost: Number,         // 공임비

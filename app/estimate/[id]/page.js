@@ -175,7 +175,12 @@ export default function EstimateDetail({ params }) {
           <div className="space-y-6">
             {/* 고객 정보 섹션 */}
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">고객 정보</h2>
+              <div className="flex items-center mb-4">
+                <h2 className="text-xl font-semibold mr-2">고객 정보</h2>
+                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${estimate.isContractor ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                  {estimate.isContractor ? '계약자' : '비계약자'}
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <div className="text-sm font-medium text-gray-500">이름</div>
@@ -322,6 +327,35 @@ export default function EstimateDetail({ params }) {
                 </div>
               </div>
             </div>
+            
+            {/* 서비스 물품 섹션 */}
+            {estimate.serviceData && estimate.serviceData.length > 0 && (
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="p-6 pb-0">
+                  <h2 className="text-xl font-semibold mb-4">서비스 물품</h2>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">비고</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {estimate.serviceData.map((item, index) => (
+                        <tr key={index}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productName || '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity || '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.remarks || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
             
             {/* 참고사항 섹션 */}
             {estimate.notes && (

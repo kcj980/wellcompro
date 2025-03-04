@@ -169,6 +169,9 @@ function EstimateContent() {
   // 계약자 여부를 관리하는 상태
   const [isContractor, setIsContractor] = useState(false);
 
+  // 서비스 물품 데이터를 관리하는 상태
+  const [serviceData, setServiceData] = useState([]);
+
   /**
    * 숫자를 한글 금액 표기로 변환하는 함수
    * 예: 10000 -> 일만원, 1250000 -> 일백이십오만원
@@ -659,10 +662,22 @@ function EstimateContent() {
         return rest;
       });
       
+      // 서비스 물품 데이터 정리
+      const processedServiceData = serviceData.map(item => {
+        const { id, ...rest } = item;
+        
+        if (id && typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id)) {
+          return { ...rest, _id: id };
+        }
+        
+        return rest;
+      });
+      
       // MongoDB에 저장할 데이터 구성
       const estimateData = {
         customerInfo,
         tableData: processedTableData,
+        serviceData: processedServiceData, // 서비스 물품 데이터 추가
         paymentInfo,
         calculatedValues,
         notes,
@@ -780,6 +795,15 @@ function EstimateContent() {
             // 계약자 여부 로드
             setIsContractor(data.estimate.isContractor || false);
             
+            // 서비스 물품 데이터 로드
+            if (data.estimate.serviceData && Array.isArray(data.estimate.serviceData)) {
+              const serviceItemsWithClientId = data.estimate.serviceData.map(item => ({
+                ...item,
+                id: item._id || item.id || `service-${Date.now()}-${Math.random()}`
+              }));
+              setServiceData(serviceItemsWithClientId);
+            }
+            
             // 공임비, 세팅비의 직접 입력 상태 설정
             if (data.estimate.paymentInfo) {
               // 공임비가 기본값 중 하나인지 체크
@@ -841,6 +865,73 @@ function EstimateContent() {
     } else {
       setIsContractor(isChecked);
     }
+  };
+
+  // 서비스 물품 추가 함수
+  const handleAddServiceItem = (productName, customQuantity = 1) => {
+    // 이미 존재하는지 확인
+    const existingItem = serviceData.find(item => item.productName === productName);
+    
+    if (existingItem) {
+      // 이미 존재하면 수량만 증가
+      setServiceData(prev => 
+        prev.map(item => 
+          item.productName === productName 
+            ? { ...item, quantity: item.quantity + customQuantity } 
+            : item
+        )
+      );
+    } else {
+      // 새로운 항목 추가
+      setServiceData(prev => [
+        ...prev, 
+        {
+          id: Date.now() + Math.random(),
+          productName,
+          quantity: customQuantity,
+          remarks: ''
+        }
+      ]);
+    }
+  };
+
+  // 서비스 물품 삭제 함수
+  const handleDeleteServiceItem = (id) => {
+    setServiceData(prev => prev.filter(item => item.id !== id));
+  };
+
+  // 서비스 물품 비고 변경 함수
+  const handleServiceRemarkChange = (id, value) => {
+    setServiceData(prev => 
+      prev.map(item => 
+        item.id === id 
+          ? { ...item, remarks: value } 
+          : item
+      )
+    );
+  };
+
+  // 서비스 물품 상품명 변경 함수
+  const handleProductNameChange = (id, value) => {
+    setServiceData(prev => 
+      prev.map(item => 
+        item.id === id 
+          ? { ...item, productName: value } 
+          : item
+      )
+    );
+  };
+
+  // 서비스 물품 수량 변경 함수
+  const handleQuantityChange = (id, value) => {
+    const newQuantity = parseInt(value) || 1;
+    setServiceData(prev => 
+      prev.map(item => 
+        item.id === id 
+          ? { ...item, quantity: newQuantity } 
+          : item
+      )
+    );
   };
 
   // JSX 렌더링 시작
@@ -1866,6 +1957,164 @@ function EstimateContent() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* 서비스 물품 섹션 */}
+          <div className="bg-white rounded-lg shadow p-6 mt-6">
+            <h2 className="text-xl font-semibold mb-4">서비스 물품</h2>
+            
+            {/* 서비스 물품 선택 버튼 */}
+            <div className="mb-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('마우스')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  마우스
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('마우스패드')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  마우스패드
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('키보드')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  키보드
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('스피커')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  스피커
+                </button>
+              </div>
+            </div>
+            
+            {/* 서비스 물품 직접 입력 폼 */}
+            <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50">
+              <h3 className="text-md font-medium mb-3">직접 입력</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">상품명</label>
+                  <input
+                    type="text"
+                    id="custom-product-name"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="상품명 입력"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">개수</label>
+                  <input
+                    type="number"
+                    id="custom-quantity"
+                    min="1"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="개수 입력"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const productName = document.getElementById('custom-product-name').value;
+                      const quantity = parseInt(document.getElementById('custom-quantity').value) || 1;
+                      
+                      if (productName.trim()) {
+                        // 새 서비스 물품 추가
+                        handleAddServiceItem(productName, quantity);
+                        
+                        // 입력 필드 초기화
+                        document.getElementById('custom-product-name').value = '';
+                        document.getElementById('custom-quantity').value = '';
+                      } else {
+                        alert('상품명을 입력해주세요.');
+                      }
+                    }}
+                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    추가하기
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* 서비스 물품 테이블 */}
+            <div className="max-w-full">
+              <table className="w-full table-fixed divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="w-[10%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      작업
+                    </th>
+                    <th className="w-[40%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      상품명
+                    </th>
+                    <th className="w-[15%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      개수
+                    </th>
+                    <th className="w-[35%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      비고
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {serviceData.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-4 py-4 text-center text-sm text-gray-500">
+                        서비스 물품이 없습니다. 위 버튼을 클릭하여 추가하세요.
+                      </td>
+                    </tr>
+                  ) : (
+                    serviceData.map((item) => (
+                      <tr key={item.id}>
+                        <td className="px-4 py-4">
+                          <button
+                            onClick={() => handleDeleteServiceItem(item.id)}
+                            className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                          >
+                            삭제
+                          </button>
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="text"
+                            value={item.productName}
+                            onChange={(e) => handleProductNameChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="text"
+                            value={item.remarks}
+                            onChange={(e) => handleServiceRemarkChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="비고를 입력하세요"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
 
