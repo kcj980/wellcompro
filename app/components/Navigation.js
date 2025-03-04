@@ -44,9 +44,9 @@ export default function Navigation() {
                 검색
               </Link>
               <Link
-                href="/panel"
+                href="/"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
-                  ${isActive('/panel')
+                  ${isActive('/')
                     ? 'bg-blue-700 text-white shadow-lg'
                     : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
                   }`}

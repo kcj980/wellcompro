@@ -7,6 +7,8 @@ export default function ConsumerQuotePage({ params }) {
   const [estimate, setEstimate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showNotes, setShowNotes] = useState(true);
+  const [printTriggered, setPrintTriggered] = useState(false);
   const router = useRouter();
   const printRef = useRef(null);
   const { id } = params;
@@ -63,6 +65,19 @@ export default function ConsumerQuotePage({ params }) {
     window.print();
   };
   
+  // 페이지 로드 후 자동 인쇄 기능
+  useEffect(() => {
+    if (estimate && !loading && !error && !printTriggered) {
+      // 데이터가 로드되고 에러가 없을 때 약간의 지연 후 인쇄 실행
+      const timer = setTimeout(() => {
+        handlePrint();
+        setPrintTriggered(true);
+      }, 500); // 0.5초 지연 후 인쇄 실행
+      
+      return () => clearTimeout(timer);
+    }
+  }, [estimate, loading, error, printTriggered]);
+  
   if (loading) {
     return <div style={{ width: '800px', margin: '0 auto', padding: '24px', textAlign: 'center' }}>데이터를 불러오는 중...</div>;
   }
@@ -107,12 +122,24 @@ export default function ConsumerQuotePage({ params }) {
           ← 돌아가기
         </button>
         
-        <button
-          onClick={handlePrint}
-          className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
-        >
-          인쇄하기
-        </button>
+        <div className="flex items-center">
+          <label className="flex items-center cursor-pointer mr-4">
+            <input 
+              type="checkbox" 
+              checked={showNotes} 
+              onChange={(e) => setShowNotes(e.target.checked)}
+              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
+            />
+            <span className="ml-2 text-gray-700">공지-참고-사항 추가</span>
+          </label>
+          
+          <button
+            onClick={handlePrint}
+            className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
+          >
+            인쇄하기
+          </button>
+        </div>
       </div>
       
       {/* 인쇄 영역 */}
@@ -238,7 +265,7 @@ export default function ConsumerQuotePage({ params }) {
         {estimate.serviceData && estimate.serviceData.length > 0 && (
           <div className="border border-sky-200 rounded-lg p-2 mb-1 bg-sky-50">
             <div className="flex items-center">
-              <h2 className="text-lg font-bold text-black mr-4">서비스 상품</h2>
+              <h2 className="text-lg font-bold text-blue-800 mr-4">서비스 상품</h2>
               <div className="flex flex-wrap gap-2">
                 {estimate.serviceData.map((item, index) => (
                   <div key={index} className="bg-white px-3 py-1 rounded-full border border-sky-200 text-sm">
@@ -251,8 +278,8 @@ export default function ConsumerQuotePage({ params }) {
         )}
         
         {/* 이곳에 결제 정보 표시 */}
-        <div className="border border-sky-200 rounded-lg px-2 mb-6 bg-sky-50">
-          <h2 className="text-lg font-bold mb-1 mt-1 text-black">결제 정보</h2>
+        <div className="border border-sky-200 rounded-lg px-2 mb-2 bg-sky-50">
+          <h2 className="text-lg font-bold mb-1 mt-1 text-blue-800">결제 정보</h2>
           <div className="space-y-1">
             {/* 상품/부품 합계 */}
             <div className="border border-sky-200 rounded-md p-1 bg-white flex justify-between">
@@ -281,34 +308,33 @@ export default function ConsumerQuotePage({ params }) {
             {/* 총 구입 금액과 계약금을 한 줄에 표시 */}
             <div className="flex gap-1">
               {estimate.paymentInfo?.deposit > 0 && (
-                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between items-center">
                   <span className="font-semibold text-black">계약금:</span>
                   <span>{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
                 </div>
               )}
-              <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1.6] flex justify-between">
+              <div className="border border-sky-400 rounded-md p-2 bg-sky-200 flex-[1.6] flex justify-between items-center">
                 <span className="font-semibold text-black">총 구입 금액:</span>
-                <span>{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
+                <span className="font-semibold text-black">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
               </div>
             </div>
 
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
                 {/* 부가세(VAT) 표시 */}
                 {estimate.paymentInfo?.includeVat && (
-                    <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                    <div className="border border-sky-200 rounded-md p-2 bg-white flex-1 flex justify-between items-center">
                         <span className="font-semibold text-black">부가세(VAT):</span>
                         <span>{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 ({estimate.paymentInfo?.vatRate || 10}%)</span>
                     </div>
                 )}
                 
                 {/* 최종 결제 금액 */}
-                <div className="border border-sky-200 rounded-md p-1 bg-sky-100 flex-[1.6] flex justify-between font-bold">
-                    <span className="text-black">최종 결제 금액:</span>
-                    <span className="text-black">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
+                <div className="border-2 border-sky-500 rounded-md p-3 bg-gradient-to-r from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
+                    <div className="absolute inset-0 bg-sky-500 opacity-10 rounded"></div>
+                    <span className="text-lg text-sky-900 z-10">최종 결제 금액:</span>
+                    <span className="text-xl text-sky-900 z-10">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
                 </div>
             </div>
-            
-            
             
             {/* 배송+설치 - 값이 있을 때는 금액 표시, 없을 때는 안내 메시지 표시 */}
             <div className="flex justify-end">
@@ -326,16 +352,19 @@ export default function ConsumerQuotePage({ params }) {
           </div>
         </div>
         
-        <div className="border border-sky-200 rounded-lg p-4 bg-sky-50">
-          <h2 className="text-lg font-bold mb-2 text-black border-b border-sky-200 pb-2">참고사항</h2>
-          <ul className="list-disc pl-5 space-y-1 text-black">
-            <li>본 견적서의 유효기간은 발행일로부터 7일입니다.</li>
-            <li>상기 금액은 부가세가 {estimate.paymentInfo?.includeVat ? '포함된' : '포함되지 않은'} 금액입니다.</li>
-            <li>상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</li>
-            <li>계약금 입금 후 주문이 확정됩니다.</li>
-            {estimate.notes && <li>{estimate.notes}</li>}
-          </ul>
-        </div>
+        {/* 참고사항 - 체크박스가 체크되었을 때만 표시 */}
+        {showNotes && (
+          <div className="border border-sky-200 rounded-lg p-2 bg-sky-50">
+            <h2 className="text-lg font-bold mb-2 text-blue-800 border-b border-sky-200 pb-2">공지-참고-사항(꼭 읽으세요)</h2>
+            <ul className="list-disc pl-5 space-y-1 text-black p-1 border border-sky-200 rounded-md bg-white">
+              <li>본 견적서의 유효기간은 발행일로부터 7일입니다.</li>
+              <li>상기 금액은 부가세가 {estimate.paymentInfo?.includeVat ? '포함된' : '포함되지 않은'} 금액입니다.</li>
+              <li>상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</li>
+              <li>계약금 입금 후 주문이 확정됩니다.</li>
+              {estimate.notes && <li>{estimate.notes}</li>}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-gray-800 mb-8">사용법</h1>
         
         {/* 2개 컬럼 레이아웃 컨테이너 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* 첫 번째 컬럼 */}
           <div className="space-y-8">
@@ -45,8 +45,11 @@ export default function Home() {
                 <p className="text-gray-600">⑥ '저장하기' 버튼 클릭 → 1.5초 후 검색 페이지로 이동</p>
               </div>
             </section>
-
-            <section>
+          </div>
+          
+          {/* 두 번째 컬럼 */}
+          <div className="space-y-8">
+          <section>
               <h2 className="text-2xl font-semibold text-gray-700 mb-4">2. 견적 조회</h2>
               <div className="ml-4 space-y-2 text-gray-600">
                 <p>① 오른쪽 상단 '검색' 버튼 클릭</p>
@@ -54,10 +57,6 @@ export default function Home() {
                 <p>③ 검색된 견적 클릭 시 상세페이지로 이동</p>
               </div>
             </section>
-          </div>
-          
-          {/* 두 번째 컬럼 */}
-          <div className="space-y-8">
             <section>
               <h2 className="text-2xl font-semibold text-gray-700 mb-4">3. 견적 수정</h2>
               <div className="ml-4 space-y-2 text-gray-600">
@@ -88,6 +87,38 @@ export default function Home() {
                 <ul className="ml-6 list-disc text-gray-600">
                   <li>상단 프린터 버튼 클릭</li>
                   <li>오른쪽 상단 인쇄 버튼 클릭</li>
+                </ul>
+              </div>
+            </section>
+          </div>
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-2xl font-semibold text-gray-700 mb-4">수정사항</h2>
+              <div className="ml-4 space-y-2 text-gray-600">
+                <ul className="list-disc ml-6">
+                  <li>엑셀 내보내기 기능 삭제</li>
+                  <li>다나와 일괄입력 데이터 형식 수정</li>
+                  <li>분류에 SSD인 경우 "SSD/M.2 NVMe"로 변경 후 저장</li>
+                  <li>택배비를 배송+설치 비용으로 변경</li>
+                  <li>계약자 여부 체크박스 추가 (저장/수정하기 옆)</li>
+                  <li>판매형태 직접입력 기능 수정 완료</li>
+                  <li>서비스물품 추가 입력칸 생성 및 DB 저장 완료</li>
+                  <li>상세페이지에 계약자 확인, 서비스 상품 추가</li>
+                  <li>견적서 메인페이지 추가
+                    <ul className="list-disc ml-6 mt-2">
+                      <li>견적서(일반소비자), 견적서(기업), 납품서 버튼 추가</li>
+                      <li>버튼 클릭 시 해당 견적서 페이지로 이동 후 인쇄 페이지 표시</li>
+                    </ul>
+                  </li>
+                  <li>견적서(일반소비자) 변경사항
+                    <ul className="list-disc ml-6 mt-2">
+                      <li>상호 로고 추가</li>
+                      <li>공급자와 공급받는자 위치 변경 및 테이블 형식으로 변경하여 공간 절약</li>
+                      <li>상품데이터에서 단가 제거</li>
+                      <li>결제 정보를 표 형식으로 변경하여 공간 절약</li>
+                      <li>서비스 물품 추가</li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
             </section>
