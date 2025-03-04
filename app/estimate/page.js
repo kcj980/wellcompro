@@ -166,6 +166,9 @@ function EstimateContent() {
   // 참고사항을 관리하는 상태
   const [notes, setNotes] = useState('');
 
+  // 계약자 여부를 관리하는 상태
+  const [isContractor, setIsContractor] = useState(false);
+
   /**
    * 숫자를 한글 금액 표기로 변환하는 함수
    * 예: 10000 -> 일만원, 1250000 -> 일백이십오만원
@@ -214,11 +217,6 @@ function EstimateContent() {
       ...prev,
       [name]: value
     }));
-
-    // 판매형태가 변경되었고, 값이 있다면 직접입력 모드를 해제
-    if (name === 'saleType' && value) {
-      setIsCustomSaleType(false);
-    }
   };
 
   // 판매 형태 버튼 클릭 시 호출되는 함수
@@ -332,14 +330,21 @@ function EstimateContent() {
     
     // 각 줄을 파싱하여 상품 데이터 생성
     const newData = lines.map(line => {
-      // 탭으로 구분된 데이터를 분리 (분류, 상품명1, 상품명2, 수량, 카드가격, 현금가격)
-      const [category, productName1, productName2, quantity, cardPrice, cashPrice] = line.split('\t');
+      // 탭으로 구분된 데이터를 분리 (분류, 상품명, 수량, 카드최저가, 현금최저가, 카드최저가 합계, 현금최저가 합계)
+      const [category, productName, quantity, cardPrice, cashPrice, cardTotal, cashTotal] = line.split('\t');
+      
+      // SSD 카테고리인 경우 "SSD/M.2 NVMe"로 변경
+      let processedCategory = category || '';
+      if (processedCategory === "SSD") {
+        processedCategory = "SSD/M.2 NVMe";
+      }
+      
       return {
         id: Date.now() + Math.random(), // 고유 ID 생성
-        category: category || '',
-        productName: productName1 || '',
+        category: processedCategory,
+        productName: productName || '',
         quantity: quantity || '',
-        price: cashPrice ? cashPrice.replace(/[^0-9]/g, '') : '', // 숫자만 추출
+        price: cashTotal ? cashTotal.replace(/[^0-9]/g, '') : '', // 현금최저가 합계에서 숫자만 추출
         productCode: '',
         distributor: '',
         reconfirm: '',
@@ -386,10 +391,16 @@ function EstimateContent() {
         // 세 번째 줄에서 수량 추출
         const quantity = lines[i + 2];
 
+        // SSD 카테고리인 경우 "SSD/M.2 NVMe"로 변경
+        let processedCategory = category;
+        if (processedCategory === "SSD") {
+          processedCategory = "SSD/M.2 NVMe";
+        }
+
         // 상품 데이터 생성
         newData.push({
           id: Date.now() + Math.random(), // 고유 ID 생성
-          category: category,
+          category: processedCategory,
           productName: productName,
           quantity: quantity,
           price: price,
@@ -654,7 +665,8 @@ function EstimateContent() {
         tableData: processedTableData,
         paymentInfo,
         calculatedValues,
-        notes
+        notes,
+        isContractor // 계약자 여부 추가
       };
 
       console.log('Sending data to server:', estimateData);
@@ -765,6 +777,9 @@ function EstimateContent() {
             // 참고사항 로드
             setNotes(data.estimate.notes || '');
             
+            // 계약자 여부 로드
+            setIsContractor(data.estimate.isContractor || false);
+            
             // 공임비, 세팅비의 직접 입력 상태 설정
             if (data.estimate.paymentInfo) {
               // 공임비가 기본값 중 하나인지 체크
@@ -813,6 +828,20 @@ function EstimateContent() {
       window.scrollTo(0, 0);
     }
   }, [saveStatus.error]);
+
+  // 계약자 체크박스 상태 변경 처리 함수
+  const handleContractorChange = (e) => {
+    const isChecked = e.target.checked;
+    
+    // 체크 해제 시 확인 대화상자 표시
+    if (!isChecked && isContractor) {
+      if (confirm("계약자를 해지 하겠습니까?")) {
+        setIsContractor(false);
+      }
+    } else {
+      setIsContractor(isChecked);
+    }
+  };
 
   // JSX 렌더링 시작
   return (
@@ -1238,7 +1267,8 @@ function EstimateContent() {
               <form onSubmit={handleDanawaSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    데이터 입력 (분류, 상품명, 상품명, 수량, 카드가격, 현금가격 순서)
+                    PC견적-&gt;견적공유-&gt;견적인쇄 <br />
+                    [분류/상품명/수량/카드최저가/현금 최저가/카드최저가 합계/현금최저가 합계]
                   </label>
                   <textarea
                     value={bulkData}
@@ -1265,7 +1295,8 @@ function EstimateContent() {
               <form onSubmit={handleQuoteKingSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    데이터 입력 (번호/분류/상품명/현금가/수량/현금가합계 순서)
+                    PC견적-&gt;견적갭쳐 <br />
+                    [번호/분류/이미지/제품명/판매가/수량/합계]
                   </label>
                   <textarea
                     value={quoteKingData}
@@ -1565,7 +1596,7 @@ function EstimateContent() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    공임비
+                    공임비(제작/조립비)
                   </label>
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-2">
@@ -1612,7 +1643,7 @@ function EstimateContent() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    세팅비
+                    세팅비(SW)
                   </label>
                   <div className="space-y-2">
                     <div className="flex flex-wrap gap-2">
@@ -1707,7 +1738,7 @@ function EstimateContent() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    택배비
+                    배송+설비 비용
                   </label>
                   <div className="flex flex-col items-start gap-2">
                     <input
@@ -1716,7 +1747,7 @@ function EstimateContent() {
                       value={paymentInfo.shippingCost}
                       onChange={handlePaymentInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="택배비를 입력하세요"
+                      placeholder="배송+설비 비용를 입력하세요"
                     />
                     <span className="text-sm text-gray-700 whitespace-nowrap">
                       {numberToKorean(parseInt(paymentInfo.shippingCost) || 0)}
@@ -1857,7 +1888,21 @@ function EstimateContent() {
       )}
 
       {/* 저장하기/수정하기 버튼 영역 */}
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex justify-center items-center gap-4">
+        {/* 계약자 체크박스 */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="contractor-checkbox"
+            checked={isContractor}
+            onChange={handleContractorChange}
+            className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+          />
+          <label htmlFor="contractor-checkbox" className="ml-2 text-gray-700 font-medium">
+            계약자
+          </label>
+        </div>
+
         <button
           type="button"
           onClick={saveEstimate}
