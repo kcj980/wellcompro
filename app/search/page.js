@@ -247,168 +247,6 @@ export default function SearchPage() {
     return buttons;
   };
 
-  // CSV 파일로 내보내기 함수
-  const exportToCSV = () => {
-    if (filteredEstimates.length === 0) {
-      alert('내보낼 데이터가 없습니다.');
-      return;
-    }
-    
-    // CSV 헤더 생성
-    const headers = [
-      '고객명',
-      '핸드폰번호',
-      'PC번호',
-      '계약구분',
-      '판매형태',
-      '구입형태',
-      'AS조건',
-      '운영체계',
-      '견적담당',
-      '상품 수',
-      '최종 금액',
-      '생성일'
-    ];
-    
-    // CSV 데이터 행 생성
-    const rows = filteredEstimates.map(estimate => [
-      estimate.customerInfo?.name || '',
-      estimate.customerInfo?.phone || '',
-      estimate.customerInfo?.pcNumber || '',
-      estimate.customerInfo?.contractType || '',
-      estimate.customerInfo?.saleType || '',
-      estimate.customerInfo?.purchaseType || '',
-      estimate.customerInfo?.asCondition || '',
-      estimate.customerInfo?.os || '',
-      estimate.customerInfo?.manager || '',
-      estimate.tableData?.length || 0,
-      estimate.calculatedValues?.finalPayment || 0,
-      formatDate(estimate.createdAt)
-    ]);
-    
-    // CSV 데이터 생성
-    let csvContent = headers.join(',') + '\n';
-    
-    rows.forEach(row => {
-      // 각 필드의 값에 쉼표가 있으면 쌍따옴표로 묶기
-      const formattedRow = row.map(field => {
-        const str = String(field);
-        return str.includes(',') ? `"${str}"` : str;
-      });
-      
-      csvContent += formattedRow.join(',') + '\n';
-    });
-    
-    // UTF-8 BOM 추가 (Excel에서 한글 인코딩 문제 방지)
-    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
-    
-    // 다운로드 링크 생성
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `견적목록_${formatDate(new Date())}.csv`);
-    document.body.appendChild(link);
-    
-    // 다운로드 링크 클릭
-    link.click();
-    
-    // 클린업
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-  
-  // Excel로 내보내기 함수 (더 자세한 정보 포함)
-  const exportToExcel = () => {
-    if (filteredEstimates.length === 0) {
-      alert('내보낼 데이터가 없습니다.');
-      return;
-    }
-    
-    // CSV 헤더 생성 (Excel용으로 더 많은 정보 포함)
-    const headers = [
-      '고객명',
-      '핸드폰번호',
-      'PC번호',
-      '계약구분',
-      '판매형태',
-      '구입형태',
-      'AS조건',
-      '운영체계',
-      '견적담당',
-      '상품 합계',
-      '공임비',
-      '세팅비',
-      '할인',
-      '총 구입금액',
-      '계약금',
-      'VAT 포함 여부',
-      'VAT 비율',
-      'VAT 금액',
-      '최종 금액',
-      '견적 생성일',
-      '최종 수정일'
-    ];
-    
-    // CSV 데이터 행 생성 (더 상세한 정보)
-    const rows = filteredEstimates.map(estimate => [
-      estimate.customerInfo?.name || '',
-      estimate.customerInfo?.phone || '',
-      estimate.customerInfo?.pcNumber || '',
-      estimate.customerInfo?.contractType || '',
-      estimate.customerInfo?.saleType || '',
-      estimate.customerInfo?.purchaseType || '',
-      estimate.customerInfo?.asCondition || '',
-      estimate.customerInfo?.os || '',
-      estimate.customerInfo?.manager || '',
-      estimate.calculatedValues?.productTotal || 0,
-      estimate.paymentInfo?.laborCost || 0,
-      estimate.paymentInfo?.setupCost || 0,
-      estimate.paymentInfo?.discount || 0,
-      estimate.calculatedValues?.totalPurchase || 0,
-      estimate.paymentInfo?.deposit || 0,
-      estimate.paymentInfo?.includeVat ? 'O' : 'X',
-      estimate.paymentInfo?.vatRate || 0,
-      estimate.calculatedValues?.vatAmount || 0,
-      estimate.calculatedValues?.finalPayment || 0,
-      formatDate(estimate.createdAt),
-      estimate.updatedAt ? formatDate(estimate.updatedAt) : ''
-    ]);
-    
-    // CSV 데이터 생성
-    let csvContent = headers.join(',') + '\n';
-    
-    rows.forEach(row => {
-      // 각 필드의 값에 쉼표가 있으면 쌍따옴표로 묶기
-      const formattedRow = row.map(field => {
-        const str = String(field);
-        return str.includes(',') ? `"${str}"` : str;
-      });
-      
-      csvContent += formattedRow.join(',') + '\n';
-    });
-    
-    // UTF-8 BOM 추가 (Excel에서 한글 인코딩 문제 방지)
-    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
-    
-    // 다운로드 링크 생성
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `견적목록_상세_${formatDate(new Date())}.csv`);
-    document.body.appendChild(link);
-    
-    // 다운로드 링크 클릭
-    link.click();
-    
-    // 클린업
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -416,208 +254,183 @@ export default function SearchPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
             <h1 className="text-2xl font-bold">견적 목록</h1>
             
-            {/* 내보내기 버튼 */}
-            {filteredEstimates.length > 0 && (
-              <div className="flex gap-2">
-                <button
-                  onClick={exportToCSV}
-                  className="bg-green-600 text-white px-3 py-2 text-sm rounded-md hover:bg-green-700 flex items-center"
+            {/* 검색 및 정렬 컨트롤 */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              {/* 검색 폼 */}
+              <form 
+                onSubmit={handleSearchSubmit} 
+                className="w-full md:w-auto flex-grow max-w-md"
+              >
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="고객명, 연락처, PC번호로 검색"
+                    className="block w-full py-2 px-3 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                  />
+                  <button
+                    type="submit"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+              
+              {/* 정렬 선택 */}
+              <div className="flex items-center">
+                <label htmlFor="sort" className="mr-2 text-sm font-medium text-gray-700">정렬:</label>
+                <select
+                  id="sort"
+                  value={sortOption}
+                  onChange={handleSortChange}
+                  className="block w-40 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  CSV 내보내기
-                </button>
-                
-                <button
-                  onClick={exportToExcel}
-                  className="bg-blue-600 text-white px-3 py-2 text-sm rounded-md hover:bg-blue-700 flex items-center"
-                >
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  상세 내보내기
-                </button>
+                  <option value="newest">최신순</option>
+                  <option value="oldest">오래된순</option>
+                  <option value="nameAsc">고객명 오름차순</option>
+                  <option value="nameDesc">고객명 내림차순</option>
+                  <option value="priceAsc">금액 오름차순</option>
+                  <option value="priceDesc">금액 내림차순</option>
+                </select>
               </div>
-            )}
+            </div>
           </div>
           
-          {/* 검색 및 정렬 컨트롤 */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            {/* 검색 폼 */}
-            <form 
-              onSubmit={handleSearchSubmit} 
-              className="w-full md:w-auto flex-grow max-w-md"
-            >
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="고객명, 연락처, PC번호로 검색"
-                  className="block w-full py-2 px-3 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-                <button
-                  type="submit"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              </div>
-            </form>
-            
-            {/* 정렬 선택 */}
-            <div className="flex items-center">
-              <label htmlFor="sort" className="mr-2 text-sm font-medium text-gray-700">정렬:</label>
-              <select
-                id="sort"
-                value={sortOption}
-                onChange={handleSortChange}
-                className="block w-40 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          {/* 로딩 상태 표시 */}
+          {loading && (
+            <div className="flex justify-center py-10">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+            </div>
+          )}
+          
+          {/* 에러 표시 */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+              <strong className="font-bold">오류! </strong>
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+          
+          {/* 견적 목록이 비어있는 경우 */}
+          {!loading && !error && filteredEstimates.length === 0 && (
+            <div className="bg-white shadow rounded-lg p-6 text-center">
+              {searchTerm ? (
+                <p className="text-gray-500">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>
+              ) : (
+                <p className="text-gray-500">저장된 견적이 없습니다.</p>
+              )}
+              <button
+                onClick={() => router.push('/estimate')}
+                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
-                <option value="newest">최신순</option>
-                <option value="oldest">오래된순</option>
-                <option value="nameAsc">고객명 오름차순</option>
-                <option value="nameDesc">고객명 내림차순</option>
-                <option value="priceAsc">금액 오름차순</option>
-                <option value="priceDesc">금액 내림차순</option>
-              </select>
+                견적 작성하기
+              </button>
             </div>
-          </div>
-        </div>
-        
-        {/* 로딩 상태 표시 */}
-        {loading && (
-          <div className="flex justify-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-          </div>
-        )}
-        
-        {/* 에러 표시 */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-            <strong className="font-bold">오류! </strong>
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
-        
-        {/* 견적 목록이 비어있는 경우 */}
-        {!loading && !error && filteredEstimates.length === 0 && (
-          <div className="bg-white shadow rounded-lg p-6 text-center">
-            {searchTerm ? (
-              <p className="text-gray-500">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>
-            ) : (
-              <p className="text-gray-500">저장된 견적이 없습니다.</p>
-            )}
-            <button
-              onClick={() => router.push('/estimate')}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            >
-              견적 작성하기
-            </button>
-          </div>
-        )}
-        
-        {/* 견적 목록 표시 */}
-        {!loading && !error && filteredEstimates.length > 0 && (
-          <>
-            <div className="bg-white shadow overflow-hidden rounded-lg">
-              <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                <span className="text-sm text-gray-600">
-                  총 <span className="font-medium">{filteredEstimates.length}</span>개의 견적이 있습니다.
-                  {searchTerm && (
-                    <span className="ml-1">
-                      (검색어: "<span className="font-medium">{searchTerm}</span>")
-                    </span>
-                  )}
-                </span>
-              </div>
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      고객명
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      연락처
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      총 금액
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      생성일
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      견적담당
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      견적서
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {currentEstimates.map((estimate) => (
-                    <tr 
-                      key={estimate._id}
-                      onClick={() => handleEstimateClick(estimate._id)}
-                      className="hover:bg-gray-50 cursor-pointer"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {estimate.customerInfo?.name || '이름 없음'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {estimate.customerInfo?.phone || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {estimate.calculatedValues?.finalPayment?.toLocaleString() || 0}원
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(estimate.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {estimate.customerInfo?.manager || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <button
-                          onClick={(e) => handleQuoteClick(estimate._id, e)}
-                          className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 inline-flex items-center"
-                        >
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                          </svg>
-                          견적서
-                        </button>
-                      </td>
+          )}
+          
+          {/* 견적 목록 표시 */}
+          {!loading && !error && filteredEstimates.length > 0 && (
+            <>
+              <div className="bg-white shadow overflow-hidden rounded-lg">
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                  <span className="text-sm text-gray-600">
+                    총 <span className="font-medium">{filteredEstimates.length}</span>개의 견적이 있습니다.
+                    {searchTerm && (
+                      <span className="ml-1">
+                        (검색어: "<span className="font-medium">{searchTerm}</span>")
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        고객명
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        연락처
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        총 금액
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        생성일
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        견적담당
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        견적서
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* 페이지네이션 */}
-            {totalPages > 1 && (
-              <div className="mt-4 flex justify-center">
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                  {renderPaginationButtons()}
-                </nav>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentEstimates.map((estimate) => (
+                      <tr 
+                        key={estimate._id}
+                        onClick={() => handleEstimateClick(estimate._id)}
+                        className="hover:bg-gray-50 cursor-pointer"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {estimate.customerInfo?.name || '이름 없음'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {estimate.customerInfo?.phone || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {estimate.calculatedValues?.finalPayment?.toLocaleString() || 0}원
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(estimate.createdAt)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {estimate.customerInfo?.manager || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <button
+                            onClick={(e) => handleQuoteClick(estimate._id, e)}
+                            className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 inline-flex items-center"
+                          >
+                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            견적서
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </>
-        )}
-        
-        {/* 새 견적 작성 버튼 */}
-        {!loading && filteredEstimates.length > 0 && (
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={() => router.push('/estimate')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            >
-              새 견적 작성
-            </button>
-          </div>
-        )}
+              
+              {/* 페이지네이션 */}
+              {totalPages > 1 && (
+                <div className="mt-4 flex justify-center">
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    {renderPaginationButtons()}
+                  </nav>
+                </div>
+              )}
+            </>
+          )}
+          
+          {/* 새 견적 작성 버튼 */}
+          {!loading && filteredEstimates.length > 0 && (
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => router.push('/estimate')}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              >
+                새 견적 작성
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -536,9 +536,9 @@ function EstimateContent() {
     total += vatAmount;
     
     // 버림/올림 적용 (100원 또는 1000원 단위)
-    if (paymentInfo.roundingType === '100') {
+    if (paymentInfo.roundingType === '100down') {
       total = Math.floor(total / 100) * 100;
-    } else if (paymentInfo.roundingType === '1000') {
+    } else if (paymentInfo.roundingType === '1000down') {
       total = Math.floor(total / 1000) * 1000;
     } else if (paymentInfo.roundingType === '100up') {
       total = Math.ceil(total / 100) * 100;
@@ -1769,9 +1769,9 @@ function EstimateContent() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100' }))}
+                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100down' }))}
                     className={`px-3 py-2 rounded-md text-sm ${
-                      paymentInfo.roundingType === '100'
+                      paymentInfo.roundingType === '100down'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
@@ -1780,9 +1780,9 @@ function EstimateContent() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000' }))}
+                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000down' }))}
                     className={`px-3 py-2 rounded-md text-sm ${
-                      paymentInfo.roundingType === '1000'
+                      paymentInfo.roundingType === '1000down'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}

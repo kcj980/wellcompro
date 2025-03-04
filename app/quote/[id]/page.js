@@ -1068,43 +1068,6 @@ export default function InvoicePage({ params }) {
       };
     }
   };
-  
-  // 금액을 한글로 변환하는 함수
-  const numberToKorean = (number) => {
-    if (isNaN(number) || number === 0) return '영원';
-    
-    const units = ['', '만', '억', '조'];
-    const digits = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
-    const decimals = ['', '십', '백', '천'];
-    
-    const numStr = number.toString();
-    let result = '';
-    
-    // 큰 단위부터 처리 (조, 억, 만)
-    for (let i = 0; i < numStr.length; i++) {
-      const digit = parseInt(numStr[i]);
-      
-      // 현재 자릿수 계산
-      const unitIndex = Math.floor((numStr.length - 1 - i) / 4);
-      const decimalIndex = (numStr.length - 1 - i) % 4;
-      
-      if (digit !== 0) {
-        // 일의 자리가 아닌 경우 '일'은 생략
-        if (digit === 1 && decimalIndex !== 0) {
-          result += decimals[decimalIndex];
-        } else {
-          result += digits[digit] + decimals[decimalIndex];
-        }
-      }
-      
-      // 단위 추가 (만, 억, 조)
-      if (decimalIndex === 0 && digit !== 0) {
-        result += units[unitIndex];
-      }
-    }
-    
-    return result + '원';
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 print:p-0 print:bg-white">
@@ -1199,8 +1162,6 @@ export default function InvoicePage({ params }) {
           <div ref={invoiceRef} className="print-this-section invoice-container bg-white border-2 border-blue-200 rounded-lg shadow-lg">
             {/* 견적서 헤더 */}
             <div className="relative pt-6 px-4 mb-6">
-              {/* 로고 삭제 */}
-              
               {/* 견적서 제목 */}
               <h1 
                 className="text-3xl font-bold text-center mx-auto" 
