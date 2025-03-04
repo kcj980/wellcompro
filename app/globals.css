@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .tracking-extra-widetitle {
+        letter-spacing: 0.5em; /* 원하는 자간 값으로 조정 */
+      }
+    .tracking-extra-wide {
+      letter-spacing: 0.3em; /* 원하는 자간 값으로 조정 */
+    }
+    .tracking-extra-wide2 {
+        letter-spacing: 1.0em; /* 원하는 자간 값으로 조정 */
+    }
+    .tracking-tighter {
+        letter-spacing: -0.08em; /* 원하는 값으로 조정 */
+    }
+
+  }

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function ConsumerQuotePage({ params }) {
   const [estimate, setEstimate] = useState(null);
@@ -108,109 +109,124 @@ export default function ConsumerQuotePage({ params }) {
         
         <button
           onClick={handlePrint}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
+          className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
         >
           인쇄하기
         </button>
       </div>
       
       {/* 인쇄 영역 */}
-      <div ref={printRef} className="print-this-section bg-white p-6 border border-gray-300 rounded-lg shadow-sm">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold">견적서</h1>
-          <p className="text-gray-600 mt-2">(일반소비자용)</p>
-        </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-          <p>견적일자: {formatDate(estimate.createdAt)}</p>
-        </div>
-        
-        <div style={{ display: 'flex', gap: '24px', marginBottom: '24px' }}>
-          <div style={{ width: '50%' }} className="border border-gray-300 rounded-lg p-4">
-            <h2 className="text-lg font-bold mb-2 text-center border-b border-gray-300 pb-2">공급자</h2>
-            <div className="space-y-2">
-              <div className="flex">
-                <span className="font-semibold w-24">상호:</span>
-                <span>웰컴 시스템</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">대표자:</span>
-                <span>김선식</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">주소:</span>
-                <span>부산시 동래구 온천동 456-29</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">연락처:</span>
-                <span>051-926-6604</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">사업자번호:</span>
-                <span>607-02-70320</span>
-              </div>
-            </div>
+      <div ref={printRef} className="print-this-section bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '5px' }}>
+          <div style={{ width: '200px' }}>
+            <Image 
+              src="/wellcomlogo.png" 
+              alt="웰컴 시스템 로고" 
+              width={200} 
+              height={80} 
+              style={{ objectFit: 'contain' }}
+            />
           </div>
-          
-          <div style={{ width: '50%' }} className="border border-gray-300 rounded-lg p-4">
-            <h2 className="text-lg font-bold mb-2 text-center border-b border-gray-300 pb-2">공급받는자</h2>
-            <div className="space-y-2">
-              <div className="flex">
-                <span className="font-semibold w-24">성함:</span>
-                <span>{estimate.customerInfo?.name || '-'}</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">연락처:</span>
-                <span>{estimate.customerInfo?.phone || '-'}</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">PC번호:</span>
-                <span>{estimate.customerInfo?.pcNumber || '-'}</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">AS조건:</span>
-                <span>{estimate.customerInfo?.asCondition || '-'}</span>
-              </div>
-              <div className="flex">
-                <span className="font-semibold w-24">견적담당:</span>
-                <span>{estimate.customerInfo?.manager || '-'}</span>
-              </div>
-            </div>
+          <div className="text-center" style={{ flex: 1 }}>
+            <h1 className="text-3xl font-bold text-black tracking-extra-widetitle">견 적 서</h1>
+          </div>
+          <div style={{ width: '200px', textAlign: 'right', paddingBottom: '50px' }}>
+            <p className="text-gray-700 tracking-tighter">견적일자: {formatDate(estimate.createdAt)}</p>
           </div>
         </div>
         
-        <div style={{ marginBottom: '24px' }}>
-          <table style={{ width: '100%' }} className="border-collapse border border-gray-300">
-            <thead className="bg-gray-100">
+        <div style={{ display: 'flex', gap: '24px', marginBottom: '5px' }}>
+          <div className="flex justify-between mb-1 w-full">
+            <div style={{ width: '45%', height: '125px' }} className="border border-sky-200 rounded-lg bg-sky-50">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <h2 className="text-lg font-bold text-black border-r border-sky-200 tracking-extra-wide" style={{ writingMode: 'vertical-rl', marginRight: '10px', paddingTop: '1px' }}>공급받는자</h2>
+                <div className="space-y-1" style={{ margin: '0', padding: '0' }}>
+                  <div className="flex" style={{ margin: '0' }}>
+                      <span className="font-semibold w-24 text-black">성함:</span>
+                      <span className="font-semibold text-black">{estimate.customerInfo?.name || '-'}</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                      <span className="font-semibold w-24 text-black">연락처:</span>
+                      <span className="font-semibold text-black">{estimate.customerInfo?.phone || '-'}</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                      <span className="font-semibold w-24 text-black">PC번호:</span>
+                      <span className="font-semibold text-black">{estimate.customerInfo?.pcNumber || '-'}</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                      <span className="font-semibold w-24 text-black">AS조건:</span>
+                      <span className="font-semibold text-black">{estimate.customerInfo?.asCondition || '-'}</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                      <span className="font-semibold w-24 text-black">견적담당:</span>
+                      <span className="font-semibold text-black">{estimate.customerInfo?.manager || '-'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style={{ width: '54%', height: '125px' }} className="border border-sky-200 rounded-lg bg-sky-50">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <h2 className="text-lg font-bold text-black border-r border-sky-200 tracking-extra-wide2" style={{ writingMode: 'vertical-rl', marginRight: '10px', paddingTop: '12.5px' }}>공급자</h2>
+                <div className="space-y-1" style={{ margin: '0', padding: '0' }}>
+                  <div className="flex" style={{ margin: '0' }}>
+                    <span className="font-semibold w-24 text-black">상호:</span>
+                    <span className="font-semibold text-black">웰컴 시스템</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                    <span className="font-semibold w-24 text-black">대표자:</span>
+                    <span className="font-semibold text-black">김선식</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                    <span className="font-semibold w-24 text-black">사업자번호:</span>
+                    <span className="font-semibold text-black">607-02-70320</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                    <span className="font-semibold w-24 text-black">주소:</span>
+                    <span className="font-semibold text-black">부산시 동래구 온천동 456-29</span>
+                  </div>
+                  <div className="flex" style={{ margin: '0' }}>
+                    <span className="font-semibold w-24 text-black">연락처:</span>
+                    <span className="font-semibold text-black">051-926-6604</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style={{ marginBottom: '7px' }}>
+          <table style={{ width: '100%' }} className="border-collapse border border-sky-200">
+            <thead className="bg-sky-100">
               <tr>
-                <th className="border border-gray-300 p-2 text-center">No.</th>
-                <th className="border border-gray-300 p-2 text-center">분류</th>
-                <th className="border border-gray-300 p-2 text-center">상품명</th>
-                <th className="border border-gray-300 p-2 text-center">수량</th>
-                <th className="border border-gray-300 p-2 text-center">단가</th>
-                <th className="border border-gray-300 p-2 text-center">금액</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '1%' }}>No.</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '12%' }}>분류</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '51%' }}>상품명</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '6%' }}>수량</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '14%' }}>단가</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '14%' }}>금액</th>
               </tr>
             </thead>
             <tbody>
               {estimate.tableData && estimate.tableData.map((item, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="border border-gray-300 p-2 text-center">{index + 1}</td>
-                  <td className="border border-gray-300 p-2 text-center">{item.category || '-'}</td>
-                  <td className="border border-gray-300 p-2">{item.productName}</td>
-                  <td className="border border-gray-300 p-2 text-center">{item.quantity}</td>
-                  <td className="border border-gray-300 p-2 text-right">
+                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-sky-50'}>
+                  <td className="border border-sky-200 text-center">{index + 1}</td>
+                  <td className="border border-sky-200 text-center">{item.category || '-'}</td>
+                  <td className="border border-sky-200">{item.productName}</td>
+                  <td className="border border-sky-200 text-center">{item.quantity}</td>
+                  <td className="border border-sky-200 text-right">
                     {item.price && item.quantity ? 
                       Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : '-'}원
                   </td>
-                  <td className="border border-gray-300 p-2 text-right">
+                  <td className="border border-sky-200 text-right">
                     {item.price ? parseInt(item.price).toLocaleString() : '-'}원
                   </td>
                 </tr>
               ))}
               
-              <tr className="bg-gray-100 font-bold">
-                <td colSpan="4" className="border border-gray-300 p-2 text-right">합계</td>
-                <td colSpan="2" className="border border-gray-300 p-2 text-right">
+              <tr className="bg-sky-200 font-bold">
+                <td colSpan="4" className="border border-sky-200 text-right p-1 text-black" style={{ padding: '0' }}>합계</td>
+                <td colSpan="2" className="border border-sky-200 text-right p-1 text-black">
                   {estimate.calculatedValues?.productTotal?.toLocaleString()}원
                 </td>
               </tr>
@@ -218,50 +234,101 @@ export default function ConsumerQuotePage({ params }) {
           </table>
         </div>
         
-        <div className="border border-gray-300 rounded-lg p-4 mb-6 bg-gray-50">
-          <h2 className="text-lg font-bold mb-2">결제 정보</h2>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <div className="flex-1">
-                <span className="font-semibold">상품/부품 합계:</span>
-                <span className="ml-2">{estimate.calculatedValues?.productTotal?.toLocaleString()}원</span>
-              </div>
-              <div className="flex-1">
-                <span className="font-semibold">공임비:</span>
-                <span className="ml-2">{estimate.paymentInfo?.laborCost?.toLocaleString() || '0'}원</span>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex-1">
-                <span className="font-semibold">세팅비:</span>
-                <span className="ml-2">{estimate.paymentInfo?.setupCost?.toLocaleString() || '0'}원</span>
-              </div>
-              <div className="flex-1">
-                <span className="font-semibold">할인:</span>
-                <span className="ml-2">{estimate.paymentInfo?.discount?.toLocaleString() || '0'}원</span>
+        {/* 서비스 상품 데이터 표시 */}
+        {estimate.serviceData && estimate.serviceData.length > 0 && (
+          <div className="border border-sky-200 rounded-lg p-2 mb-1 bg-sky-50">
+            <div className="flex items-center">
+              <h2 className="text-lg font-bold text-black mr-4">서비스 상품</h2>
+              <div className="flex flex-wrap gap-2">
+                {estimate.serviceData.map((item, index) => (
+                  <div key={index} className="bg-white px-3 py-1 rounded-full border border-sky-200 text-sm">
+                    {item.productName}
+                  </div>
+                ))}
               </div>
             </div>
-            {estimate.paymentInfo?.includeVat && (
-              <div className="flex">
-                <span className="font-semibold">부가세(VAT):</span>
-                <span className="ml-2">{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 ({estimate.paymentInfo?.vatRate || 10}%)</span>
-              </div>
-            )}
-            <div className="flex font-bold mt-2 pt-2 border-t border-gray-300">
-              <span className="font-semibold">최종 결제 금액:</span>
-              <span className="ml-2">{estimate.calculatedValues?.finalPayment?.toLocaleString()}원</span>
+          </div>
+        )}
+        
+        {/* 이곳에 결제 정보 표시 */}
+        <div className="border border-sky-200 rounded-lg px-2 mb-6 bg-sky-50">
+          <h2 className="text-lg font-bold mb-1 mt-1 text-black">결제 정보</h2>
+          <div className="space-y-1">
+            {/* 상품/부품 합계 */}
+            <div className="border border-sky-200 rounded-md p-1 bg-white flex justify-between">
+              <span className="font-semibold text-black">상품/부품 합계:</span>
+              <span>{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
             </div>
-            {estimate.paymentInfo?.shippingCost > 0 && (
-              <div className="flex justify-end text-sm text-gray-600">
-                <span>※택배비 별도: {estimate.paymentInfo?.shippingCost?.toLocaleString()}원</span>
+            
+            {/* 공임비(제작/조립비), 세팅비(SW), 할인 한 줄에 표시 */}
+            <div className="flex gap-1">
+              <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                <span className="font-semibold text-black">공임비(제작/조립비):</span>
+                <span>{estimate.paymentInfo?.laborCost ? `${estimate.paymentInfo.laborCost.toLocaleString()}원` : ''}</span>
               </div>
-            )}
+              <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                <span className="font-semibold text-black">세팅비(SW):</span>
+                <span>{estimate.paymentInfo?.setupCost ? `${estimate.paymentInfo.setupCost.toLocaleString()}원` : ''}</span>
+              </div>
+              {estimate.paymentInfo?.discount > 0 && (
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-[0.5] flex justify-between">
+                  <span className="font-semibold text-black">할인:</span>
+                  <span>-{estimate.paymentInfo?.discount?.toLocaleString()}원</span>
+                </div>
+              )}
+            </div>
+            
+            {/* 총 구입 금액과 계약금을 한 줄에 표시 */}
+            <div className="flex gap-1">
+              {estimate.paymentInfo?.deposit > 0 && (
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                  <span className="font-semibold text-black">계약금:</span>
+                  <span>{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
+                </div>
+              )}
+              <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1.6] flex justify-between">
+                <span className="font-semibold text-black">총 구입 금액:</span>
+                <span>{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
+              </div>
+            </div>
+
+            <div className="flex gap-1">
+                {/* 부가세(VAT) 표시 */}
+                {estimate.paymentInfo?.includeVat && (
+                    <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                        <span className="font-semibold text-black">부가세(VAT):</span>
+                        <span>{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 ({estimate.paymentInfo?.vatRate || 10}%)</span>
+                    </div>
+                )}
+                
+                {/* 최종 결제 금액 */}
+                <div className="border border-sky-200 rounded-md p-1 bg-sky-100 flex-[1.6] flex justify-between font-bold">
+                    <span className="text-black">최종 결제 금액:</span>
+                    <span className="text-black">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
+                </div>
+            </div>
+            
+            
+            
+            {/* 배송+설치 - 값이 있을 때는 금액 표시, 없을 때는 안내 메시지 표시 */}
+            <div className="flex justify-end">
+              <div className="border border-sky-400 rounded-md p-1 mb-1 bg-white inline-flex text-sm">
+                {estimate.paymentInfo?.shippingCost > 0 ? (
+                  <>
+                    <span className="font-semibold text-black whitespace-pre">※배송+설치 별도 추가: </span>
+                    <span className="font-semibold text-black">{estimate.paymentInfo?.shippingCost?.toLocaleString()}원※</span>
+                  </>
+                ) : (
+                  <span className="font-semibold text-black">※배송+설치 비용은 별도 부과됩니다※</span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-          <h2 className="text-lg font-bold mb-2">참고사항</h2>
-          <ul className="list-disc pl-5 space-y-1">
+        <div className="border border-sky-200 rounded-lg p-4 bg-sky-50">
+          <h2 className="text-lg font-bold mb-2 text-black border-b border-sky-200 pb-2">참고사항</h2>
+          <ul className="list-disc pl-5 space-y-1 text-black">
             <li>본 견적서의 유효기간은 발행일로부터 7일입니다.</li>
             <li>상기 금액은 부가세가 {estimate.paymentInfo?.includeVat ? '포함된' : '포함되지 않은'} 금액입니다.</li>
             <li>상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</li>
