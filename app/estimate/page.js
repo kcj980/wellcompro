@@ -1829,7 +1829,7 @@ function EstimateContent() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    배송+설비 비용
+                    배송+설비 비용(최종결재금액 포함X)
                   </label>
                   <div className="flex flex-col items-start gap-2">
                     <input
