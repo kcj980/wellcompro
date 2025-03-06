@@ -71,6 +71,7 @@ const EstimateSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+  //납품일자
 });
 
 // mongoose.models 객체에 EstimateSchema가 있으면 그것을 사용하고, 없으면 새로 만듭니다.

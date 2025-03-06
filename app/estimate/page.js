@@ -339,7 +339,7 @@ function EstimateContent() {
       // SSD 카테고리인 경우 "SSD/M.2 NVMe"로 변경
       let processedCategory = category || '';
       if (processedCategory === "SSD") {
-        processedCategory = "SSD/M.2 NVMe";
+        processedCategory = "SSD/M.2";
       }
       
       return {

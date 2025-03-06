@@ -221,6 +221,71 @@ export default function ConsumerQuotePage({ params }) {
             </div>
           </div>
         </div>
+
+        <div className="flex gap-2 mb-2">
+          <div style={{ width: '350px', height: '110px' }}className="border border-sky-200 rounded-lg flex bg-sky-50">
+            <table style={{ width: '350px' }} className="m-1">
+              <tbody>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold">성명</td>
+                  <td style={{ width: '75%' }} className="text-left text-black font-semibold">
+                    {estimate.customerInfo?.name || ''}
+                  </td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold">연락처</td>
+                  <td style={{ width: '75%' }} className="text-left text-black font-semibold">
+                    {estimate.customerInfo?.phone || ''}
+                  </td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold">PC번호</td>
+                  <td style={{ width: '75%' }} className="text-left text-black font-semibold">
+                    {estimate.customerInfo?.pcNumber || ''}
+                  </td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold">AS조건</td>
+                  <td style={{ width: '75%' }} className="text-left text-black font-semibold">
+                    {estimate.customerInfo?.asCondition || ''}
+                  </td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold">견적담당</td>
+                  <td style={{ width: '75%' }} className="text-left text-black font-semibold">
+                    {estimate.customerInfo?.manager || ''}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div style={{ width: '350px', height: '110px' }}className="border border-sky-200 rounded-lg flex bg-sky-50">
+            <table style={{ width: '350px', border: 'none' }} className="m-1">
+              <tbody>
+                <tr style={{ lineHeight: '1' }}>
+                  <td className="text-center text-black font-semibold border-r border-sky-200 tracking-extra-wide pr-1" rowSpan="4" style={{ writingMode: 'vertical-rl'}}>공 급 자</td>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1">등록번호</td>
+                  <td style={{ width: '45%' }} className="text-left text-black font-semibold">607-02-70320</td>
+                  <td style={{ width: '30%' }} className="text-center text-left text-black font-semibold border-l border-sky-200" rowSpan="2">김 선 식</td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1">상호</td>
+                  <td style={{ width: '45%' }} className="text-left text-black font-semibold">웰컴 시스템</td>
+                  
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1">주소</td>
+                  <td style={{ width: '40%' }} className="text-left text-black font-semibold" colSpan="2">부산시 동래구 온천장로 20 <br/>부산컴퓨터도매상가 209호</td>
+                </tr>
+                <tr style={{ lineHeight: '1' }}>
+                  <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1">전화번호</td>
+                  <td style={{ width: '40%' }} className="text-left text-black font-semibold" colSpan="2">051-926-6604, 010-8781-8871</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         
         <div style={{ marginBottom: '7px' }}>
           <table style={{ width: '100%' }} className="border-collapse border border-sky-200">
@@ -243,10 +308,10 @@ export default function ConsumerQuotePage({ params }) {
                   <td className="border border-sky-200 text-center">{item.quantity}</td>
                   <td className="border border-sky-200 text-right">
                     {item.price && item.quantity ? 
-                      Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : '-'}원
+                      Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : '-'}
                   </td>
                   <td className="border border-sky-200 text-right">
-                    {item.price ? parseInt(item.price).toLocaleString() : '-'}원
+                    {item.price ? parseInt(item.price).toLocaleString() : '-'}
                   </td>
                 </tr>
               ))}
