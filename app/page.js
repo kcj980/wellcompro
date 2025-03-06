@@ -95,31 +95,18 @@ export default function Home() {
             <section>
               <h2 className="text-2xl font-semibold text-gray-700 mb-4">수정사항</h2>
               <div className="ml-4 space-y-2 text-gray-600">
-                <ul className="list-disc ml-6">
-                  <li>엑셀 내보내기 기능 삭제</li>
-                  <li>다나와 일괄입력 데이터 형식 수정</li>
-                  <li>분류에 SSD인 경우 "SSD/M.2 NVMe"로 변경 후 저장</li>
-                  <li>택배비를 배송+설치 비용으로 변경</li>
-                  <li>계약자 여부 체크박스 추가 (저장/수정하기 옆)</li>
-                  <li>판매형태 직접입력 기능 수정 완료</li>
-                  <li>서비스물품 추가 입력칸 생성 및 DB 저장 완료</li>
-                  <li>상세페이지에 계약자 확인, 서비스 상품 추가</li>
-                  <li>견적서 메인페이지 추가
-                    <ul className="list-disc ml-6 mt-2">
-                      <li>견적서(일반소비자), 견적서(기업), 납품서 버튼 추가</li>
-                      <li>버튼 클릭 시 해당 견적서 페이지로 이동 후 인쇄 페이지 표시</li>
-                    </ul>
-                  </li>
-                  <li>견적서(일반소비자) 변경사항
-                    <ul className="list-disc ml-6 mt-2">
-                      <li>상호 로고 추가</li>
-                      <li>공급자와 공급받는자 위치 변경 및 테이블 형식으로 변경하여 공간 절약</li>
-                      <li>상품데이터에서 단가 제거</li>
-                      <li>결제 정보를 표 형식으로 변경하여 공간 절약</li>
-                      <li>서비스 물품 추가</li>
-                    </ul>
-                  </li>
-                </ul>
+              <p>견적서(일반소비자)</p>
+              <ul className="ml-6 list-disc text-gray-600">
+                <li>SSD/M.2 NVMe → SSD/M.2 수정</li>
+                <li>공급자 - 공급받는자 글자 삭제 /상호 , 대표자 한줄에 표기 및 테이블 형식으로 다시만들기, 손님 데이터 여백늘리기</li>
+                <li>테이블 배경생 흰색통일 </li>
+                <li>로고"35년 기술과 노하우를 더하다 문구추가"</li>
+                <li>테이블 하단 합계를 부품 금액 합계로 수정</li>
+                <li>테이블 단가, 금액 가로 길이 줄이고 상품명 늘이기</li>
+                <li>최종결제금액에 "VAT포함" 및 글자색 더 진하게게, 총구입금액 (공임+세팅-할인)</li>
+                <li>결제 정보 글자를 상품/부품 합계랑 같은 줄에 위치</li>
+                <li>"공지사항 필독" 으로 제목 변경</li>
+              </ul>
               </div>
             </section>
           </div>
