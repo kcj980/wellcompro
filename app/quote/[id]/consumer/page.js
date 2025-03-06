@@ -369,7 +369,7 @@ export default function ConsumerQuotePage({ params }) {
               ※공지사항 필독※
             </h2>
             <ul className="list-disc pl-5 space-y-1 text-black p-1 border border-sky-200 rounded-md bg-white">
-              <li>본 견적서는 수급상황에 따라, 그액과 부품이 대체/변동 될 수 있습니다.</li>
+              <li>본 견적서는 수급상황에 따라, 금액과 부품이 대체/변동 될 수 있습니다.</li>
               <li>상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</li>
               <li>계약금 입금 후 주문이 확정됩니다.</li>
             </ul>
