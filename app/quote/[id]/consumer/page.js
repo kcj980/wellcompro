@@ -289,10 +289,10 @@ export default function ConsumerQuotePage({ params }) {
                   <td className="border border-sky-200 text-center">{item.quantity}</td>
                   <td className="border border-sky-200 text-right pr-1">
                     {item.price && item.quantity ? 
-                      Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : '-'}
+                      Math.round(Number(String(item.price).replace(/,/g, '')) / parseInt(item.quantity)).toLocaleString() : '-'}
                   </td>
                   <td className="border border-sky-200 text-right pr-1">
-                    {item.price ? parseInt(item.price).toLocaleString() : '-'}
+                    {item.price ? Number(String(item.price).replace(/,/g, '')).toLocaleString() : '-'}
                   </td>
                 </tr>
               ))}

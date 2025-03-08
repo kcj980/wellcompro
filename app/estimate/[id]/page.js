@@ -261,7 +261,7 @@ export default function EstimateDetail({ params }) {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productName || '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity || '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.price ? `${parseInt(item.price).toLocaleString()}원` : '-'}
+                          {item.price ? `${Number(String(item.price).replace(/,/g, '')).toLocaleString()}원` : '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productCode || '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.distributor || '-'}</td>

@@ -317,10 +317,30 @@ function EstimateContent() {
   // 상품 정보 입력 필드 변경 시 호출되는 함수
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // 현금가(price) 필드인 경우 콤마 포맷팅 적용
+    if (name === 'price') {
+      // 입력값에서 콤마(,) 제거
+      const numericValue = value.replace(/,/g, '');
+      
+      // 숫자만 입력되었는지 확인 (빈 문자열 허용)
+      if (numericValue === '' || /^\d+$/.test(numericValue)) {
+        // 숫자 형식으로 변환하여 3자리마다 콤마 추가 (화면 표시용)
+        const formattedValue = numericValue === '' ? '' : Number(numericValue).toLocaleString();
+        
+        // 화면에 표시할 콤마가 포함된 문자열 저장
+        setFormData(prev => ({
+          ...prev,
+          [name]: formattedValue
+        }));
+      }
+    } else {
+      // 다른 필드는 그대로 처리
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
     
     // textarea 높이 자동 조절 - 내용이 길어지면 높이가 자동으로 늘어남
     e.target.style.height = 'auto';
@@ -333,8 +353,8 @@ function EstimateContent() {
    * 수량이 없거나 0인 경우 경고 메시지 표시
    */
   const multiplyPriceByQuantity = () => {
-    // 입력된 현금가와 수량 가져오기
-    const price = parseInt(formData.price) || 0;
+    // 입력된 현금가와 수량 가져오기 (현금가에서 콤마 제거 후 숫자로 변환)
+    const price = parseInt(formData.price.replace(/,/g, '')) || 0;
     const quantity = parseInt(formData.quantity) || 0;
     
     // 수량이 0인 경우 계산하지 않음
@@ -346,10 +366,12 @@ function EstimateContent() {
     // 현금가와 수량을 곱한 결과 계산
     const multipliedPrice = price * quantity;
     
-    // 계산된 값으로 현금가 업데이트
+    // 계산된 값으로 현금가 업데이트 (콤마 포맷팅 적용)
+    const formattedPrice = multipliedPrice.toLocaleString();
+    
     setFormData(prev => ({
       ...prev,
-      price: multipliedPrice.toString()
+      price: formattedPrice
     }));
   };
 
@@ -379,12 +401,16 @@ function EstimateContent() {
         processedCategory = "SSD/M.2";
       }
       
+      // 현금가에서 숫자만 추출하고 콤마 포맷팅 적용
+      const numericPrice = cashTotal ? cashTotal.replace(/[^0-9]/g, '') : '';
+      const formattedPrice = numericPrice ? Number(numericPrice).toLocaleString() : '';
+      
       return {
         id: Date.now() + Math.random(), // 고유 ID 생성
         category: processedCategory,
         productName: productName || '',
         quantity: quantity || '',
-        price: cashTotal ? cashTotal.replace(/[^0-9]/g, '') : '', // 현금최저가 합계에서 숫자만 추출
+        price: formattedPrice, // 콤마 포맷팅이 적용된 현금가
         productCode: '',
         distributor: '',
         reconfirm: '',
@@ -426,7 +452,9 @@ function EstimateContent() {
         const productName = firstLine[3] || '';
         
         // 두 번째 줄에서 현금가 추출 (숫자만)
-        const price = lines[i + 1].replace(/[^0-9]/g, '');
+        const numericPrice = lines[i + 1].replace(/[^0-9]/g, '');
+        // 콤마 포맷팅 적용
+        const formattedPrice = numericPrice ? Number(numericPrice).toLocaleString() : '';
         
         // 세 번째 줄에서 수량 추출
         const quantity = lines[i + 2];
@@ -443,7 +471,7 @@ function EstimateContent() {
           category: processedCategory,
           productName: productName,
           quantity: quantity,
-          price: price,
+          price: formattedPrice, // 콤마 포맷팅이 적용된 현금가
           productCode: '',
           distributor: '',
           reconfirm: '',
@@ -482,17 +510,19 @@ function EstimateContent() {
   const handleEdit = (row) => {
     // 수정할 항목의 ID 저장
     setEditingId(row.id);
+    
     // 현재 항목 데이터로 폼 데이터 설정
     setFormData({
       category: row.category,
       productName: row.productName,
       quantity: row.quantity,
-      price: row.price,
+      price: row.price, // 콤마 포맷팅이 적용된 현금가
       productCode: row.productCode,
       distributor: row.distributor,
       reconfirm: row.reconfirm,
       remarks: row.remarks
     });
+    
     // 상품 정보 입력창이 보이도록 설정
     setShowForm(true);
   };
@@ -504,17 +534,21 @@ function EstimateContent() {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // 현금가는 이미 콤마 포맷팅이 적용되어 있으므로 그대로 사용
+    const dataToSubmit = formData;
+    
     if (editingId) {
       // 수정 모드: 기존 항목 업데이트
       setTableData(prev => prev.map(item => 
-        item.id === editingId ? { ...formData, id: editingId } : item
+        item.id === editingId ? { ...dataToSubmit, id: editingId } : item
       ));
       // 수정 모드 종료
       setEditingId(null);
     } else {
       // 새로운 항목 추가 모드
       // 임시 ID 생성 - 'temp-' 접두사를 붙여 MongoDB ObjectId와 구분되게 함
-      setTableData(prev => [...prev, { ...formData, id: `temp-${Date.now()}` }]);
+      setTableData(prev => [...prev, { ...dataToSubmit, id: `temp-${Date.now()}` }]);
     }
 
     // 폼 초기화
@@ -541,9 +575,10 @@ function EstimateContent() {
    * @returns {number} 상품 합계 금액
    */
   const calculateProductTotal = () => {
-    // 모든 상품의 현금가를 합산
+    // 모든 상품의 현금가를 합산 (콤마 제거 후 숫자로 변환)
     const total = tableData.reduce((sum, item) => {
-      const price = parseInt(item.price) || 0;
+      // 현금가에서 콤마 제거 후 숫자로 변환
+      const price = parseInt(String(item.price).replace(/,/g, '')) || 0;
       return sum + price;  // 수량을 곱하지 않고 현금가만 더함 (이미 곱해진 금액으로 가정)
     }, 0);
     return total;
@@ -703,7 +738,7 @@ function EstimateContent() {
           success: false, 
           error: '고객 이름을 입력해주세요.' 
         });
-        alert('고객 이름을 입력해주세요.');
+        //alert('고객 이름을 입력해주세요.');
         return;
       }
 
@@ -713,7 +748,7 @@ function EstimateContent() {
           success: false, 
           error: '최소 하나 이상의 상품을 추가해주세요.' 
         });
-        alert('최소 하나 이상의 상품을 추가해주세요.');
+        //alert('최소 하나 이상의 상품을 추가해주세요.');
         return;
       }
 
@@ -853,10 +888,14 @@ function EstimateContent() {
             
             // 상품 데이터에 고유 ID가 없는 경우를 대비해 클라이언트 ID 생성하여 추가
             const productsWithClientId = (data.estimate.tableData || []).map(item => {
+              // 현금가에 콤마 포맷팅 적용
+              const price = item.price ? Number(String(item.price).replace(/,/g, '')).toLocaleString() : '';
+              
               // MongoDB의 _id가 있으면 그대로 id로 사용, 없으면 새로운 ID 생성
               return {
                 ...item,
-                id: item._id || item.id || `imported-${Date.now()}-${Math.random()}`
+                id: item._id || item.id || `imported-${Date.now()}-${Math.random()}`,
+                price: price // 콤마 포맷팅이 적용된 현금가
               };
             });
             
