@@ -131,7 +131,7 @@ export default function ConsumerQuotePage({ params }) {
               onChange={(e) => setShowNotes(e.target.checked)}
               className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
             />
-            <span className="ml-2 text-gray-700">공지-참고-사항 추가</span>
+            <span className="ml-2 text-gray-700">공지사항 필독 추가</span>
           </label>
           
           <label className="flex items-center cursor-pointer">
@@ -170,10 +170,15 @@ export default function ConsumerQuotePage({ params }) {
           </div>
           <div style={{ width: '200px', textAlign: 'right', paddingBottom: '40px' }}>
             <p className="text-gray-700 tracking-tighter">견적일자: {formatDate(estimate.createdAt)}</p>
-            <p className="text-gray-700 tracking-tighter">출고/납품: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            {/* 출고일자 표시 */}
+            {estimate.paymentInfo?.releaseDate ? (
+                <p style={{ lineHeight: '1' }} className="text-gray-700 tracking-tighter">출고일자: {formatDate(estimate.paymentInfo.releaseDate)}</p>
+            ) : (
+                <p style={{ lineHeight: '1' }} className="text-gray-700 tracking-tighter">출고일자: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            )}
           </div>
         </div>
-        
+
         <div className="flex gap-2 mb-2" style={{ width: '100%' }}>
           <div style={{ width: '50%', height: 'auto' }}className="border border-sky-200 rounded-lg flex bg-sky-50">
             <table style={{ width: '100%' }} className="m-1">

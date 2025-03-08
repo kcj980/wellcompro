@@ -51,7 +51,7 @@ export default function EstimateDetail({ params }) {
     router.push('/search');
   };
   
-  // 날짜 형식 변환 함수
+  // 날짜 형식 변환 함수(견적 생성, 수정일)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -62,6 +62,15 @@ export default function EstimateDetail({ params }) {
     
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
+    // 날짜 형식 변환 함수(출고일자)
+    const formatDateRelease = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    };
   
   // 견적 페이지로 이동하여 수정하는 함수
   const handleEditClick = () => {
@@ -325,6 +334,15 @@ export default function EstimateDetail({ params }) {
                   <div className="text-sm font-medium text-gray-500">결제 방법</div>
                   <div className="mt-1">{estimate.paymentInfo?.paymentMethod || '-'}</div>
                 </div>
+
+                {/* 출고일자 표시 */}
+                {estimate.paymentInfo?.releaseDate && (
+                  <div>
+                    <div className="text-sm font-medium text-gray-500">출고일자</div>
+                    <div className="mt-1">{formatDateRelease(estimate.paymentInfo.releaseDate)}</div>
+                  </div>
+                )}
+
               </div>
             </div>
             

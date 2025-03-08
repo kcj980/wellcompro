@@ -233,6 +233,19 @@ export default function BusinessQuotePage({ params }) {
               <span className="font-semibold w-24">견적 유효기간:</span>
               <span>견적일로부터 30일</span>
             </div>
+            
+            {/* 출고일자 표시 */}
+            {estimate.paymentInfo?.releaseDate ? (
+              <div className="flex">
+                <span className="font-semibold w-24">출고예정일:</span>
+                <span>{formatDate(estimate.paymentInfo.releaseDate)}</span>
+              </div>
+            ) : (
+              <div className="flex">
+                <span className="font-semibold w-24">출고예정일:</span>
+                <span>출고일자가 없습니다.</span>
+              </div>
+            )}
           </div>
         </div>
         

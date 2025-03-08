@@ -131,7 +131,8 @@ function EstimateContent() {
     vatRate: 10,          // VAT 비율 (기본 10%)
     roundingType: '',     // 버림/올림 타입 (기본 없음)
     paymentMethod: '',     // 결제 방법
-    shippingCost: 0        // 택배비
+    shippingCost: 0,      // 택배비
+    releaseDate: ''       // 출고일자
   });
 
   /**
@@ -1348,67 +1349,67 @@ function EstimateContent() {
             </div>
           </div>
 
-        {/* 일괄 입력 섹션 */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">일괄 데이터 입력</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 다나와 입력 폼 */}
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">다나와 형식</h3>
-              <form onSubmit={handleDanawaSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PC견적-&gt;견적공유-&gt;견적인쇄 <br />
-                    [분류/상품명/수량/카드최저가/현금 최저가/카드최저가 합계/현금최저가 합계]
-                  </label>
-                  <textarea
-                    value={bulkData}
-                    onChange={handleBulkDataChange}
-                      rows={1}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[42px] resize-none overflow-hidden"
-                    placeholder="다나와 데이터를 붙여넣으세요..."
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                  >
-                    다나와 등록
-                  </button>
-                </div>
-              </form>
-            </div>
+          {/* 일괄 입력 섹션 */}
+          <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 className="text-xl font-semibold mb-4">일괄 데이터 입력</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 다나와 입력 폼 */}
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">다나와 형식</h3>
+                <form onSubmit={handleDanawaSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      PC견적-&gt;견적공유-&gt;견적인쇄 <br />
+                      [분류/상품명/수량/카드최저가/현금 최저가/카드최저가 합계/현금최저가 합계]
+                    </label>
+                    <textarea
+                      value={bulkData}
+                      onChange={handleBulkDataChange}
+                        rows={1}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[42px] resize-none overflow-hidden"
+                      placeholder="다나와 데이터를 붙여넣으세요..."
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                    >
+                      다나와 등록
+                    </button>
+                  </div>
+                </form>
+              </div>
 
-            {/* 견적왕 입력 폼 */}
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">견적왕 형식</h3>
-              <form onSubmit={handleQuoteKingSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PC견적-&gt;견적갭쳐 <br />
-                    [번호/분류/이미지/제품명/판매가/수량/합계]
-                  </label>
-                  <textarea
-                    value={quoteKingData}
-                    onChange={handleQuoteKingChange}
-                      rows={1}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[42px] resize-none overflow-hidden"
-                    placeholder="견적왕 데이터를 붙여넣으세요..."
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
-                  >
-                    견적왕 등록
-                  </button>
-                </div>
-              </form>
+              {/* 견적왕 입력 폼 */}
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">견적왕 형식</h3>
+                <form onSubmit={handleQuoteKingSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      PC견적-&gt;견적갭쳐 <br />
+                      [번호/분류/이미지/제품명/판매가/수량/합계]
+                    </label>
+                    <textarea
+                      value={quoteKingData}
+                      onChange={handleQuoteKingChange}
+                        rows={1}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[42px] resize-none overflow-hidden"
+                      placeholder="견적왕 데이터를 붙여넣으세요..."
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                    >
+                      견적왕 등록
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
 
           {/* 상품 정보 입력창 토글 버튼 */}
           <div className="mb-4">
@@ -1421,137 +1422,135 @@ function EstimateContent() {
             </button>
           </div>
 
-        {/* 기존 개별 입력 폼 */}
+          {/* 기존 개별 입력 폼 */}
           {showForm && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
               <h2 className="text-xl font-semibold mb-4">
                 {editingId ? '상품 정보 수정' : '상품 정보 입력'}
               </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                분류
-              </label>
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    분류
+                  </label>
                   <textarea
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="분류를 입력하세요"
+                    required
+                    placeholder="분류를 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                상품명
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    상품명
+                  </label>
                   <textarea
-                name="productName"
-                value={formData.productName}
-                onChange={handleChange}
+                    name="productName"
+                    value={formData.productName}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="상품명을 입력하세요"
+                    required
+                    placeholder="상품명을 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                수량
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    수량
+                  </label>
                   <textarea
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="수량을 입력하세요"
+                    required
+                    placeholder="수량을 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                현금가
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    현금가
+                  </label>
                   <div className="flex items-center gap-2">
                     <textarea
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
+                      name="price"
+                      value={formData.price}
+                      onChange={handleChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                required
-                placeholder="현금가를 입력하세요"
+                      required
+                      placeholder="현금가를 입력하세요"
                       rows={1}
                     />
                     <button
                       type="button"
                       onClick={multiplyPriceByQuantity}
                       className="bg-blue-600 text-white px-2 py-2 rounded-md hover:bg-blue-700 whitespace-nowrap text-sm"
-                    >
-                      수량 곱하기
-                    </button>
+                    >수량 곱하기</button>
                   </div>
-            </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                상품코드
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    상품코드
+                  </label>
                   <textarea
-                name="productCode"
-                value={formData.productCode}
-                onChange={handleChange}
+                    name="productCode"
+                    value={formData.productCode}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                placeholder="상품코드를 입력하세요"
+                    placeholder="상품코드를 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                총판
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    총판
+                  </label>
                   <textarea
-                name="distributor"
-                value={formData.distributor}
-                onChange={handleChange}
+                    name="distributor"
+                    value={formData.distributor}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                placeholder="총판을 입력하세요"
+                    placeholder="총판을 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                재조사
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    재조사
+                  </label>
                   <textarea
-                name="reconfirm"
-                value={formData.reconfirm}
-                onChange={handleChange}
+                    name="reconfirm"
+                    value={formData.reconfirm}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                placeholder="재조사 여부를 입력하세요"
+                    placeholder="재조사 여부를 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                비고
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    비고
+                  </label>
                   <textarea
-                name="remarks"
-                value={formData.remarks}
-                onChange={handleChange}
+                    name="remarks"
+                    value={formData.remarks}
+                    onChange={handleChange}
                     className="w-full border border-gray-300 rounded-md px-3 py-2 resize-none overflow-hidden min-h-[42px]"
-                placeholder="비고를 입력하세요"
+                    placeholder="비고를 입력하세요"
                     rows={1}
-              />
-            </div>
+                  />
+                </div>
 
                 <div className="lg:col-span-4 flex justify-end gap-2">
                   {editingId && (
@@ -1575,23 +1574,21 @@ function EstimateContent() {
                       취소
                     </button>
                   )}
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                    {editingId ? '수정' : '입력'}
-              </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >{editingId ? '수정' : '추가'}</button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
           )}
 
-        {/* 테이블 */}
+          {/* 테이블 */}
           <div className="bg-white rounded-lg shadow">
             <div className="max-w-full">
               <table className="w-full table-fixed divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
+                <thead className="bg-gray-50">
+                  <tr>
                     <th className="w-[10%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">작업</div>
                     </th>
@@ -1619,11 +1616,11 @@ function EstimateContent() {
                     <th className="w-[15%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">비고</div>
                     </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {tableData.map((row) => (
-                <tr key={row.id}>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {tableData.map((row) => (
+                    <tr key={row.id}>
                       <td className="px-4 py-4">
                         <div className="flex gap-1">
                           <button
@@ -1664,12 +1661,170 @@ function EstimateContent() {
                       <td className="px-4 py-4">
                         <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">{row.remarks}</div>
                       </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* 서비스 물품 섹션 */}
+          <div className="bg-white rounded-lg shadow p-6 mt-6">
+            <h2 className="text-xl font-semibold mb-4">서비스 물품</h2>
+            
+            {/* 서비스 물품 선택 버튼 */}
+            <div className="mb-4">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('마우스')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  마우스
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('마우스패드')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  마우스패드
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('키보드')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  키보드
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddServiceItem('스피커')}
+                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
+                >
+                  스피커
+                </button>
+              </div>
+            </div>
+            
+            {/* 서비스 물품 직접 입력 폼 */}
+            <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50">
+              <h3 className="text-md font-medium mb-3">직접 입력</h3>
+              <div className="flex gap-3 items-end">
+                <div className="flex-[2]"> {/* 상품명 영역을 50%로 설정 */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">상품명</label>
+                  <input
+                    type="text"
+                    id="custom-product-name"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="상품명 입력"
+                  />
+                </div>
+                <div className="flex-[1]"> {/* 개수 영역을 25%로 설정 */}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">개수</label>
+                  <input
+                    type="number"
+                    id="custom-quantity"
+                    min="1"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="개수 입력"
+                  />
+                </div>
+                <div className="flex-[1]"> {/* 추가하기 버튼을 25%로 설정 */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const productName = document.getElementById('custom-product-name').value;
+                      const quantity = parseInt(document.getElementById('custom-quantity').value) || 1;
+                      
+                      if (productName.trim()) {
+                        // 새 서비스 물품 추가
+                        handleAddServiceItem(productName, quantity);
+                        
+                        // 입력 필드 초기화
+                        document.getElementById('custom-product-name').value = '';
+                        document.getElementById('custom-quantity').value = '';
+                      } else {
+                        alert('상품명을 입력해주세요.');
+                      }
+                    }}
+                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  >
+                    추가하기
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* 서비스 물품 테이블 */}
+            <div className="max-w-full">
+              <table className="w-full table-fixed divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="w-[10%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      작업
+                    </th>
+                    <th className="w-[40%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      상품명
+                    </th>
+                    <th className="w-[15%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      개수
+                    </th>
+                    <th className="w-[35%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      비고
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {serviceData.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-4 py-4 text-center text-sm text-gray-500">
+                        서비스 물품이 없습니다. 위 버튼을 클릭하여 추가하세요.
+                      </td>
+                    </tr>
+                  ) : (
+                    serviceData.map((item) => (
+                      <tr key={item.id}>
+                        <td className="px-4 py-4">
+                          <button
+                            onClick={() => handleDeleteServiceItem(item.id)}
+                            className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                          >
+                            삭제
+                          </button>
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="text"
+                            value={item.productName}
+                            onChange={(e) => handleProductNameChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="number"
+                            min="1"
+                            value={item.quantity}
+                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                        </td>
+                        <td className="px-4 py-4">
+                          <input
+                            type="text"
+                            value={item.remarks}
+                            onChange={(e) => handleServiceRemarkChange(item.id, e.target.value)}
+                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="비고를 입력하세요"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           {/* 테이블 끝난 후 결제 정보 섹션 */}
           <div className="bg-white rounded-lg shadow p-6 mt-6">
@@ -1827,6 +1982,8 @@ function EstimateContent() {
                     </span>
                   </div>
                 </div>
+                
+                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     배송+설비 비용(최종결재금액 포함X)
@@ -1956,167 +2113,27 @@ function EstimateContent() {
                     placeholder="결제 방법을 입력하세요"
                   />
                 </div>
+
+                {/* 출고일자 입력 필드 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    출고일자
+                  </label>
+                  <div className="flex flex-col items-start gap-2">
+                    <input
+                      type="date"
+                      name="releaseDate"
+                      value={paymentInfo.releaseDate}
+                      onChange={handlePaymentInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+                
               </div>
             </div>
           </div>
 
-          {/* 서비스 물품 섹션 */}
-          <div className="bg-white rounded-lg shadow p-6 mt-6">
-            <h2 className="text-xl font-semibold mb-4">서비스 물품</h2>
-            
-            {/* 서비스 물품 선택 버튼 */}
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleAddServiceItem('마우스')}
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                >
-                  마우스
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAddServiceItem('마우스패드')}
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                >
-                  마우스패드
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAddServiceItem('키보드')}
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                >
-                  키보드
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAddServiceItem('스피커')}
-                  className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200"
-                >
-                  스피커
-                </button>
-              </div>
-            </div>
-            
-            {/* 서비스 물품 직접 입력 폼 */}
-            <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50">
-              <h3 className="text-md font-medium mb-3">직접 입력</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">상품명</label>
-                  <input
-                    type="text"
-                    id="custom-product-name"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="상품명 입력"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">개수</label>
-                  <input
-                    type="number"
-                    id="custom-quantity"
-                    min="1"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="개수 입력"
-                  />
-                </div>
-                <div className="flex items-end">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const productName = document.getElementById('custom-product-name').value;
-                      const quantity = parseInt(document.getElementById('custom-quantity').value) || 1;
-                      
-                      if (productName.trim()) {
-                        // 새 서비스 물품 추가
-                        handleAddServiceItem(productName, quantity);
-                        
-                        // 입력 필드 초기화
-                        document.getElementById('custom-product-name').value = '';
-                        document.getElementById('custom-quantity').value = '';
-                      } else {
-                        alert('상품명을 입력해주세요.');
-                      }
-                    }}
-                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                  >
-                    추가하기
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            {/* 서비스 물품 테이블 */}
-            <div className="max-w-full">
-              <table className="w-full table-fixed divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="w-[10%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      작업
-                    </th>
-                    <th className="w-[40%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      상품명
-                    </th>
-                    <th className="w-[15%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      개수
-                    </th>
-                    <th className="w-[35%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      비고
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {serviceData.length === 0 ? (
-                    <tr>
-                      <td colSpan="4" className="px-4 py-4 text-center text-sm text-gray-500">
-                        서비스 물품이 없습니다. 위 버튼을 클릭하여 추가하세요.
-                      </td>
-                    </tr>
-                  ) : (
-                    serviceData.map((item) => (
-                      <tr key={item.id}>
-                        <td className="px-4 py-4">
-                          <button
-                            onClick={() => handleDeleteServiceItem(item.id)}
-                            className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                          >
-                            삭제
-                          </button>
-                        </td>
-                        <td className="px-4 py-4">
-                          <input
-                            type="text"
-                            value={item.productName}
-                            onChange={(e) => handleProductNameChange(item.id, e.target.value)}
-                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-4 py-4">
-                          <input
-                            type="number"
-                            min="1"
-                            value={item.quantity}
-                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-4 py-4">
-                          <input
-                            type="text"
-                            value={item.remarks}
-                            onChange={(e) => handleServiceRemarkChange(item.id, e.target.value)}
-                            className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="비고를 입력하세요"
-                          />
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
 
           {/* 참고사항 섹션 */}
           <div className="mt-6 bg-white shadow rounded-lg p-6">
