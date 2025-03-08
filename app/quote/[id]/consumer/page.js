@@ -10,6 +10,11 @@ export default function ConsumerQuotePage({ params }) {
   const [showNotes, setShowNotes] = useState(true);
   const [showStamp, setShowStamp] = useState(true);
   const [printTriggered, setPrintTriggered] = useState(false);
+  const [showNotesEditor, setShowNotesEditor] = useState(false);
+  const [notesContent, setNotesContent] = useState('');
+  const [noticeItems, setNoticeItems] = useState([]);
+  const [savingAnnouncement, setSavingAnnouncement] = useState(false);
+  const [announcementError, setAnnouncementError] = useState(null);
   const router = useRouter();
   const printRef = useRef(null);
   const { id } = params;
@@ -51,6 +56,44 @@ export default function ConsumerQuotePage({ params }) {
     }
   }, [id]);
   
+  // 공지사항을 불러오는 함수
+  useEffect(() => {
+    const fetchAnnouncement = async () => {
+      try {
+        // API를 통해 공지사항 데이터 불러오기
+        const response = await fetch('/api/quote/consumer', {
+          cache: 'no-store'
+        });
+        
+        if (!response.ok) {
+          throw new Error(`서버 오류: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.announcement) {
+          // 줄바꿈을 기준으로 공지사항을 배열로 변환
+          const items = data.announcement
+            .split('\n')
+            .filter(line => line.trim() !== '')
+            .map(line => line.trim());
+          
+          setNoticeItems(items);
+        }
+      } catch (err) {
+        console.error('Error fetching announcement:', err);
+        // 기본 공지사항 설정
+        setNoticeItems([
+          '본 견적서는 수급상황에 따라, 금액과 부품이 대체/변동 될 수 있습니다.',
+          '상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.',
+          '계약금 입금 후 주문이 확정됩니다.'
+        ]);
+      }
+    };
+    
+    fetchAnnouncement();
+  }, []);
+  
   // 날짜 형식 변환 함수
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -78,6 +121,59 @@ export default function ConsumerQuotePage({ params }) {
       return () => clearTimeout(timer);
     }
   }, [estimate, loading, error, printTriggered]);
+  
+  // 공지사항 수정 처리 함수 추가
+  const handleNotesContentChange = (e) => {
+    setNotesContent(e.target.value);
+  };
+
+  // 공지사항 저장 함수 추가
+  const saveNotesContent = async () => {
+    if (!notesContent.trim()) {
+      return;
+    }
+    
+    try {
+      setSavingAnnouncement(true);
+      setAnnouncementError(null);
+      
+      // 줄바꿈을 기준으로 텍스트를 분리하여 배열로 변환
+      const newNoticeItems = notesContent
+        .split('\n')
+        .filter(line => line.trim() !== '') // 빈 줄 제거
+        .map(line => line.trim());
+      
+      // API를 통해 공지사항 저장
+      const response = await fetch('/api/quote/consumer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          announcement: notesContent
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '공지사항 저장 중 오류가 발생했습니다.');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setNoticeItems(newNoticeItems);
+        setShowNotesEditor(false);
+      } else {
+        throw new Error(data.message || '공지사항 저장 중 오류가 발생했습니다.');
+      }
+    } catch (err) {
+      console.error('Error saving announcement:', err);
+      setAnnouncementError(err.message);
+    } finally {
+      setSavingAnnouncement(false);
+    }
+  };
   
   if (loading) {
     return <div style={{ width: '800px', margin: '0 auto', padding: '24px', textAlign: 'center' }}>데이터를 불러오는 중...</div>;
@@ -124,6 +220,19 @@ export default function ConsumerQuotePage({ params }) {
         </button>
         
         <div className="flex items-center">
+          {/* 공지사항 수정 버튼 추가 */}
+          <button
+            onClick={() => {
+              setShowNotesEditor(!showNotesEditor);
+              if (!showNotesEditor) {
+                setNotesContent(noticeItems.join('\n'));
+              }
+            }}
+            className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 mr-4 text-sm"
+          >
+            공지사항수정+
+          </button>
+          
           <label className="flex items-center cursor-pointer mr-4">
             <input 
               type="checkbox" 
@@ -152,6 +261,43 @@ export default function ConsumerQuotePage({ params }) {
           </button>
         </div>
       </div>
+      
+      {/* 공지사항 수정 에디터 - 체크박스 아래에 위치 */}
+      {showNotesEditor && (
+        <div className="mb-4 no-print">
+          <div className="border border-gray-300 rounded-lg p-3 bg-gray-50">
+            <textarea
+              value={notesContent}
+              onChange={handleNotesContentChange}
+              className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="공지사항을 입력하세요. 각 줄은 별도의 항목으로 표시됩니다."
+            ></textarea>
+            {announcementError && (
+              <div className="text-red-500 text-sm mt-1">{announcementError}</div>
+            )}
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={saveNotesContent}
+                disabled={savingAnnouncement}
+                className={`bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 ${
+                  savingAnnouncement ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {savingAnnouncement ? '저장 중...' : '저장'}
+              </button>
+              <button
+                onClick={() => setShowNotesEditor(false)}
+                disabled={savingAnnouncement}
+                className={`bg-gray-500 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-600 ml-2 ${
+                  savingAnnouncement ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* 인쇄 영역 */}
       <div ref={printRef} className="print-this-section bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
@@ -419,9 +565,9 @@ export default function ConsumerQuotePage({ params }) {
             <div className="flex items-center">
               <span className="text-sm font-bold text-blue-800 mr-2">※공지사항 필독※</span>
               <div className="flex-1 flex flex-wrap gap-x-4 text-xs text-black p-1 bg-white border border-sky-200 rounded-md">
-                <span>· 본 견적서는 수급상황에 따라, 금액과 부품이 대체/변동 될 수 있습니다.</span>
-                <span>· 상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</span>
-                <span>· 계약금 입금 후 주문이 확정됩니다.</span>
+                {noticeItems.map((item, index) => (
+                  <span key={index}>· {item}</span>
+                ))}
               </div>
             </div>
           </div>
