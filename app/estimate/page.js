@@ -1634,7 +1634,7 @@ function EstimateContent() {
                 onClick={() => setShowForm(!showForm)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
             >
-                상품 정보 입력창 {showForm ? '-' : '+'}
+                상품정보 입력창 {showForm ? '-' : '+'}
             </button>
             {/* 전체 삭제 버튼 추가 */}
             <button
@@ -1642,7 +1642,7 @@ function EstimateContent() {
                 onClick={handleDeleteAllProducts}
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 ml-2" // ml-2로 여백 추가
             >
-                전체 삭제
+                상품정보 전체삭제
             </button>
           </div>
           
@@ -2292,7 +2292,7 @@ function EstimateContent() {
                       
                       // 버려진 금액이 있으면 서비스 물품에 추가
                       if (discardedAmount > 0) {
-                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                        handleAddServiceItem(`절사 -${discardedAmount}원`, 1);
                       }
                     }}
                     className={`px-3 py-2 rounded-md text-sm ${
@@ -2322,7 +2322,7 @@ function EstimateContent() {
                       
                       // 버려진 금액이 있으면 서비스 물품에 추가
                       if (discardedAmount > 0) {
-                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                        handleAddServiceItem(`절사 -${discardedAmount}원`, 1);
                       }
                     }}
                     className={`px-3 py-2 rounded-md text-sm ${
@@ -2352,7 +2352,7 @@ function EstimateContent() {
                       
                       // 버려진 금액이 있으면 서비스 물품에 추가
                       if (discardedAmount > 0) {
-                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                        handleAddServiceItem(`절사 -${discardedAmount}원`, 1);
                       }
                     }}
                     className={`px-3 py-2 rounded-md text-sm ${
