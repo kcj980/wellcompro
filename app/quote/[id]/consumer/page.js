@@ -8,6 +8,7 @@ export default function ConsumerQuotePage({ params }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNotes, setShowNotes] = useState(true);
+  const [showStamp, setShowStamp] = useState(true);
   const [printTriggered, setPrintTriggered] = useState(false);
   const router = useRouter();
   const printRef = useRef(null);
@@ -133,6 +134,16 @@ export default function ConsumerQuotePage({ params }) {
             <span className="ml-2 text-gray-700">공지-참고-사항 추가</span>
           </label>
           
+          <label className="flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={showStamp} 
+              onChange={(e) => setShowStamp(e.target.checked)}
+              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
+            />
+            <span className="ml-2 text-gray-700">인감도장 표시</span>
+          </label>
+          
           <button
             onClick={handlePrint}
             className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
@@ -208,7 +219,31 @@ export default function ConsumerQuotePage({ params }) {
                   <td className="text-center text-black font-semibold border-r border-sky-200 tracking-extra-wide pr-1" rowSpan="4" style={{ writingMode: 'vertical-rl'}}>공 급 자</td>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-tighter">등록번호</td>
                   <td style={{ width: '45%' }} className="text-left text-black font-semibold">607-02-70320</td>
-                  <td style={{ width: '30%' }} className="text-center text-left text-black font-semibold border-l border-sky-200" rowSpan="2">김 선 식</td>
+                  <td style={{ width: '30%' }} className="text-center text-left text-black font-semibold border-l border-sky-200 relative" rowSpan="2">
+                    김 선 식
+                    <span className="relative inline-block">
+                      {showStamp && (
+                        <div className="absolute" style={{ 
+                          top: '-35px', 
+                          left: '-32px', 
+                          width: '60px', 
+                          height: '60px',
+                          zIndex: 10
+                        }}>
+                          <Image
+                            src="/stamp.png"
+                            alt="인감도장"
+                            width={55}
+                            height={55}
+                            style={{ 
+                              transform: 'rotate(0deg)',
+                              objectFit: 'contain'
+                            }}
+                          />
+                        </div>
+                      )}
+                    </span>
+                  </td>
                 </tr>
                 <tr style={{ lineHeight: '1' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-extra-widetitler">상 호</td>
