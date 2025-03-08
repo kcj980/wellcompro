@@ -223,14 +223,14 @@ export default function ConsumerQuotePage({ params }) {
                 <tr style={{ lineHeight: '18px' }}>
                   <td className="text-center text-black font-semibold border-r border-sky-200 tracking-extra-wide pr-1" rowSpan="4" style={{ writingMode: 'vertical-rl'}}>공 급 자</td>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-tighter">등록번호</td>
-                  <td style={{ width: '45%' }} className="text-left text-black font-semibold">607-02-70320</td>
-                  <td style={{ width: '30%' }} className="text-center text-left text-black font-semibold border-l border-sky-200 relative" rowSpan="2">
-                    김 선 식
+                  <td style={{ width: '37%' }} className="text-left text-black font-semibold tracking-wide">607-02-70320</td>
+                  <td style={{ width: '38%' }} className="text-center text-left text-black font-semibold border-l border-sky-200 relative" rowSpan="2">
+                    김 선 식<span style={{ fontSize: '0.6rem' }}> &nbsp;&nbsp;&nbsp;&nbsp;(인)</span>
                     <span className="relative inline-block">
                       {showStamp && (
                         <div className="absolute" style={{ 
-                          top: '-37px', 
-                          left: '-34px', 
+                          top: '-34px', 
+                          left: '-36px', 
                           width: '60px', 
                           height: '60px',
                           zIndex: 10
@@ -252,7 +252,7 @@ export default function ConsumerQuotePage({ params }) {
                 </tr>
                 <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-extra-widetitler">상 호</td>
-                  <td style={{ width: '45%' }} className="text-left text-black font-semibold">웰컴 시스템</td>
+                  <td style={{ width: '37%' }} className="text-left text-black font-semibold tracking-wider">웰컴 시스템</td>
                   
                 </tr>
                 <tr style={{ lineHeight: '18px' }}>
@@ -273,11 +273,11 @@ export default function ConsumerQuotePage({ params }) {
             <thead className="bg-sky-100">
               <tr>
                 <th className="border border-sky-200 text-center text-black" style={{ width: '1%' }}>No.</th>
-                <th className="border border-sky-200 text-center text-black" style={{ width: '12%' }}>분류</th>
-                <th className="border border-sky-200 text-center text-black" style={{ width: '53%' }}>상품명</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '12%' }}>분 &nbsp;&nbsp;류</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '53%' }}>상 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;품 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;명</th>
                 <th className="border border-sky-200 text-center text-black" style={{ width: '6%' }}>수량</th>
-                <th className="border border-sky-200 text-center text-black" style={{ width: '13%' }}>단가</th>
-                <th className="border border-sky-200 text-center text-black" style={{ width: '13%' }}>금액</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '13%' }}>단 &nbsp;&nbsp;가</th>
+                <th className="border border-sky-200 text-center text-black" style={{ width: '13%' }}>금 &nbsp;&nbsp;액</th>
               </tr>
             </thead>
             <tbody>
@@ -287,11 +287,11 @@ export default function ConsumerQuotePage({ params }) {
                   <td className="border border-sky-200 text-center">{item.category || '-'}</td>
                   <td className="border border-sky-200">{item.productName}</td>
                   <td className="border border-sky-200 text-center">{item.quantity}</td>
-                  <td className="border border-sky-200 text-right">
+                  <td className="border border-sky-200 text-right pr-1">
                     {item.price && item.quantity ? 
                       Math.round(parseInt(item.price) / parseInt(item.quantity)).toLocaleString() : '-'}
                   </td>
-                  <td className="border border-sky-200 text-right">
+                  <td className="border border-sky-200 text-right pr-1">
                     {item.price ? parseInt(item.price).toLocaleString() : '-'}
                   </td>
                 </tr>
@@ -300,7 +300,7 @@ export default function ConsumerQuotePage({ params }) {
               <tr className="bg-sky-100 font-bold">
                 <td colSpan="4" className="border border-sky-200 text-right p-1 text-black" style={{ padding: '0' }}>부품 금액 합계</td>
                 <td colSpan="2" className="border border-sky-200 text-right p-1 text-black">
-                  {estimate.calculatedValues?.productTotal?.toLocaleString()}원
+                  {estimate.calculatedValues?.productTotal?.toLocaleString()}
                 </td>
               </tr>
             </tbody>
@@ -326,10 +326,10 @@ export default function ConsumerQuotePage({ params }) {
         {/* 이곳에 결제 정보 표시 */}
         <div className="border border-sky-200 rounded-lg px-2 mb-2 bg-sky-50">
           <div className="flex justify-between items-center mb-1 mt-1">
-            <h2 className="text-lg font-bold text-blue-800 border border-sky-300 rounded-md px-3 py-1 bg-sky-100 shadow-sm">결제 정보</h2>
+            <h2 className="text-lg font-bold text-blue-800 ml-1">결제 정보</h2>
             <div className="border border-sky-200 rounded-md p-1 bg-sky-350 flex justify-between" style={{ width: '84%' }}>
               <span className="font-semibold text-black">상품/부품 합계:</span>
-              <span>{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
+              <span className="font-bold text-black">{estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원</span>
             </div>
           </div>
           <div className="space-y-1">
@@ -360,7 +360,7 @@ export default function ConsumerQuotePage({ params }) {
                 </div>
               )}
               <div className="border border-sky-400 rounded-md p-2 bg-sky-350 flex-[1.6] flex justify-between items-center">
-                <span className="font-semibold text-black">총 구입 금액<span className="text-xs">
+                <span className="font-semibold text-black">총 구입금액<span className="text-xs">
                   {estimate.paymentInfo?.discount > 0 ? "(공임+세팅-할인)" : "(공임+세팅)"}
                 </span>:</span>
                 <span className="font-semibold text-black">{estimate.calculatedValues?.totalPurchase?.toLocaleString() || '0'}원</span>
@@ -380,39 +380,50 @@ export default function ConsumerQuotePage({ params }) {
                 <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-450 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
                     <div className="absolute inset-0 bg-sky-500 opacity-10 rounded"></div>
                     <span className="text-lg text-blue-900 z-10 font-bold">
-                      {estimate.paymentInfo?.includeVat ? "최종 결제 금액(VAT포함):" : "최종 결제 금액:"}
+                      {estimate.paymentInfo?.includeVat ? "최종 결제금액(VAT포함):" : "최종 결제금액:"}
                     </span>
                     <span className="text-xl text-blue-900 z-10 font-bold">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
                 </div>
             </div>
             
-            {/* 배송+설치 - 값이 있을 때는 금액 표시, 없을 때는 안내 메시지 표시 */}
-            <div className="flex justify-end">
+            {/* 결제 방식 안내 및 배송+설치 - 값이 있을 때는 금액 표시, 없을 때는 안내 메시지 표시 */}
+            <div className="flex justify-between">
+              <div className="border border-sky-400 rounded-md p-1 mb-1 bg-white inline-flex text-sm">
+                {estimate.paymentInfo?.paymentMethod ? (
+                  <>
+                    <span className="font-semibold text-black whitespace-pre">결제 방식: </span>
+                    <span className="font-semibold text-black">{estimate.paymentInfo.paymentMethod}</span>
+                  </>
+                ) : (
+                  <span className="font-semibold text-black">결제방식: 현금 / 카드</span>
+                )}
+              </div>
+
               <div className="border border-sky-400 rounded-md p-1 mb-1 bg-white inline-flex text-sm">
                 {estimate.paymentInfo?.shippingCost > 0 ? (
                   <>
-                    <span className="font-semibold text-black whitespace-pre">※배송+설치 별도 추가: </span>
-                    <span className="font-semibold text-black">{estimate.paymentInfo?.shippingCost?.toLocaleString()}원※</span>
+                    <span className="font-semibold text-black whitespace-pre">※ 배송+설치 별도 추가: </span>
+                    <span className="font-semibold text-black">{estimate.paymentInfo?.shippingCost?.toLocaleString()}원 ※</span>
                   </>
                 ) : (
-                  <span className="font-semibold text-black">※배송+설치 비용은 별도 부과됩니다※</span>
+                  <span className="font-semibold text-black">※ 배송+설치 비용은 별도 부과됩니다 ※</span>
                 )}
               </div>
-            </div>
+            </div> 
           </div>
         </div>
         
-        {/* 참고사항 - 체크박스가 체크되었을 때만 표시 */}
+        {/* 공지사항 - 체크박스가 체크되었을 때만 표시 */}
         {showNotes && (
           <div className="border border-sky-200 rounded-lg p-1 bg-sky-50">
-            <h2 className="text-lg font-bold mb-1 text-blue-800 border border-sky-300 rounded-md px-3 py-1 bg-sky-100 shadow-sm inline-block">
-              ※공지사항 필독※
-            </h2>
-            <ul className="list-disc pl-5 space-y-1 text-black p-1 border border-sky-200 rounded-md bg-white">
-              <li>본 견적서는 수급상황에 따라, 금액과 부품이 대체/변동 될 수 있습니다.</li>
-              <li>상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</li>
-              <li>계약금 입금 후 주문이 확정됩니다.</li>
-            </ul>
+            <div className="flex items-center">
+              <span className="text-sm font-bold text-blue-800 mr-2">※공지사항 필독※</span>
+              <div className="flex-1 flex flex-wrap gap-x-4 text-xs text-black p-1 bg-white border border-sky-200 rounded-md">
+                <span>· 본 견적서는 수급상황에 따라, 금액과 부품이 대체/변동 될 수 있습니다.</span>
+                <span>· 상품의 사양 및 가격은 제조사의 정책에 따라 변경될 수 있습니다.</span>
+                <span>· 계약금 입금 후 주문이 확정됩니다.</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
