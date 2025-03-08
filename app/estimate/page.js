@@ -585,7 +585,31 @@ function EstimateContent() {
   };
 
   /**
-   * 총 구입 금액 계산 함수 (상품/부품 + 공임비 + 세팅비 - 할인)
+   * 버림 적용 시 버려진 값을 계산하는 함수
+   * @param {string} roundingType - 버림 유형 ('100down', '1000down', '10000down')
+   * @param {number} total - 버림 적용 전 금액
+   * @returns {number} 버려진 금액
+   */
+  const calculateDiscardedAmount = (roundingType, total) => {
+    let roundedTotal = total;
+    
+    if (roundingType === '100down') {
+      roundedTotal = Math.floor(total / 100) * 100;
+      return total - roundedTotal;
+    } else if (roundingType === '1000down') {
+      roundedTotal = Math.floor(total / 1000) * 1000;
+      return total - roundedTotal;
+    } else if (roundingType === '10000down') {
+      roundedTotal = Math.floor(total / 10000) * 10000;
+      return total - roundedTotal;
+    }
+    
+    return 0;
+  };
+
+  /**
+   * 총 구입 금액 계산 함수
+   * 상품 합계 + 공임비 + 세팅비 - 할인
    * @returns {number} 총 구입 금액
    */
   const calculateTotalPurchase = () => {
@@ -595,7 +619,18 @@ function EstimateContent() {
     const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
     const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
     
-    return productTotal + laborCost + setupCost - discount;
+    let total = productTotal + laborCost + setupCost - discount;
+    
+    // 버림 적용 (100원, 1000원 또는 10000원 단위)
+    if (paymentInfo.roundingType === '100down') {
+      total = Math.floor(total / 100) * 100;
+    } else if (paymentInfo.roundingType === '1000down') {
+      total = Math.floor(total / 1000) * 1000;
+    } else if (paymentInfo.roundingType === '10000down') {
+      total = Math.floor(total / 10000) * 10000;
+    }
+    
+    return total;
   };
 
   /**
@@ -613,8 +648,8 @@ function EstimateContent() {
   };
 
   /**
-   * 최종 결제 금액 계산 함수 (VAT 및 버림/올림 적용)
-   * 총 구입 금액에 VAT를 더하고 필요시 100원/1000원 단위 버림/올림 적용
+   * 최종 결제 금액 계산 함수 (VAT 적용)
+   * 총 구입 금액에 VAT를 더함
    * @returns {number} 최종 결제 금액
    */
   const calculateFinalPayment = () => {
@@ -622,16 +657,7 @@ function EstimateContent() {
     const vatAmount = calculateVatAmount(total);
     total += vatAmount;
     
-    // 버림/올림 적용 (100원 또는 1000원 단위)
-    if (paymentInfo.roundingType === '100down') {
-      total = Math.floor(total / 100) * 100;
-    } else if (paymentInfo.roundingType === '1000down') {
-      total = Math.floor(total / 1000) * 1000;
-    } else if (paymentInfo.roundingType === '100up') {
-      total = Math.ceil(total / 100) * 100;
-    } else if (paymentInfo.roundingType === '1000up') {
-      total = Math.ceil(total / 1000) * 1000;
-    }
+    // 버림 로직은 calculateTotalPurchase로 이동
     
     return total;
   };
@@ -1105,6 +1131,25 @@ function EstimateContent() {
       }));
     }
   }, [isEditMode]); // 수정 모드 변경 시에만 실행
+
+  /**
+   * 테이블의 모든 상품 데이터를 삭제하는 함수
+   * 사용자에게 확인 대화상자를 표시하고 확인 시 모든 데이터 삭제
+   */
+  const handleDeleteAllProducts = () => {
+    // 테이블에 데이터가 없으면 경고 메시지 표시
+    if (tableData.length === 0) {
+      alert('삭제할 상품 데이터가 없습니다.');
+      return;
+    }
+    
+    // 삭제 확인 대화상자 표시
+    if (window.confirm('모든 상품 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      // 테이블 데이터 초기화
+      setTableData([]);
+      console.log('모든 상품 데이터가 삭제되었습니다.');
+    }
+  };
 
   // JSX 렌더링 시작
   return (
@@ -1583,15 +1628,24 @@ function EstimateContent() {
           </div>
 
           {/* 상품 정보 입력창 토글 버튼 */}
-          <div className="mb-4">
+          <div className="mb-4 flex items-center"> {/* flex 클래스를 추가하여 가로 배치 */}
             <button
-              type="button"
-              onClick={() => setShowForm(!showForm)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
+                type="button"
+                onClick={() => setShowForm(!showForm)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
             >
-              상품 정보 입력창 {showForm ? '-' : '+'}
+                상품 정보 입력창 {showForm ? '-' : '+'}
+            </button>
+            {/* 전체 삭제 버튼 추가 */}
+            <button
+                type="button"
+                onClick={handleDeleteAllProducts}
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 ml-2" // ml-2로 여백 추가
+            >
+                전체 삭제
             </button>
           </div>
+          
 
           {/* 기존 개별 입력 폼 */}
           {showForm && (
@@ -1749,6 +1803,8 @@ function EstimateContent() {
                     type="submit"
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                   >{editingId ? '수정' : '추가'}</button>
+                  
+                  
                 </div>
               </form>
             </div>
@@ -1766,14 +1822,14 @@ function EstimateContent() {
                     <th className="w-[12%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">분류</div>
                     </th>
-                    <th className="w-[25%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                    <th className="w-[27%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">상품명</div>
                     </th>
-                    <th className="w-[8%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                    <th className="w-[6%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">수량</div>
                     </th>
                     <th className="w-[12%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
-                      <div className="truncate">현금가</div>
+                      <div className="truncate text-right">현금가</div>
                     </th>
                     <th className="w-[12%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                       <div className="truncate">상품코드</div>
@@ -1817,7 +1873,7 @@ function EstimateContent() {
                       <td className="px-4 py-4">
                         <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">{row.quantity}</div>
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="px-4 py-4 text-right"> {/* 오른쪽 정렬 추가 */}
                         <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">{row.price}</div>
                       </td>
                       <td className="px-4 py-4">
@@ -2128,8 +2184,8 @@ function EstimateContent() {
               {/* 계약금 및 VAT 정보 */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    총 구입 금액 (상품/부품+공임비+세팅비-할인)
+                  <label className="block text-sm font-medium text-gray-700 mb-1 tracking-tight">
+                    총 구입 금액 (상품/부품+공임비+세팅비-할인-자리수버림)
                   </label>
                   <div className="text-lg font-semibold text-gray-900">
                     {calculatedValues.totalPurchase.toLocaleString()}원
@@ -2219,47 +2275,93 @@ function EstimateContent() {
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100down' }))}
+                    onClick={() => {
+                      // 현재 총 구입 금액 계산
+                      const productTotal = calculateProductTotal();
+                      const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
+                      const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                      const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
+                      const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                      
+                      // 버림 적용
+                      const roundingType = '100down';
+                      setPaymentInfo(prev => ({ ...prev, roundingType }));
+                      
+                      // 버려진 금액 계산
+                      const discardedAmount = calculateDiscardedAmount(roundingType, totalBeforeRounding);
+                      
+                      // 버려진 금액이 있으면 서비스 물품에 추가
+                      if (discardedAmount > 0) {
+                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                      }
+                    }}
                     className={`px-3 py-2 rounded-md text-sm ${
                       paymentInfo.roundingType === '100down'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    100 버림
+                    백자리<br />버림
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000down' }))}
+                    onClick={() => {
+                      // 현재 총 구입 금액 계산
+                      const productTotal = calculateProductTotal();
+                      const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
+                      const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                      const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
+                      const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                      
+                      // 버림 적용
+                      const roundingType = '1000down';
+                      setPaymentInfo(prev => ({ ...prev, roundingType }));
+                      
+                      // 버려진 금액 계산
+                      const discardedAmount = calculateDiscardedAmount(roundingType, totalBeforeRounding);
+                      
+                      // 버려진 금액이 있으면 서비스 물품에 추가
+                      if (discardedAmount > 0) {
+                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                      }
+                    }}
                     className={`px-3 py-2 rounded-md text-sm ${
                       paymentInfo.roundingType === '1000down'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    1000 버림
+                    천자리<br/>버림
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '100up' }))}
+                    onClick={() => {
+                      // 현재 총 구입 금액 계산
+                      const productTotal = calculateProductTotal();
+                      const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
+                      const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                      const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
+                      const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                      
+                      // 버림 적용
+                      const roundingType = '10000down';
+                      setPaymentInfo(prev => ({ ...prev, roundingType }));
+                      
+                      // 버려진 금액 계산
+                      const discardedAmount = calculateDiscardedAmount(roundingType, totalBeforeRounding);
+                      
+                      // 버려진 금액이 있으면 서비스 물품에 추가
+                      if (discardedAmount > 0) {
+                        handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                      }
+                    }}
                     className={`px-3 py-2 rounded-md text-sm ${
-                      paymentInfo.roundingType === '100up'
+                      paymentInfo.roundingType === '10000down'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    100 올림
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '1000up' }))}
-                    className={`px-3 py-2 rounded-md text-sm ${
-                      paymentInfo.roundingType === '1000up'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
-                  >
-                    1000 올림
+                    만자리<br/>버림
                   </button>
                   {paymentInfo.roundingType && (
                     <button
@@ -2267,7 +2369,7 @@ function EstimateContent() {
                       onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '' }))}
                       className="px-3 py-2 rounded-md text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
                     >
-                      버림/올림 취소
+                      버림 취소
                     </button>
                   )}
                 </div>

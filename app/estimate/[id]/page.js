@@ -326,8 +326,9 @@ export default function EstimateDetail({ params }) {
                 <div>
                   <div className="text-sm font-medium text-gray-500">버림 설정</div>
                   <div className="mt-1">
-                    {estimate.paymentInfo?.roundingType === '100' ? '100원 단위 버림' :
-                     estimate.paymentInfo?.roundingType === '1000' ? '1,000원 단위 버림' : '버림 없음'}
+                    {estimate.paymentInfo?.roundingType === '100down' ? '100원 단위 버림' :
+                     estimate.paymentInfo?.roundingType === '1000down' ? '1,000원 단위 버림' :
+                     estimate.paymentInfo?.roundingType === '10000down' ? '10,000원 단위 버림' : '버림 없음'}
                   </div>
                 </div>
                 <div>
