@@ -132,7 +132,7 @@ function EstimateContent() {
     roundingType: '',     // 버림/올림 타입 (기본 없음)
     paymentMethod: '',     // 결제 방법
     shippingCost: 0,      // 택배비
-    releaseDate: ''       // 출고일자
+    releaseDate: new Date().toISOString().split('T')[0]  // 출고일자 (기본값: 오늘 날짜)
   });
 
   /**
@@ -770,6 +770,7 @@ function EstimateContent() {
           // 견적 데이터가 성공적으로 로드된 경우 폼에 데이터 채우기
           if (data.success && data.estimate) {
             // 견적 데이터 설정 (고객 정보, 상품 목록, 결제 정보 등)
+
             setCustomerInfo(data.estimate.customerInfo || defaultCustomerInfo);
             
             // 상품 데이터에 고유 ID가 없는 경우를 대비해 클라이언트 ID 생성하여 추가
@@ -782,7 +783,25 @@ function EstimateContent() {
             });
             
             setTableData(productsWithClientId);
-            setPaymentInfo(data.estimate.paymentInfo || defaultPaymentInfo);
+            
+            // paymentInfo 설정 - releaseDate가 없으면 오늘 날짜로 설정
+            const estimatePaymentInfo = data.estimate.paymentInfo || {};
+            
+            // MongoDB에서 가져온 날짜를 YYYY-MM-DD 형식으로 변환
+            let formattedReleaseDate = '';
+            if (estimatePaymentInfo.releaseDate) {
+              const date = new Date(estimatePaymentInfo.releaseDate);
+              formattedReleaseDate = date.toISOString().split('T')[0];
+
+            } else {
+              formattedReleaseDate = new Date().toISOString().split('T')[0];
+            }
+            
+            setPaymentInfo({
+              ...estimatePaymentInfo,
+              releaseDate: formattedReleaseDate
+            });
+            
             setCalculatedValues(data.estimate.calculatedValues || {
               productTotal: 0,
               totalPurchase: 0,
