@@ -183,31 +183,31 @@ export default function ConsumerQuotePage({ params }) {
           <div style={{ width: '50%', height: 'auto' }}className="border border-sky-200 rounded-lg flex bg-sky-50">
             <table style={{ width: '100%' }} className="m-1">
               <tbody>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold tracking-extra-widetitler">성 명</td>
                   <td style={{ width: '75%' }} className="text-left text-black font-semibold">
                     {estimate.customerInfo?.name || ''}
                   </td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold tracking-wide">연 락 처</td>
                   <td style={{ width: '75%' }} className="text-left text-black font-semibold">
                     {estimate.customerInfo?.phone || ''}
                   </td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold tracking-wider">PC 번호</td>
                   <td style={{ width: '75%' }} className="text-left text-black font-semibold">
                     {estimate.customerInfo?.pcNumber || ''}
                   </td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold tracking-wider">AS 조건</td>
                   <td style={{ width: '75%' }} className="text-left text-black font-semibold">
                     {estimate.customerInfo?.asCondition || ''}
                   </td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold tracking-tight">견적담당</td>
                   <td style={{ width: '75%' }} className="text-left text-black font-semibold">
                     {estimate.customerInfo?.manager || ''}
@@ -220,7 +220,7 @@ export default function ConsumerQuotePage({ params }) {
           <div style={{ width: '50%', height: 'auto' }}className="border border-sky-200 rounded-lg flex bg-sky-50">
             <table style={{ width: '100%' }} className="m-1">
               <tbody>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td className="text-center text-black font-semibold border-r border-sky-200 tracking-extra-wide pr-1" rowSpan="4" style={{ writingMode: 'vertical-rl'}}>공 급 자</td>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-tighter">등록번호</td>
                   <td style={{ width: '45%' }} className="text-left text-black font-semibold">607-02-70320</td>
@@ -250,16 +250,16 @@ export default function ConsumerQuotePage({ params }) {
                     </span>
                   </td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-extra-widetitler">상 호</td>
                   <td style={{ width: '45%' }} className="text-left text-black font-semibold">웰컴 시스템</td>
                   
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-extra-widetitler">주 소</td>
                   <td style={{ width: '40%' }} className="text-left text-black font-semibold" colSpan="2">부산시 동래구 온천장로 20 <br/>부산컴퓨터도매상가 209호</td>
                 </tr>
-                <tr style={{ lineHeight: '17px' }}>
+                <tr style={{ lineHeight: '18px' }}>
                   <td style={{ width: '25%' }} className="text-left text-black font-semibold pl-1 tracking-tighter">전화번호</td>
                   <td style={{ width: '40%' }} className="text-left text-black font-semibold" colSpan="2">051-926-6604, 010-8781-8871</td>
                 </tr>
@@ -359,7 +359,7 @@ export default function ConsumerQuotePage({ params }) {
                   <span>{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
                 </div>
               )}
-              <div className="border border-sky-400 rounded-md p-2 bg-sky-450 flex-[1.6] flex justify-between items-center">
+              <div className="border border-sky-400 rounded-md p-2 bg-sky-350 flex-[1.6] flex justify-between items-center">
                 <span className="font-semibold text-black">총 구입 금액<span className="text-xs">
                   {estimate.paymentInfo?.discount > 0 ? "(공임+세팅-할인)" : "(공임+세팅)"}
                 </span>:</span>
@@ -377,7 +377,7 @@ export default function ConsumerQuotePage({ params }) {
                 )}
                 
                 {/* 최종 결제 금액 */}
-                <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-550 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
+                <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-450 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
                     <div className="absolute inset-0 bg-sky-500 opacity-10 rounded"></div>
                     <span className="text-lg text-blue-900 z-10 font-bold">
                       {estimate.paymentInfo?.includeVat ? "최종 결제 금액(VAT포함):" : "최종 결제 금액:"}

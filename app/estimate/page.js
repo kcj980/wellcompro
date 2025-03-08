@@ -110,6 +110,7 @@ function EstimateContent() {
   const [isCustomManager, setIsCustomManager] = useState(false);
   const [isCustomLaborCost, setIsCustomLaborCost] = useState(false);
   const [isCustomSetupCost, setIsCustomSetupCost] = useState(false);
+  const [isCustomPaymentMethod, setIsCustomPaymentMethod] = useState(false); // 결제 방법 직접 입력 모드 상태
 
   /**
    * 결제 정보를 관리하는 상태
@@ -802,6 +803,14 @@ function EstimateContent() {
               releaseDate: formattedReleaseDate
             });
             
+            // 결제 방법이 '카드' 또는 '현금'인 경우 직접 입력 모드가 아니도록 설정
+            if (estimatePaymentInfo.paymentMethod === '카드' || estimatePaymentInfo.paymentMethod === '현금') {
+              setIsCustomPaymentMethod(false);
+            } else if (estimatePaymentInfo.paymentMethod) {
+              // 결제 방법이 있지만 '카드'나 '현금'이 아닌 경우 직접 입력 모드로 설정
+              setIsCustomPaymentMethod(true);
+            }
+            
             setCalculatedValues(data.estimate.calculatedValues || {
               productTotal: 0,
               totalPurchase: 0,
@@ -952,6 +961,16 @@ function EstimateContent() {
           : item
       )
     );
+  };
+
+  // 결제 방법 선택 핸들러
+  const handlePaymentMethodSelect = (value) => {
+    setIsCustomPaymentMethod(value === 'custom');
+    if (value !== 'custom') {
+      setPaymentInfo(prev => ({ ...prev, paymentMethod: value }));
+    } else {
+      setPaymentInfo(prev => ({ ...prev, paymentMethod: '' }));
+    }
   };
 
   // JSX 렌더링 시작
@@ -2123,14 +2142,53 @@ function EstimateContent() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     결제 방법
                   </label>
-                  <input
-                    type="text"
-                    name="paymentMethod"
-                    value={paymentInfo.paymentMethod}
-                    onChange={handlePaymentInfoChange}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="결제 방법을 입력하세요"
-                  />
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handlePaymentMethodSelect('카드')}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          paymentInfo.paymentMethod === '카드' && !isCustomPaymentMethod
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        카드
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePaymentMethodSelect('현금')}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          paymentInfo.paymentMethod === '현금' && !isCustomPaymentMethod
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        현금
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePaymentMethodSelect('custom')}
+                        className={`px-3 py-1 rounded-md text-sm ${
+                          isCustomPaymentMethod
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        직접입력
+                      </button>
+                    </div>
+                    {isCustomPaymentMethod && (
+                      <input
+                        type="text"
+                        name="paymentMethod"
+                        value={paymentInfo.paymentMethod}
+                        onChange={handlePaymentInfoChange}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="결제 방법을 입력하세요"
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {/* 출고일자 입력 필드 */}
