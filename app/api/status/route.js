@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/mongodb';
+import { getKoreanISOString } from '@/app/utils/dateUtils';
 
 export async function GET() {
   let dbStatus = 'disconnected';
@@ -31,7 +32,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       status: 'online',
-      timestamp: new Date().toISOString(),
+      timestamp: getKoreanISOString(),
       database: {
         status: dbStatus === 'connected' ? 'healthy' : 'unhealthy',
         readyState: dbStatus
@@ -45,7 +46,7 @@ export async function GET() {
     return NextResponse.json({
       success: false,
       status: 'online with errors',
-      timestamp: new Date().toISOString(),
+      timestamp: getKoreanISOString(),
       database: {
         status: 'unhealthy',
         readyState: dbStatus,

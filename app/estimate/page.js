@@ -17,6 +17,7 @@
  */
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { getKoreanDate, formatDateToKoreanDate } from '../utils/dateUtils';
 
 // 메인 컴포넌트
 export default function Estimate() {
@@ -131,9 +132,9 @@ function EstimateContent() {
     includeVat: true,     // VAT 포함 여부 (기본 활성화)
     vatRate: 10,          // VAT 비율 (기본 10%)
     roundingType: '',     // 버림/올림 타입 (기본 없음)
-    paymentMethod: '',     // 결제 방법
+    paymentMethod: '',    // 결제 방법
     shippingCost: 0,      // 택배비
-    releaseDate: new Date().toISOString().split('T')[0]  // 출고일자 (기본값: 오늘 날짜)
+    releaseDate: getKoreanDate()  // 출고일자 (기본값: 오늘 날짜)
   });
 
   /**
@@ -217,11 +218,45 @@ function EstimateContent() {
 
   // 고객 정보 입력 필드 변경 시 호출되는 함수
   const handleCustomerInfoChange = (e) => {
+
     const { name, value } = e.target;
-    setCustomerInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // 핸드폰 번호 자동 포맷팅 기능
+    if (name === 'phone') {
+      // 입력된 값에 이미 하이픈('-')이 있는지 확인
+      if (value.includes('-')) {
+        // 하이픈이 이미 있으면 그대로 저장
+        setCustomerInfo(prev => ({
+          ...prev,
+          [name]: value
+        }));
+      } else {
+        
+        // 숫자만 추출
+        const numbersOnly = value.replace(/[^0-9]/g, '');
+        
+        // 11자리 숫자인 경우 자동으로 하이픈 추가
+        if (numbersOnly.length === 11) {
+          const formattedNumber = `${numbersOnly.substring(0, 3)}-${numbersOnly.substring(3, 7)}-${numbersOnly.substring(7, 11)}`;
+          setCustomerInfo(prev => ({
+            ...prev,
+            [name]: formattedNumber
+          }));
+        } else {
+          // 11자리가 아닌 경우 그대로 저장
+          setCustomerInfo(prev => ({
+            ...prev,
+            [name]: numbersOnly
+          }));
+        }
+      }
+    } else {
+      // 핸드폰 번호가 아닌 다른 필드는 그대로 처리
+      setCustomerInfo(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   // 판매 형태 버튼 클릭 시 호출되는 함수
@@ -520,9 +555,10 @@ function EstimateContent() {
    */
   const calculateTotalPurchase = () => {
     const productTotal = calculateProductTotal();
-    const laborCost = parseInt(paymentInfo.laborCost) || 0;
-    const setupCost = parseInt(paymentInfo.setupCost) || 0;
-    const discount = parseInt(paymentInfo.discount) || 0;
+    // 숫자 값 필드 사용 (없으면 기존 방식으로 fallback)
+    const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
+    const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+    const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
     
     return productTotal + laborCost + setupCost - discount;
   };
@@ -537,7 +573,7 @@ function EstimateContent() {
     // VAT 포함 옵션이 비활성화된 경우 0 반환
     if (!paymentInfo.includeVat) return 0;
     // VAT 계산 (총 구입 금액 * VAT 비율 / 100)
-    const vatRate = parseInt(paymentInfo.vatRate) || 0;
+    const vatRate = paymentInfo.vatRate !== undefined ? paymentInfo.vatRate : (parseInt(paymentInfo.vatRate) || 0);
     return Math.floor(totalPurchase * vatRate / 100);
   };
 
@@ -568,10 +604,42 @@ function EstimateContent() {
   // 결제 정보 변경 시 호출되는 함수
   const handlePaymentInfoChange = (e) => {
     const { name, value } = e.target;
-    setPaymentInfo(prev => ({
-      ...prev,
-      [name]: name === 'includeVat' ? e.target.checked : value
-    }));
+    
+    // 체크박스(includeVat)인 경우 그대로 처리
+    if (name === 'includeVat') {
+      setPaymentInfo(prev => ({
+        ...prev,
+        [name]: e.target.checked
+      }));
+      return;
+    }
+    
+    // 금액 관련 필드인 경우 (laborCost, setupCost, discount, deposit, shippingCost)
+    if (['laborCost', 'setupCost', 'discount', 'deposit', 'shippingCost'].includes(name)) {
+      // 입력값에서 콤마(,) 제거
+      const numericValue = value.replace(/,/g, '');
+      
+      // 숫자만 입력되었는지 확인 (빈 문자열 허용)
+      if (numericValue === '' || /^\d+$/.test(numericValue)) {
+        // 숫자 형식으로 변환하여 3자리마다 콤마 추가 (화면 표시용)
+        const formattedValue = numericValue === '' ? '' : Number(numericValue).toLocaleString();
+        
+        // 화면에는 콤마가 포함된 문자열로 표시하고, 내부적으로는 숫자 값으로 저장
+        setPaymentInfo(prev => ({
+          ...prev,
+          [name]: numericValue === '' ? 0 : parseInt(numericValue)
+        }));
+        
+        // 입력 필드의 값은 콤마가 포함된 문자열로 설정 (React의 제어 컴포넌트 패턴)
+        e.target.value = formattedValue;
+      }
+    } else {
+      // 금액 관련 필드가 아닌 경우 그대로 처리
+      setPaymentInfo(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   // 참고사항 변경 시 호출되는 함수
@@ -583,7 +651,7 @@ function EstimateContent() {
   const handleLaborCostSelect = (value) => {
     setPaymentInfo(prev => ({
       ...prev,
-      laborCost: value
+      laborCost: value // 숫자 값으로 저장
     }));
     // 직접 입력 모드 해제
     setIsCustomLaborCost(false);
@@ -593,7 +661,7 @@ function EstimateContent() {
   const handleSetupCostSelect = (value) => {
     setPaymentInfo(prev => ({
       ...prev,
-      setupCost: value
+      setupCost: value // 숫자 값으로 저장
     }));
     // 직접 입력 모드 해제
     setIsCustomSetupCost(false);
@@ -680,7 +748,16 @@ function EstimateContent() {
         customerInfo,
         tableData: processedTableData,
         serviceData: processedServiceData, // 서비스 물품 데이터 추가
-        paymentInfo,
+        paymentInfo: {
+          ...paymentInfo,
+          // 문자열로 저장된 금액 필드들을 숫자로 변환
+          laborCost: Number(paymentInfo.laborCost || 0),
+          setupCost: Number(paymentInfo.setupCost || 0),
+          discount: Number(paymentInfo.discount || 0),
+          deposit: Number(paymentInfo.deposit || 0),
+          shippingCost: Number(paymentInfo.shippingCost || 0),
+          vatRate: Number(paymentInfo.vatRate || 0)
+        },
         calculatedValues,
         notes,
         isContractor // 계약자 여부 추가
@@ -792,10 +869,10 @@ function EstimateContent() {
             let formattedReleaseDate = '';
             if (estimatePaymentInfo.releaseDate) {
               const date = new Date(estimatePaymentInfo.releaseDate);
-              formattedReleaseDate = date.toISOString().split('T')[0];
+              formattedReleaseDate = formatDateToKoreanDate(date);
 
             } else {
-              formattedReleaseDate = new Date().toISOString().split('T')[0];
+              formattedReleaseDate = getKoreanDate();
             }
             
             setPaymentInfo({
@@ -881,6 +958,7 @@ function EstimateContent() {
       window.scrollTo(0, 0);
     }
   }, [saveStatus.error]);
+
 
   // 계약자 체크박스 상태 변경 처리 함수
   const handleContractorChange = (e) => {
@@ -972,6 +1050,22 @@ function EstimateContent() {
       setPaymentInfo(prev => ({ ...prev, paymentMethod: '' }));
     }
   };
+
+  // 컴포넌트 마운트 시 PC 번호 디폴트 값 설정
+  useEffect(() => {
+    // 수정 모드가 아닐 때만 디폴트 값 설정
+    if (!isEditMode) {
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2); // 년도의 마지막 두 자리
+      const month = (now.getMonth() + 1).toString().padStart(2, '0'); // 월 (01-12 형식)
+      const defaultPcNumber = `${year}${month}PC`;
+      
+      setCustomerInfo(prev => ({
+        ...prev,
+        pcNumber: defaultPcNumber
+      }));
+    }
+  }, [isEditMode]); // 수정 모드 변경 시에만 실행
 
   // JSX 렌더링 시작
   return (
@@ -1915,9 +2009,9 @@ function EstimateContent() {
                     </div>
                     {isCustomLaborCost && (
                       <input
-                        type="number"
+                        type="text"
                         name="laborCost"
-                        value={paymentInfo.laborCost}
+                        value={paymentInfo.laborCost ? paymentInfo.laborCost.toLocaleString() : ''}
                         onChange={handlePaymentInfoChange}
                         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="공임비를 입력하세요"
@@ -1962,9 +2056,9 @@ function EstimateContent() {
                     </div>
                     {isCustomSetupCost && (
                       <input
-                        type="number"
+                        type="text"
                         name="setupCost"
-                        value={paymentInfo.setupCost}
+                        value={paymentInfo.setupCost ? paymentInfo.setupCost.toLocaleString() : ''}
                         onChange={handlePaymentInfoChange}
                         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="세팅비를 입력하세요"
@@ -1978,15 +2072,15 @@ function EstimateContent() {
                   </label>
                   <div className="flex flex-col items-start gap-2">
                     <input
-                      type="number"
+                      type="text"
                       name="discount"
-                      value={paymentInfo.discount}
+                      value={paymentInfo.discount ? paymentInfo.discount.toLocaleString() : ''}
                       onChange={handlePaymentInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="할인 금액을 입력하세요"
                     />
                     <span className="text-sm text-gray-700 whitespace-nowrap">
-                      {numberToKorean(parseInt(paymentInfo.discount) || 0)}
+                      {numberToKorean(paymentInfo.discount || 0)}
                     </span>
                   </div>
                 </div>
@@ -2008,15 +2102,15 @@ function EstimateContent() {
                   </label>
                   <div className="flex flex-col items-start gap-2">
                     <input
-                      type="number"
+                      type="text"
                       name="deposit"
-                      value={paymentInfo.deposit}
+                      value={paymentInfo.deposit ? paymentInfo.deposit.toLocaleString() : ''}
                       onChange={handlePaymentInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="계약금을 입력하세요"
                     />
                     <span className="text-sm text-gray-700 whitespace-nowrap">
-                      {numberToKorean(parseInt(paymentInfo.deposit) || 0)}
+                      {numberToKorean(paymentInfo.deposit || 0)}
                     </span>
                   </div>
                 </div>
@@ -2024,19 +2118,19 @@ function EstimateContent() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    배송+설비 비용(최종결재금액 포함X)
+                    배송+설치 비용(최종결재금액 포함X)
                   </label>
                   <div className="flex flex-col items-start gap-2">
                     <input
-                      type="number"
+                      type="text"
                       name="shippingCost"
-                      value={paymentInfo.shippingCost}
+                      value={paymentInfo.shippingCost ? paymentInfo.shippingCost.toLocaleString() : ''}
                       onChange={handlePaymentInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="배송+설비 비용를 입력하세요"
                     />
                     <span className="text-sm text-gray-700 whitespace-nowrap">
-                      {numberToKorean(parseInt(paymentInfo.shippingCost) || 0)}
+                      {numberToKorean(paymentInfo.shippingCost || 0)}
                     </span>
                   </div>
                 </div>
