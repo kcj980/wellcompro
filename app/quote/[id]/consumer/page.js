@@ -386,64 +386,103 @@ export default function ConsumerQuotePage({ params }) {
         }
       `}</style>
 
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="no-print">
-        <button
-          onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800 font-medium"
-        >
-          ← 돌아가기
-        </button>
-        
-        <div className="flex items-center">
-          {/* 공지사항 수정 버튼 추가 */}
-          <button
-            onClick={() => {
-              setShowNotesEditor(!showNotesEditor);
-              if (!showNotesEditor) {
-                setNotesContent(noticeItems.join('\n'));
-              }
-            }}
-            className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 mr-4 text-sm"
-          >
-            공지사항수정+
-          </button>
+      <div className="no-print bg-white shadow-sm rounded-lg p-4 mb-6 border border-gray-200">
+        <div className="flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
+          {/* 왼쪽 영역: 돌아가기 버튼 */}
+          <div className="flex-shrink-0">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center text-gray-700 hover:text-sky-600 font-medium transition-colors duration-200"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              돌아가기
+            </button>
+          </div>
           
-          <label className="flex items-center cursor-pointer mr-4">
-            <input 
-              type="checkbox" 
-              checked={showNotes} 
-              onChange={(e) => setShowNotes(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
-            />
-            <span className="ml-2 text-gray-700">공지사항 필독 추가</span>
-          </label>
+          {/* 중앙 영역: 체크박스 옵션들 */}
+          <div className="flex flex-wrap items-center gap-4 flex-grow">
+            {/* 체크박스 그룹 - 스타일링된 커스텀 체크박스 */}
+            <div className="flex items-center gap-4 bg-gray-50 p-2 rounded-lg">
+              <label className="flex items-center cursor-pointer">
+                <div className="relative">
+                  <input 
+                    type="checkbox" 
+                    checked={showNotes} 
+                    onChange={(e) => setShowNotes(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`block w-10 h-6 rounded-full transition-colors duration-200 ${showNotes ? 'bg-sky-400' : 'bg-gray-300'}`}></div>
+                  <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${showNotes ? 'transform translate-x-4' : ''}`}></div>
+                </div>
+                <span className="ml-2 text-gray-700 text-sm">공지사항 필독</span>
+              </label>
+              
+              <label className="flex items-center cursor-pointer">
+                <div className="relative">
+                  <input 
+                    type="checkbox" 
+                    checked={showStamp} 
+                    onChange={(e) => setShowStamp(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`block w-10 h-6 rounded-full transition-colors duration-200 ${showStamp ? 'bg-sky-400' : 'bg-gray-300'}`}></div>
+                  <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ${showStamp ? 'transform translate-x-4' : ''}`}></div>
+                </div>
+                <span className="ml-2 text-gray-700 text-sm">인감도장 표시</span>
+              </label>
+            </div>
+            
+            {/* 공지사항 수정 버튼 */}
+            <button
+              onClick={() => {
+                setShowNotesEditor(!showNotesEditor);
+                if (!showNotesEditor) {
+                  setNotesContent(noticeItems.join('\n'));
+                }
+              }}
+              className="flex items-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1.5 rounded-md hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-sm shadow-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              공지사항 수정
+            </button>
+          </div>
           
-          <label className="flex items-center cursor-pointer mr-4">
-            <input 
-              type="checkbox" 
-              checked={showStamp} 
-              onChange={(e) => setShowStamp(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
-            />
-            <span className="ml-2 text-gray-700">인감도장 표시</span>
-          </label>
-          
-          {/* 빈 행 재계산 버튼 추가 */}
-          <button
-            onClick={calculateEmptyRowsAfterImagesLoaded}
-            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors mr-2"
-          >
-            빈 행 재계산
-          </button>
-          
-          <button
-            onClick={handlePrint}
-            className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
-          >
-            인쇄하기
-          </button>
+          {/* 오른쪽 영역: 액션 버튼들 */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* 빈 행 재계산 버튼 */}
+            <button
+              onClick={calculateEmptyRowsAfterImagesLoaded}
+              className="flex items-center justify-center bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-md hover:from-emerald-600 hover:to-green-600 transition-all duration-200 text-sm shadow-sm min-w-[140px]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              행 추가/삭제
+            </button>
+            
+            {/* 인쇄하기 버튼 */}
+            <button
+              onClick={handlePrint}
+              className="flex items-center justify-center bg-gradient-to-r from-sky-400 to-sky-500 text-white px-5 py-2 rounded-md hover:from-sky-500 hover:to-sky-600 transition-all duration-200 text-sm shadow-sm min-w-[120px]"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              인쇄하기
+            </button>
+          </div>
         </div>
+          {/* 설명 텍스트를 버튼 아래로 이동 */}
+          <span className="text-gray-700 text-sm">
+            행 추가/삭제 버튼을 누르면 테이블 행 수가 자동으로 계산됩니다. 인쇄하기를 누르기전 화면에 빈행이 있으면 출력엔 빈행이 없이 출력되고, 화면에 빈행이 없으면 출력엔 빈행이 포함됨니다.
+          </span>
       </div>
+      
+      
       
       {/* 공지사항 수정 에디터 - 체크박스 아래에 위치 */}
       {showNotesEditor && (
@@ -483,7 +522,7 @@ export default function ConsumerQuotePage({ params }) {
       )}
       
       {/* 디버깅 정보 표시 */}
-      <div className="mb-4 no-print">
+      {/* <div className="mb-4 no-print">
         <details>
           <summary className="cursor-pointer text-sm text-gray-600">디버깅 정보 (빈 행 계산)</summary>
           <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
@@ -495,10 +534,10 @@ export default function ConsumerQuotePage({ params }) {
             <p>빈 행 수: {emptyRows}</p>
           </div>
         </details>
-      </div>
+      </div> */}
       
       {/* 인쇄 영역 */}
-      <div ref={printRef} className="print-this-section bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
+      <div ref={printRef} className="print-this-section print-border bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ width: '200px', paddingBottom: '10px'}}>
             <Image 
