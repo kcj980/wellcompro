@@ -18,6 +18,7 @@ export default function ConsumerQuotePage({ params }) {
   const [rowEmptyAdd, setRowEmptyAdd] = useState(0); // 빈 행 추가를 위한 상태 변수 추가
   const router = useRouter();
   const printRef = useRef(null);
+  const tableRef = useRef(null);
   const { id } = params;
   
   // A4 세로 크기와 인쇄 영역 크기 차이에 따라 빈 행 수 자동 계산
@@ -133,7 +134,113 @@ export default function ConsumerQuotePage({ params }) {
   
   // 인쇄 함수
   const handlePrint = () => {
-    window.print();
+    // 인쇄 전에 빈 행 계산을 한 번 더 실행
+    calculateEmptyRows();
+    
+    // 약간의 지연 후 인쇄 실행 (빈 행이 추가된 후)
+    setTimeout(() => {
+      window.print();
+    }, 200);
+  };
+  
+  // A4 크기에 맞게 빈 행 개수 계산 함수 추가 (개선된 버전)
+  const calculateEmptyRows = () => {
+    if (!printRef.current || !tableRef.current) {
+      console.log('참조 오류: printRef 또는 tableRef가 없습니다.');
+      return;
+    }
+    
+    // A4 세로 크기 (mm 단위, 297mm)
+    // 브라우저에서 픽셀로 변환 (약 1123px, 96 DPI 기준)
+    // 여백과 다른 요소들을 고려하여 실제 사용 가능한 높이 계산
+    const A4_HEIGHT_PX = 1090; // 여백을 고려한 A4 높이 (픽셀)
+    
+    // 현재 견적서 영역의 높이 측정
+    const currentHeight = printRef.current.offsetHeight;
+    
+    // 테이블의 모든 데이터 행 선택 (빈 행 제외)
+    const dataRows = tableRef.current.querySelectorAll('tbody tr:not(.empty-row)');
+    
+    // 행 높이를 고정값 30px로 설정
+    const fixedRowHeight = 30;
+    
+    console.log('현재 높이:', currentHeight, 'A4 높이:', A4_HEIGHT_PX, '고정 행 높이:', fixedRowHeight);
+    
+    // 디버깅 정보 저장
+    setDebugInfo({
+      currentHeight,
+      A4_HEIGHT_PX,
+      rowHeight: fixedRowHeight,
+      dataRowsLength: dataRows.length,
+      estimateDataLength: estimate.tableData?.length || 0
+    });
+    
+    // 현재 높이가 A4 크기보다 작은 경우에만 빈 행 추가
+    if (currentHeight < A4_HEIGHT_PX) {
+      // 필요한 높이 차이
+      const heightDifference = A4_HEIGHT_PX - currentHeight;
+      
+      // 필요한 빈 행 개수 계산 (고정 행 높이 사용)
+      const rowsNeeded = Math.ceil(heightDifference / fixedRowHeight);
+      
+      console.log('높이 차이:', heightDifference, '필요한 행 수:', rowsNeeded);
+      
+      // 최대 30개 행으로 제한
+      const newEmptyRows = Math.min(rowsNeeded, 30);
+      console.log('설정할 빈 행 수:', newEmptyRows);
+      setEmptyRows(newEmptyRows);
+    } else {
+      // 이미 A4 크기를 초과하면 빈 행 추가하지 않음
+      console.log('A4 크기를 초과하여 빈 행을 추가하지 않습니다.');
+      setEmptyRows(0);
+    }
+  };
+  
+  // 모든 이미지가 로드된 후 빈 행 계산을 실행하는 함수
+  const calculateEmptyRowsAfterImagesLoaded = () => {
+    // 견적서 영역 내의 모든 이미지 요소 선택
+    if (!printRef.current) return;
+    
+    const images = printRef.current.querySelectorAll('img');
+    
+    // 이미지가 없는 경우 바로 계산 실행
+    if (images.length === 0) {
+      calculateEmptyRows();
+      return;
+    }
+    
+    // 이미지 로드 완료 카운터
+    let loadedCount = 0;
+    
+    // 각 이미지의 로드 이벤트 처리
+    images.forEach(img => {
+      if (img.complete) {
+        // 이미 로드된 이미지
+        loadedCount++;
+        if (loadedCount === images.length) {
+          // 모든 이미지가 로드되면 계산 실행
+          calculateEmptyRows();
+        }
+      } else {
+        // 로드 이벤트 리스너 추가
+        img.addEventListener('load', () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            // 모든 이미지가 로드되면 계산 실행
+            calculateEmptyRows();
+          }
+        });
+        
+        // 오류 처리
+        img.addEventListener('error', () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            // 모든 이미지가 로드되면 계산 실행
+            calculateEmptyRows();
+          }
+        });
+      }
+    });
   };
   
   // 페이지 로드 후 자동 인쇄 기능
@@ -219,21 +326,53 @@ export default function ConsumerQuotePage({ params }) {
       {/* 인쇄 스타일 */}
       <style jsx global>{`
         @media print {
+          @page {
+            size: A4 portrait;
+            margin: 0;
+          }
+          
+          html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
           body * {
             visibility: hidden;
           }
-          .print-this-section,
-          .print-this-section * {
+          
+          .print-this-section, .print-this-section * {
             visibility: visible;
           }
+          
           .print-this-section {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 210mm;
+            height: auto;
+            margin: 0;
+            padding: 4mm;
+            box-sizing: border-box;
           }
+          
           .no-print {
             display: none !important;
+          }
+          
+          /* 인쇄 시 빈 행이 정확하게 표시되도록 스타일 추가 */
+          .empty-row {
+            height: 30px !important;
+            line-height: 30px !important;
+          }
+          
+          /* 페이지 나누기 방지 */
+          table {
+            page-break-inside: avoid;
           }
         }
       `}</style>
@@ -343,6 +482,10 @@ export default function ConsumerQuotePage({ params }) {
             </div>
           </div>
         </div>
+          {/* 설명 텍스트를 버튼 아래로 이동 */}
+          <span className="text-gray-700 text-sm">
+            행 추가/삭제 버튼을 누르면 테이블 행 수가 자동으로 계산됩니다. 인쇄하기를 누르기전 화면에 빈행이 있으면 출력엔 빈행이 없이 출력되고, 화면에 빈행이 없으면 출력엔 빈행이 포함됨니다.
+          </span>
       </div>
       
       {/* 공지사항 수정 에디터 */}
@@ -383,8 +526,23 @@ export default function ConsumerQuotePage({ params }) {
         </div>
       )}
       
+      {/* 디버깅 정보 표시 */}
+      {/* <div className="mb-4 no-print">
+        <details>
+          <summary className="cursor-pointer text-sm text-gray-600">디버깅 정보 (빈 행 계산)</summary>
+          <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+            <p>현재 높이: {debugInfo.currentHeight}px</p>
+            <p>A4 높이: {debugInfo.A4_HEIGHT_PX}px</p>
+            <p>행 높이: {debugInfo.rowHeight}px</p>
+            <p>테이블 행 수: {debugInfo.dataRowsLength}</p>
+            <p>데이터 행 수: {debugInfo.estimateDataLength}</p>
+            <p>빈 행 수: {emptyRows}</p>
+          </div>
+        </details>
+      </div> */}
+      
       {/* 인쇄 영역 */}
-      <div ref={printRef} className="print-this-section bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
+      <div ref={printRef} className="print-this-section print-border bg-white p-2.5 pt-2.5 pb-2.5 px-4.5 border-2 border-sky-300 rounded-lg shadow-sm">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ width: '200px', paddingBottom: '10px'}}>
             <Image 
@@ -499,7 +657,7 @@ export default function ConsumerQuotePage({ params }) {
         </div>
         
         <div style={{ marginBottom: '7px' }}>
-          <table style={{ width: '100%' }} className="border-collapse border border-sky-200">
+          <table ref={tableRef} style={{ width: '100%' }} className="border-collapse border border-sky-200">
             <thead className="bg-sky-100">
               <tr>
                 <th className="border border-sky-200 text-center text-black" style={{ width: '1%' }}>No.</th>
