@@ -22,7 +22,7 @@ export default function Navigation() {
           </div>
           
           <div className="hidden md:block">
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-4">
               <Link
                 href="/estimate"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
@@ -51,7 +51,7 @@ export default function Navigation() {
                     : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
                   }`}
               >
-                패널
+                사용법
               </Link>
             </div>
           </div>

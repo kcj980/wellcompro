@@ -1712,7 +1712,7 @@ function EstimateContent() {
                 onClick={() => setShowForm(!showForm)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
             >
-                상품정보 입력창 {showForm ? '-' : '+'}
+                상품 정보 입력창 {showForm ? '-' : '+'}
             </button>
             {/* 전체 삭제 버튼 추가 */}
             <button
@@ -1720,7 +1720,7 @@ function EstimateContent() {
                 onClick={handleDeleteAllProducts}
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 ml-2" // ml-2로 여백 추가
             >
-                상품정보 전체삭제
+                전체 삭제
             </button>
           </div>
           

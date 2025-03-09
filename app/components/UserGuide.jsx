@@ -14,7 +14,7 @@ export default function UserGuide() {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">웰컴프로 사용 가이드</h1>
+        <h1 className="text-3xl font-bold mb-2">웰컴 사용 가이드</h1>
         <p className="text-lg opacity-90">견적 관리 시스템 사용법 안내</p>
       </div>
 
