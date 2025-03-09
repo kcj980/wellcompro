@@ -9,6 +9,8 @@ export default function SearchPage() {
   const [error, setError] = useState(null);
   const [sortOption, setSortOption] = useState('newest');
   const [searchTerm, setSearchTerm] = useState('');
+  // 계약자 필터링 옵션 추가
+  const [contractorFilter, setContractorFilter] = useState('all'); // 'all', 'contractor', 'non-contractor'
   
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,11 +22,11 @@ export default function SearchPage() {
     fetchEstimates();
   }, [sortOption]); // 정렬 옵션이 변경될 때마다 데이터를 다시 불러옴
   
-  // 검색어가 변경될 때마다 필터링
+  // 검색어나 계약자 필터가 변경될 때마다 필터링
   useEffect(() => {
     filterEstimates();
-    setCurrentPage(1); // 검색어가 변경되면 첫 페이지로 이동
-  }, [searchTerm, estimates]);
+    setCurrentPage(1); // 검색어나 필터가 변경되면 첫 페이지로 이동
+  }, [searchTerm, estimates, contractorFilter]);
   
   // 견적 목록을 불러오는 함수
   const fetchEstimates = async () => {
@@ -59,23 +61,31 @@ export default function SearchPage() {
   
   // 검색어에 따른 견적 필터링 함수
   const filterEstimates = () => {
-    if (!searchTerm.trim()) {
-      setFilteredEstimates(estimates); // 검색어가 없으면 모든 견적 표시
-      return;
+    // 먼저 계약자 필터 적용
+    let filtered = [...estimates];
+    
+    // 계약자 필터 적용
+    if (contractorFilter === 'contractor') {
+      filtered = filtered.filter(estimate => estimate.isContractor === true);
+    } else if (contractorFilter === 'non-contractor') {
+      filtered = filtered.filter(estimate => estimate.isContractor === false);
     }
     
-    const lowercasedTerm = searchTerm.toLowerCase();
-    
-    // 이름 또는 전화번호로 필터링
-    const filtered = estimates.filter(estimate => {
-      const name = estimate.customerInfo?.name?.toLowerCase() || '';
-      const phone = estimate.customerInfo?.phone?.toLowerCase() || '';
-      const pcNumber = estimate.customerInfo?.pcNumber?.toLowerCase() || '';
+    // 검색어 필터 적용
+    if (searchTerm.trim()) {
+      const lowercasedTerm = searchTerm.toLowerCase();
       
-      return name.includes(lowercasedTerm) || 
-             phone.includes(lowercasedTerm) || 
-             pcNumber.includes(lowercasedTerm);
-    });
+      // 이름 또는 전화번호로 필터링
+      filtered = filtered.filter(estimate => {
+        const name = estimate.customerInfo?.name?.toLowerCase() || '';
+        const phone = estimate.customerInfo?.phone?.toLowerCase() || '';
+        const pcNumber = estimate.customerInfo?.pcNumber?.toLowerCase() || '';
+        
+        return name.includes(lowercasedTerm) || 
+               phone.includes(lowercasedTerm) || 
+               pcNumber.includes(lowercasedTerm);
+      });
+    }
     
     setFilteredEstimates(filtered);
   };
@@ -247,6 +257,11 @@ export default function SearchPage() {
     return buttons;
   };
 
+  // 계약자 필터 변경 핸들러 추가
+  const handleContractorFilterChange = (filter) => {
+    setContractorFilter(filter);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -256,6 +271,40 @@ export default function SearchPage() {
             
             {/* 검색 및 정렬 컨트롤 */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              {/* 계약자 필터 버튼 그룹 추가 */}
+              <div className="flex items-center space-x-2 mr-4">
+                <button
+                  onClick={() => handleContractorFilterChange('all')}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    contractorFilter === 'all'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  모든 견적
+                </button>
+                <button
+                  onClick={() => handleContractorFilterChange('contractor')}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    contractorFilter === 'contractor'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  계약자 견적만
+                </button>
+                <button
+                  onClick={() => handleContractorFilterChange('non-contractor')}
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    contractorFilter === 'non-contractor'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  비계약자 견적만
+                </button>
+              </div>
+              
               {/* 검색 폼 */}
               <form 
                 onSubmit={handleSearchSubmit} 
