@@ -2403,7 +2403,13 @@ function EstimateContent() {
                           {paymentInfo.roundingType && (
                             <button
                               type="button"
-                              onClick={() => setPaymentInfo(prev => ({ ...prev, roundingType: '' }))}
+                              onClick={() => {
+                                // roundingType 초기화
+                                setPaymentInfo(prev => ({ ...prev, roundingType: '' }));
+                                
+                                // "끝자리버림" 항목 삭제
+                                setServiceData(prev => prev.filter(item => !item.productName.startsWith('끝자리버림')));
+                              }}
                               className="px-2 py-1 rounded-md text-xs bg-gray-200 text-gray-700 hover:bg-gray-300"
                               title="버림 취소"
                             >
