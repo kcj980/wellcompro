@@ -1968,9 +1968,21 @@ function EstimateContent() {
                       </td>
                     </tr>
                   ))}
+                  {/* 현금가 합계 행 추가 */}
+                  {tableData.length > 0 && (
+                    <tr className="bg-blue-50">
+                      <td colSpan="3" className="px-4 py-3 text-right font-medium text-gray-700">
+                        현금가 합계:
+                      </td>
+                      <td className="px-4 py-3 text-left font-bold text-blue-700" colSpan="6">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {calculatedValues.productTotal.toLocaleString()}원
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+            
           </div>
 
           {/* 서비스 물품 섹션 */}
@@ -2125,6 +2137,17 @@ function EstimateContent() {
                         </td>
                       </tr>
                     ))
+                  )}
+                  {/* 현금가 합계 행 추가 */}
+                  {serviceData.length > 0 && (
+                    <tr className="bg-blue-50">
+                      <td colSpan="2" className="px-4 py-3 text-right font-medium text-gray-700">
+                        서비스 물품 개수:
+                      </td>
+                      <td colSpan="2" className="px-4 py-3 text-left font-bold text-blue-700">
+                        총 {serviceData.reduce((total, item) => total + parseInt(item.quantity || 1), 0)}개
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
