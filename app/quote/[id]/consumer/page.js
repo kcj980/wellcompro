@@ -9,15 +9,42 @@ export default function ConsumerQuotePage({ params }) {
   const [error, setError] = useState(null);
   const [showNotes, setShowNotes] = useState(true);
   const [showStamp, setShowStamp] = useState(true);
-  const [printTriggered, setPrintTriggered] = useState(false);
+  //const [printTriggered, setPrintTriggered] = useState(false); //자동인쇄 주석처리
   const [showNotesEditor, setShowNotesEditor] = useState(false);
   const [notesContent, setNotesContent] = useState('');
   const [noticeItems, setNoticeItems] = useState([]);
   const [savingAnnouncement, setSavingAnnouncement] = useState(false);
   const [announcementError, setAnnouncementError] = useState(null);
+  const [rowEmptyAdd, setRowEmptyAdd] = useState(0); // 빈 행 추가를 위한 상태 변수 추가
   const router = useRouter();
   const printRef = useRef(null);
   const { id } = params;
+  
+  // A4 세로 크기와 인쇄 영역 크기 차이에 따라 빈 행 수 자동 계산
+  useEffect(() => {
+    // 데이터가 로드되고 인쇄 영역이 렌더링된 후에 계산
+    if (!loading && estimate && printRef.current) {
+      // 약간의 지연을 두어 렌더링이 완료된 후 계산
+      const timer = setTimeout(() => {
+        const a4Height = 1150; // A4 세로 크기 (픽셀) 임의로 조정
+        const printSectionHeight = printRef.current.offsetHeight; // 인쇄 영역의 높이
+        
+        console.log('인쇄 영역 높이:', printSectionHeight, 'px');
+        
+        // A4 크기와 인쇄 영역 크기의 차이 계산
+        const heightDifference = a4Height - printSectionHeight;
+        
+        // 차이가 양수일 경우, 26으로 나눈 몫을 계산하여 빈 행 수 설정
+        if (heightDifference > 0) {
+          const emptyRowsNeeded = Math.round(heightDifference / 27); // 26px을 한 행의 높이로 가정
+          console.log('필요한 빈 행 수:', emptyRowsNeeded);
+          setRowEmptyAdd(emptyRowsNeeded);
+        }
+      }, 500); // 0.5초 지연
+      
+      return () => clearTimeout(timer);
+    }
+  }, [loading, estimate]);
   
   // 견적 데이터를 불러오는 함수
   useEffect(() => {
@@ -110,17 +137,17 @@ export default function ConsumerQuotePage({ params }) {
   };
   
   // 페이지 로드 후 자동 인쇄 기능
-  useEffect(() => {
-    if (estimate && !loading && !error && !printTriggered) {
-      // 데이터가 로드되고 에러가 없을 때 약간의 지연 후 인쇄 실행
-      const timer = setTimeout(() => {
-        handlePrint();
-        setPrintTriggered(true);
-      }, 500); // 0.5초 지연 후 인쇄 실행
+  // useEffect(() => {
+  //   if (estimate && !loading && !error && !printTriggered) {
+  //     // 데이터가 로드되고 에러가 없을 때 약간의 지연 후 인쇄 실행
+  //     const timer = setTimeout(() => {
+  //       handlePrint();
+  //       setPrintTriggered(true);
+  //     }, 500); // 0.5초 지연 후 인쇄 실행
       
-      return () => clearTimeout(timer);
-    }
-  }, [estimate, loading, error, printTriggered]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [estimate, loading, error, printTriggered]);
   
   // 공지사항 수정 처리 함수 추가
   const handleNotesContentChange = (e) => {
@@ -211,61 +238,118 @@ export default function ConsumerQuotePage({ params }) {
         }
       `}</style>
 
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="no-print">
-        <button
-          onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800 font-medium"
-        >
-          ← 돌아가기
-        </button>
-        
-        <div className="flex items-center">
-          {/* 공지사항 수정 버튼 추가 */}
+      {/* 상단 컨트롤 패널 - 재디자인 */}
+      <div className="no-print mb-6">
+        {/* 뒤로가기 및 주요 컨트롤 */}
+        <div className="flex justify-between items-center mb-4">
           <button
-            onClick={() => {
-              setShowNotesEditor(!showNotesEditor);
-              if (!showNotesEditor) {
-                setNotesContent(noticeItems.join('\n'));
-              }
-            }}
-            className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 mr-4 text-sm"
+            onClick={() => router.back()}
+            className="flex items-center text-gray-600 hover:text-gray-800 font-medium transition-colors px-3 py-2 rounded-md hover:bg-gray-100"
           >
-            공지사항수정+
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            돌아가기
           </button>
-          
-          <label className="flex items-center cursor-pointer mr-4">
-            <input 
-              type="checkbox" 
-              checked={showNotes} 
-              onChange={(e) => setShowNotes(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
-            />
-            <span className="ml-2 text-gray-700">공지사항 필독 추가</span>
-          </label>
-          
-          <label className="flex items-center cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={showStamp} 
-              onChange={(e) => setShowStamp(e.target.checked)}
-              className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
-            />
-            <span className="ml-2 text-gray-700">인감도장 표시</span>
-          </label>
           
           <button
             onClick={handlePrint}
-            className="bg-sky-400 hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
+            className="flex items-center bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-colors"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+            </svg>
             인쇄하기
           </button>
         </div>
+        
+        {/* 설정 컨트롤 패널 */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 왼쪽 컨트롤 그룹 */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">문서 설정</h3>
+              
+              {/* 빈 행 추가 컨트롤 */}
+              <div className="flex items-center">
+                <span className="text-gray-700 text-sm w-28">빈 행 추가:</span>
+                <div className="flex items-center">
+                  <button 
+                    onClick={() => setRowEmptyAdd(prev => Math.max(0, prev - 1))}
+                    className="bg-gray-100 text-gray-700 px-2 py-1 rounded-l-md hover:bg-gray-200 transition-colors border border-gray-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <span className="bg-white px-3 py-1 border-t border-b border-gray-300 min-w-[2rem] text-center">
+                    {rowEmptyAdd}
+                  </span>
+                  <button 
+                    onClick={() => setRowEmptyAdd(prev => prev + 1)}
+                    className="bg-gray-100 text-gray-700 px-2 py-1 rounded-r-md hover:bg-gray-200 transition-colors border border-gray-300"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              {/* 체크박스 옵션들 */}
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={showNotes} 
+                  onChange={(e) => setShowNotes(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
+                />
+                <span className="ml-2 text-gray-700 text-sm">공지사항 필독 추가</span>
+              </label>
+              
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={showStamp} 
+                  onChange={(e) => setShowStamp(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
+                />
+                <span className="ml-2 text-gray-700 text-sm">인감도장 표시</span>
+              </label>
+            </div>
+            
+            {/* 오른쪽 컨트롤 그룹 */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">공지사항 관리</h3>
+              
+              <button
+                onClick={() => {
+                  setShowNotesEditor(!showNotesEditor);
+                  if (!showNotesEditor) {
+                    setNotesContent(noticeItems.join('\n'));
+                  }
+                }}
+                className="flex items-center bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm w-full"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+                공지사항 수정
+              </button>
+              
+              <div className="text-xs text-gray-500 italic">
+                공지사항을 수정하려면 위 버튼을 클릭하세요.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
-      {/* 공지사항 수정 에디터 - 체크박스 아래에 위치 */}
+      {/* 공지사항 수정 에디터 */}
       {showNotesEditor && (
-        <div className="mb-4 no-print">
-          <div className="border border-gray-300 rounded-lg p-3 bg-gray-50">
+        <div className="mb-6 no-print">
+          <div className="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">공지사항 편집</h3>
             <textarea
               value={notesContent}
               onChange={handleNotesContentChange}
@@ -275,24 +359,24 @@ export default function ConsumerQuotePage({ params }) {
             {announcementError && (
               <div className="text-red-500 text-sm mt-1">{announcementError}</div>
             )}
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={saveNotesContent}
-                disabled={savingAnnouncement}
-                className={`bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 ${
-                  savingAnnouncement ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                {savingAnnouncement ? '저장 중...' : '저장'}
-              </button>
+            <div className="flex justify-end mt-2 space-x-2">
               <button
                 onClick={() => setShowNotesEditor(false)}
                 disabled={savingAnnouncement}
-                className={`bg-gray-500 text-white px-3 py-1 rounded-md text-sm hover:bg-gray-600 ml-2 ${
+                className={`bg-gray-500 text-white px-3 py-1.5 rounded-md text-sm hover:bg-gray-600 transition-colors ${
                   savingAnnouncement ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
                 취소
+              </button>
+              <button
+                onClick={saveNotesContent}
+                disabled={savingAnnouncement}
+                className={`bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm hover:bg-blue-700 transition-colors ${
+                  savingAnnouncement ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {savingAnnouncement ? '저장 중...' : '저장'}
               </button>
             </div>
           </div>
@@ -440,6 +524,18 @@ export default function ConsumerQuotePage({ params }) {
                   <td className="border border-sky-200 text-right pr-1">
                     {item.price ? Number(String(item.price).replace(/,/g, '')).toLocaleString() : '-'}
                   </td>
+                </tr>
+              ))}
+
+              {/* 빈 행 추가 */}
+              {Array.from({ length: rowEmptyAdd }).map((_, index) => (
+                <tr key={`empty-${index}`} className="bg-white">
+                  <td className="border border-sky-200 text-center">{estimate.tableData?.length + index + 1 || index + 1}</td>
+                  <td className="border border-sky-200 text-center"></td>
+                  <td className="border border-sky-200">&nbsp;</td>
+                  <td className="border border-sky-200 text-center"></td>
+                  <td className="border border-sky-200 text-right pr-1"></td>
+                  <td className="border border-sky-200 text-right pr-1"></td>
                 </tr>
               ))}
               
