@@ -132,7 +132,7 @@ function EstimateContent() {
     includeVat: true,     // VAT 포함 여부 (기본 활성화)
     vatRate: 10,          // VAT 비율 (기본 10%)
     roundingType: '',     // 버림/올림 타입 (기본 없음)
-    paymentMethod: '',    // 결제 방법
+    paymentMethod: '카드',    // 결제 방법 (기본 카드)
     shippingCost: 0,      // 택배비
     releaseDate: getKoreanDate()  // 출고일자 (기본값: 오늘 날짜)
   });
@@ -668,10 +668,30 @@ function EstimateContent() {
     
     // 체크박스(includeVat)인 경우 그대로 처리
     if (name === 'includeVat') {
+      const isChecked = e.target.checked;
       setPaymentInfo(prev => ({
         ...prev,
-        [name]: e.target.checked
+        [name]: isChecked
       }));
+      
+      // VAT 포함 체크박스 상태에 따라 결제 방법 자동 변경
+      if (isChecked) {
+        // VAT 포함이 체크되면 결제 방법을 '카드'로 설정
+        setPaymentInfo(prev => ({
+          ...prev,
+          [name]: isChecked,
+          paymentMethod: '카드'
+        }));
+        setIsCustomPaymentMethod(false); // 직접 입력 모드 해제
+      } else {
+        // VAT 포함이 체크 해제되면 결제 방법을 '현금'으로 설정
+        setPaymentInfo(prev => ({
+          ...prev,
+          [name]: isChecked,
+          paymentMethod: '현금'
+        }));
+        setIsCustomPaymentMethod(false); // 직접 입력 모드 해제
+      }
       return;
     }
     

@@ -622,7 +622,7 @@ export default function ConsumerQuotePage({ params }) {
                 <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-450 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
                     <div className="absolute inset-0 bg-sky-500 opacity-10 rounded"></div>
                     <span className="text-lg text-blue-900 z-10 font-bold">
-                      {estimate.paymentInfo?.includeVat ? "최종 결제금액(VAT포함):" : "최종 결제금액:"}
+                      {estimate.paymentInfo?.includeVat ? "최종 결제금액(VAT포함):" : "최종 결제금액(VAT별도):"}
                     </span>
                     <span className="text-xl text-blue-900 z-10 font-bold">{estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원</span>
                 </div>
