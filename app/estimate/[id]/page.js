@@ -407,7 +407,49 @@ export default function EstimateDetail({ params }) {
             </div>
           </div>
         )}
+
+        {/* 뒤로 가기 및 작업 버튼 */}
+        <div className="flex justify-between items-center pt-3 mb-6">
+          <button
+            onClick={handleBackClick}
+            className="flex items-center text-blue-600 hover:text-blue-800"
+          >
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            목록으로 돌아가기
+          </button>
+          
+          <div className="flex gap-2">
+            <button
+              onClick={handleQuoteClick}
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center"
+              disabled={loading || error}
+            >
+              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              견적서
+            </button>
+            <button
+              onClick={handleEditClick}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+              disabled={loading || error}
+            >
+              수정
+            </button>
+            <button
+              onClick={handleDeleteClick}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              disabled={loading || error}
+            >
+              삭제
+            </button>
+          </div>
+        </div>
+        
       </div>
+      
     </div>
   );
 } 
