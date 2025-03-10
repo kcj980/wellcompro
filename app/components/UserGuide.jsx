@@ -60,6 +60,40 @@ export default function UserGuide() {
         {activeTab === 1 && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">2. 견적 작성</h2>
+            <div className="bg-yellow-50 p-5 rounded-lg border-2 border-yellow-300 mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                <span className="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">✨</span>
+                신기능! 다나와 자동 견적 가져오기
+              </h3>
+              
+              <div className="ml-10 space-y-3">
+                <p className="font-medium text-gray-800">
+                  크롬 확장프로그램으로 다나와 사이트에서 <span className="bg-yellow-200 px-2 py-1 rounded">클릭 한 번</span>으로 
+                  상품 정보를 자동으로 가져올 수 있습니다!
+                </p>
+                
+                <div className="bg-white p-3 rounded-lg border border-gray-200">
+                  <p className="font-medium text-gray-700 mb-2">📌 사용 방법:</p>
+                  <ol className="list-decimal pl-5 space-y-2">
+                    <li>다나와에서 원하는 상품을 장바구니에 담기</li>
+                    <li>왼쪽 상단의 <span className="font-bold text-blue-600">"WellCompro로 견적 보내기"</span> 버튼 클릭</li>
+                    <li>자동으로 견적 페이지로 이동하면서 모든 상품 데이터가 입력됨</li>
+                  </ol>
+                </div>
+                
+                <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+                  <p className="font-medium text-red-700">⚠️ 주의사항:</p>
+                  <p className="text-gray-700">
+                    견적서 작성 중에 다나와에서 상품을 추가하면, 기존 데이터에 추가되지 않고 
+                    <span className="font-bold"> 새 창이 열리면서</span> 그 새 창에 다나와 상품들이 저장됩니다.
+                  </p>
+                </div>
+                
+                <p className="text-sm text-gray-600 italic">
+                  * 확장 프로그램 설치 방법은 상단의 '확장 프로그램 다운로드' 버튼 아래에 안내되어 있습니다.
+                </p>
+              </div>
+            </div>
             
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
               <p className="font-medium text-blue-800">
