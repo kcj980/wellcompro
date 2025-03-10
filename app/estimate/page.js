@@ -1183,6 +1183,57 @@ function EstimateContent() {
     });
   };
 
+  // 다나와 크롬 확장 프로그램에서 데이터 수신을 위한 이벤트 리스너
+  useEffect(() => {
+    // 다나와 확장 프로그램에서 전송된 데이터를 처리하는 함수
+    const handleDanawaExtensionData = (event) => {
+      // 메시지 타입 확인
+      if (event.data && event.data.type === 'DANAWA_ESTIMATE_DATA') {
+        const products = event.data.products;
+        
+        if (products && products.length > 0) {
+          // 다나와 확장 프로그램에서 받은 데이터를 테이블에 추가
+          const newData = products.map(product => {
+            // SSD 카테고리인 경우 "SSD/M.2"로 변경
+            let processedCategory = product.category || '';
+            if (processedCategory === "SSD") {
+              processedCategory = "SSD/M.2";
+            }
+            
+            // 가격 포맷팅 (콤마 추가)
+            const formattedPrice = product.price ? Number(product.price).toLocaleString() : '';
+            
+            return {
+              id: Date.now() + Math.random(), // 고유 ID 생성
+              category: processedCategory,
+              productName: product.productName || '',
+              quantity: product.quantity || 1,
+              price: formattedPrice,
+              productCode: '',
+              distributor: '',
+              reconfirm: '',
+              remarks:''
+            };
+          });
+          
+          // 기존 테이블 데이터에 새 데이터 추가
+          setTableData(prev => [...prev, ...newData]);
+          
+          // 성공 메시지 표시
+          alert(`다나와에서 ${products.length}개 상품 정보를 가져왔습니다.`);
+        }
+      }
+    };
+    
+    // 이벤트 리스너 등록
+    window.addEventListener('message', handleDanawaExtensionData);
+    
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('message', handleDanawaExtensionData);
+    };
+  }, []);
+
   // JSX 렌더링 시작
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

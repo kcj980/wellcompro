@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "WellCompro 다나와 견적 가져오기",
+  "version": "1.0",
+  "description": "다나와 PC 견적 정보를 WellCompro 견적 작성 페이지로 자동 전송",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://shop.danawa.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://shop.danawa.com/virtualestimate/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+} 
