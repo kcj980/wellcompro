@@ -402,16 +402,19 @@ export default function SearchPage() {
                         고객명
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        연락처
+                        구입형태
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        PC번호
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        핸드폰번호
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         총 금액
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         생성일
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        견적담당
                       </th>
                       <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                         견적서
@@ -429,6 +432,14 @@ export default function SearchPage() {
                           {estimate.customerInfo?.name || '이름 없음'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {estimate.customerInfo?.purchaseType === '지인' && estimate.customerInfo?.purchaseTypeName
+                            ? `지인(${estimate.customerInfo.purchaseTypeName})`
+                            : estimate.customerInfo?.purchaseType || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {estimate.customerInfo?.pcNumber || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {estimate.customerInfo?.phone || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -436,9 +447,6 @@ export default function SearchPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatDate(estimate.createdAt)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {estimate.customerInfo?.manager || '-'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-center">
                           <button

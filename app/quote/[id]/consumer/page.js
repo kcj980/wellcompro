@@ -614,7 +614,7 @@ export default function ConsumerQuotePage({ params }) {
                 {estimate.paymentInfo?.includeVat && (
                     <div className="border border-sky-200 rounded-md p-2 bg-white flex-1 flex justify-between items-center">
                         <span className="font-semibold text-black">부가세(VAT):</span>
-                        <span>{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원 ({estimate.paymentInfo?.vatRate || 10}%)</span>
+                        <span>{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원</span>
                     </div>
                 )}
                 
@@ -634,7 +634,17 @@ export default function ConsumerQuotePage({ params }) {
                 {estimate.paymentInfo?.paymentMethod ? (
                   <>
                     <span className="font-semibold text-black whitespace-pre">결제 방식: </span>
-                    <span className="font-semibold text-black">{estimate.paymentInfo.paymentMethod}</span>
+                      {estimate.paymentInfo?.paymentMethod === '카드' ? (
+                        <span className="font-semibold text-black">카드[농협 938-12-182358](소성옥)</span>
+                      ) : (
+                        <>
+                          {estimate.paymentInfo?.paymentMethod === '현금' ? (
+                            <span className="font-semibold text-black">현금[부산 064-13-001200-7](김선식)</span>
+                          ) : (
+                            <span className="font-semibold text-black">{estimate.paymentInfo?.paymentMethod}</span>
+                          )}
+                        </>
+                      )}
                   </>
                 ) : (
                   <span className="font-semibold text-black">결제방식: 현금 / 카드</span>

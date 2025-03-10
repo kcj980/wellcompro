@@ -134,7 +134,7 @@ function EstimateContent() {
     roundingType: '',     // 버림/올림 타입 (기본 없음)
     paymentMethod: '카드',    // 결제 방법 (기본 카드)
     shippingCost: 0,      // 택배비
-    releaseDate: getKoreanDate()  // 출고일자 (기본값: 오늘 날짜)
+    releaseDate: '' // 출고일자 (기본값: 없음)
   });
 
   /**
@@ -956,8 +956,6 @@ function EstimateContent() {
               const date = new Date(estimatePaymentInfo.releaseDate);
               formattedReleaseDate = formatDateToKoreanDate(date);
 
-            } else {
-              formattedReleaseDate = getKoreanDate();
             }
             
             setPaymentInfo({
@@ -1643,6 +1641,22 @@ function EstimateContent() {
             </div>
           </div>
 
+          {/* 참고사항 섹션 */}
+          <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              참고사항
+            </h2>
+            <div className="text-sm text-gray-500 mb-3">
+              * 참고사항은 내부용으로 견적서에는 표시되지 않습니다.
+            </div>
+            <textarea
+              value={notes}
+              onChange={handleNotesChange}
+              className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="견적에 대한 참고사항을 입력하세요. (선택사항)"
+            ></textarea>
+          </div>
+
           {/* 일괄 입력 섹션 */}
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">일괄 데이터 입력</h2>
@@ -2326,7 +2340,7 @@ function EstimateContent() {
                               
                               // 버려진 금액이 있으면 서비스 물품에 추가
                               if (discardedAmount > 0) {
-                                handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                                handleAddServiceItem(`끝자리DC -${discardedAmount}원`, 1);
                               }
                             }}
                             className={`px-2 py-1 rounded-md text-xs ${
@@ -2357,7 +2371,7 @@ function EstimateContent() {
                               
                               // 버려진 금액이 있으면 서비스 물품에 추가
                               if (discardedAmount > 0) {
-                                handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                                handleAddServiceItem(`끝자리DC -${discardedAmount}원`, 1);
                               }
                             }}
                             className={`px-2 py-1 rounded-md text-xs ${
@@ -2388,7 +2402,7 @@ function EstimateContent() {
                               
                               // 버려진 금액이 있으면 서비스 물품에 추가
                               if (discardedAmount > 0) {
-                                handleAddServiceItem(`끝자리버림 -${discardedAmount}원`, 1);
+                                handleAddServiceItem(`끝자리DC -${discardedAmount}원`, 1);
                               }
                             }}
                             className={`px-2 py-1 rounded-md text-xs ${
@@ -2408,7 +2422,7 @@ function EstimateContent() {
                                 setPaymentInfo(prev => ({ ...prev, roundingType: '' }));
                                 
                                 // "끝자리버림" 항목 삭제
-                                setServiceData(prev => prev.filter(item => !item.productName.startsWith('끝자리버림')));
+                                setServiceData(prev => prev.filter(item => !item.productName.startsWith('끝자리DC')));
                               }}
                               className="px-2 py-1 rounded-md text-xs bg-gray-200 text-gray-700 hover:bg-gray-300"
                               title="버림 취소"
@@ -2606,21 +2620,7 @@ function EstimateContent() {
             </div>
           </div>
 
-          {/* 참고사항 섹션 */}
-          <div className="mt-6 bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              참고사항
-            </h2>
-            <div className="text-sm text-gray-500 mb-3">
-              * 참고사항은 내부용으로 견적서에는 표시되지 않습니다.
-            </div>
-            <textarea
-              value={notes}
-              onChange={handleNotesChange}
-              className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="견적에 대한 참고사항을 입력하세요. (선택사항)"
-            ></textarea>
-          </div>
+          
         </>
       )}
 
