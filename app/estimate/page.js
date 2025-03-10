@@ -1726,7 +1726,7 @@ function EstimateContent() {
                 onClick={() => setShowForm(!showForm)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
             >
-                상품 정보 입력창 {showForm ? '-' : '+'}
+                개별 상품 정보 입력창 {showForm ? '-' : '+'}
             </button>
             {/* 전체 삭제 버튼 추가 */}
             <button
@@ -1734,7 +1734,7 @@ function EstimateContent() {
                 onClick={handleDeleteAllProducts}
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 ml-2" // ml-2로 여백 추가
             >
-                전체 삭제
+                상품 전체 삭제
             </button>
           </div>
           
@@ -2047,7 +2047,7 @@ function EstimateContent() {
                     type="text"
                     id="custom-product-name"
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="상품명 입력"
+                    placeholder="서비스 상품명 입력"
                   />
                 </div>
                 <div className="flex-[1]"> {/* 개수 영역을 25%로 설정 */}

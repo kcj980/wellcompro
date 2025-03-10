@@ -159,7 +159,7 @@ export default function SearchPage() {
         <button
           key="prev"
           onClick={() => handlePageChange(currentPage - 1)}
-          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-sky-300 bg-white text-sm font-medium text-sky-600 hover:bg-sky-50"
         >
           <span className="sr-only">이전</span>
           <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -175,8 +175,8 @@ export default function SearchPage() {
         <button
           key="1"
           onClick={() => handlePageChange(1)}
-          className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-            currentPage === 1 ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50'
+          className={`relative inline-flex items-center px-4 py-2 border border-sky-300 bg-white text-sm font-medium ${
+            currentPage === 1 ? 'text-white bg-sky-500' : 'text-sky-700 hover:bg-sky-50'
           }`}
         >
           1
@@ -188,7 +188,7 @@ export default function SearchPage() {
         buttons.push(
           <span
             key="ellipsis1"
-            className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+            className="relative inline-flex items-center px-4 py-2 border border-sky-300 bg-white text-sm font-medium text-sky-700"
           >
             ...
           </span>
@@ -202,8 +202,8 @@ export default function SearchPage() {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium ${
-            currentPage === i ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'bg-white text-gray-700 hover:bg-gray-50'
+          className={`relative inline-flex items-center px-4 py-2 border border-sky-300 text-sm font-medium ${
+            currentPage === i ? 'z-10 bg-sky-500 border-sky-500 text-white' : 'bg-white text-sky-700 hover:bg-sky-50'
           }`}
         >
           {i}
@@ -218,7 +218,7 @@ export default function SearchPage() {
         buttons.push(
           <span
             key="ellipsis2"
-            className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+            className="relative inline-flex items-center px-4 py-2 border border-sky-300 bg-white text-sm font-medium text-sky-700"
           >
             ...
           </span>
@@ -229,8 +229,8 @@ export default function SearchPage() {
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
-            currentPage === totalPages ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50'
+          className={`relative inline-flex items-center px-4 py-2 border border-sky-300 bg-white text-sm font-medium ${
+            currentPage === totalPages ? 'text-white bg-sky-500' : 'text-sky-700 hover:bg-sky-50'
           }`}
         >
           {totalPages}
@@ -244,7 +244,7 @@ export default function SearchPage() {
         <button
           key="next"
           onClick={() => handlePageChange(currentPage + 1)}
-          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-sky-300 bg-white text-sm font-medium text-sky-600 hover:bg-sky-50"
         >
           <span className="sr-only">다음</span>
           <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -263,80 +263,66 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-            <h1 className="text-2xl font-bold">견적 목록</h1>
+        <div className="mb-6 bg-white rounded-xl shadow-lg p-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+              <svg className="w-8 h-8 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+              견적 목록
+            </h1>
             
-            {/* 검색 및 정렬 컨트롤 */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              {/* 계약자 필터 버튼 그룹 추가 */}
-              <div className="flex items-center space-x-2 mr-4">
-                <button
-                  onClick={() => handleContractorFilterChange('all')}
-                  className={`px-3 py-2 text-sm font-medium rounded-md ${
-                    contractorFilter === 'all'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                  }`}
-                >
-                  모든 견적
-                </button>
-                <button
-                  onClick={() => handleContractorFilterChange('contractor')}
-                  className={`px-3 py-2 text-sm font-medium rounded-md ${
-                    contractorFilter === 'contractor'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                  }`}
-                >
-                  계약자 견적만
-                </button>
-                <button
-                  onClick={() => handleContractorFilterChange('non-contractor')}
-                  className={`px-3 py-2 text-sm font-medium rounded-md ${
-                    contractorFilter === 'non-contractor'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                  }`}
-                >
-                  비계약자 견적만
-                </button>
-              </div>
-              
+            <button
+              onClick={() => router.push('/estimate')}
+              className="bg-blue-500 text-white px-5 py-2.5 rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center shadow-md"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              새 견적 작성
+            </button>
+          </div>
+          
+          {/* 검색 및 필터링 섹션 */}
+          <div className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
+            <div className="flex flex-col lg:flex-row gap-4">
               {/* 검색 폼 */}
               <form 
                 onSubmit={handleSearchSubmit} 
-                className="w-full md:w-auto flex-grow max-w-md"
+                className="flex-grow"
               >
                 <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
                   <input
                     type="text"
                     placeholder="고객명, 연락처, PC번호로 검색"
-                    className="block w-full py-2 px-3 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm"
                     value={searchTerm}
                     onChange={handleSearchChange}
                   />
                   <button
                     type="submit"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 px-4 text-blue-500 font-medium"
                   >
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                    검색
                   </button>
                 </div>
               </form>
               
               {/* 정렬 선택 */}
-              <div className="flex items-center">
-                <label htmlFor="sort" className="mr-2 text-sm font-medium text-gray-700">정렬:</label>
+              <div className="flex items-center min-w-[200px]">
+                <label htmlFor="sort" className="text-sm font-medium text-gray-700 w-11">정렬:</label>
                 <select
                   id="sort"
                   value={sortOption}
                   onChange={handleSortChange}
-                  className="block w-40 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="block w-full py-3 px-4 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm"
                 >
                   <option value="newest">최신순</option>
                   <option value="oldest">오래된순</option>
@@ -347,34 +333,93 @@ export default function SearchPage() {
                 </select>
               </div>
             </div>
+            
+            <div className="flex flex-wrap items-center justify-between mt-4">
+              {/* 계약자 필터 버튼 그룹 */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-gray-700 mr-2">필터:</span>
+                <button
+                  onClick={() => handleContractorFilterChange('all')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                    contractorFilter === 'all'
+                      ? 'bg-blue-500 text-white shadow-md'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  모든 견적
+                </button>
+                <button
+                  onClick={() => handleContractorFilterChange('contractor')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                    contractorFilter === 'contractor'
+                      ? 'bg-blue-500 text-white shadow-md'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  계약자 견적만
+                </button>
+                <button
+                  onClick={() => handleContractorFilterChange('non-contractor')}
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                    contractorFilter === 'non-contractor'
+                      ? 'bg-blue-500 text-white shadow-md'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                  }`}
+                >
+                  비계약자 견적만
+                </button>
+              </div>
+              
+              {/* 색상 설명 추가 - 필터 행 오른쪽 끝에 배치 */}
+              <div className="flex items-center border border-gray-300 rounded-lg bg-white p-2 gap-3 mt-2 lg:mt-0">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-[#85fd85] rounded mr-1"></div>
+                  <span className="text-sm text-gray-700">계약자</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-[#fdcc94] rounded mr-1"></div>
+                  <span className="text-sm text-gray-700">비계약자</span>
+                </div>
+              </div>
+            </div>
           </div>
           
           {/* 로딩 상태 표시 */}
           {loading && (
             <div className="flex justify-center py-10">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
           )}
           
           {/* 에러 표시 */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-              <strong className="font-bold">오류! </strong>
-              <span className="block sm:inline">{error}</span>
+            <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg mb-6">
+              <div className="flex">
+                <svg className="h-6 w-6 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p className="font-bold">오류가 발생했습니다</p>
+                  <p>{error}</p>
+                </div>
+              </div>
             </div>
           )}
           
           {/* 견적 목록이 비어있는 경우 */}
           {!loading && !error && filteredEstimates.length === 0 && (
-            <div className="bg-white shadow rounded-lg p-6 text-center">
+            <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
+              <svg className="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
               {searchTerm ? (
-                <p className="text-gray-500">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>
+                <p className="text-gray-600 text-lg mb-4">검색 결과가 없습니다. 다른 검색어를 입력해 주세요.</p>
               ) : (
-                <p className="text-gray-500">저장된 견적이 없습니다.</p>
+                <p className="text-gray-600 text-lg mb-4">저장된 견적이 없습니다.</p>
               )}
               <button
                 onClick={() => router.push('/estimate')}
-                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                className="mt-2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 shadow-md"
               >
                 견적 작성하기
               </button>
@@ -384,108 +429,112 @@ export default function SearchPage() {
           {/* 견적 목록 표시 */}
           {!loading && !error && filteredEstimates.length > 0 && (
             <>
-              <div className="bg-white shadow overflow-hidden rounded-lg">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                  <span className="text-sm text-gray-600">
-                    총 <span className="font-medium">{filteredEstimates.length}</span>개의 견적이 있습니다.
+              <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                <div className="px-3 py-2 bg-gray-50 border-b border-gray-200">
+                  <span className="text-sm text-gray-700 font-medium">
+                    총 <span className="font-bold text-gray-800 text-lg">{filteredEstimates.length}</span>개의 견적이 있습니다.
                     {searchTerm && (
                       <span className="ml-1">
-                        (검색어: "<span className="font-medium">{searchTerm}</span>")
+                        (검색어: "<span className="font-bold">{searchTerm}</span>")
                       </span>
                     )}
                   </span>
                 </div>
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        고객명
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        구입형태
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        PC번호
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        핸드폰번호
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        총 금액
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        생성일
-                      </th>
-                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        견적서
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {currentEstimates.map((estimate) => (
-                      <tr 
-                        key={estimate._id}
-                        onClick={() => handleEstimateClick(estimate._id)}
-                        className="hover:bg-gray-50 cursor-pointer"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {estimate.customerInfo?.name || '이름 없음'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {estimate.customerInfo?.purchaseType === '지인' && estimate.customerInfo?.purchaseTypeName
-                            ? `지인(${estimate.customerInfo.purchaseTypeName})`
-                            : estimate.customerInfo?.purchaseType || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {estimate.customerInfo?.pcNumber || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {estimate.customerInfo?.phone || '-'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {estimate.calculatedValues?.finalPayment?.toLocaleString() || 0}원
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(estimate.createdAt)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <button
-                            onClick={(e) => handleQuoteClick(estimate._id, e)}
-                            className="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600 inline-flex items-center"
-                          >
-                            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            견적서
-                          </button>
-                        </td>
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 table-fixed">
+                    <colgroup>
+                      <col width="20%" />
+                      <col width="23%" />
+                      <col width="10%" />
+                      <col width="13%" />
+                      <col width="12%" />
+                      <col width="12%" />
+                      <col width="10%" />
+                    </colgroup>
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-center">
+                          고객명
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-center">
+                          구입형태
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-center">
+                          PC번호
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-center">
+                          핸드폰번호
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-right">
+                          총 금액
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider text-center">
+                          생성일
+                        </th>
+                        <th className="px-3 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">
+                          견적서
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {currentEstimates.map((estimate) => (
+                        <tr 
+                          key={estimate._id}
+                          onClick={() => handleEstimateClick(estimate._id)}
+                          className={`cursor-pointer transition-colors duration-150 ${
+                            estimate.isContractor 
+                              ? 'bg-[#ebfee6] hover:bg-[#85fd85]' // 계약자인 경우 연한 녹색
+                              : 'bg-[#fdecd7] hover:bg-[#fdcc94]' // 비계약자인 경우 연한 주황색
+                          }`}
+                        >
+                          <td className="px-3 py-2 text-sm font-medium text-gray-800 break-words text-center">
+                            {estimate.customerInfo?.name || '-'}
+                          </td>
+                          <td className="px-3 py-2 text-sm text-gray-600 break-words text-center">
+                            {estimate.customerInfo?.purchaseType === '지인' && estimate.customerInfo?.purchaseTypeName
+                              ? `지인(${estimate.customerInfo.purchaseTypeName})`
+                              : estimate.customerInfo?.purchaseType || '-'}
+                          </td>
+                          <td className="px-3 py-2 text-sm text-gray-600 break-words text-center">
+                            {estimate.customerInfo?.pcNumber || '-'}
+                          </td>
+                          <td className="px-3 py-2 text-sm text-gray-600 break-words text-center">
+                            {estimate.customerInfo?.phone || '-'}
+                          </td>
+                          <td className="px-3 py-2 text-sm font-medium text-gray-800 break-words text-right">
+                            {estimate.calculatedValues?.finalPayment?.toLocaleString() || 0}원
+                          </td>
+                          <td className="px-3 py-2 text-sm text-gray-600 break-words text-center">
+                            {formatDate(estimate.createdAt)}
+                          </td>
+                          <td className="px-3 py-2 text-center">
+                            <button
+                              onClick={(e) => handleQuoteClick(estimate._id, e)}
+                              className="bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-blue-600 transition-colors duration-200 inline-flex items-center shadow-sm"
+                            >
+                              <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                              </svg>
+                              견적서
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
               
               {/* 페이지네이션 */}
               {totalPages > 1 && (
-                <div className="mt-4 flex justify-center">
+                <div className="mt-6 flex justify-center">
                   <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                     {renderPaginationButtons()}
                   </nav>
                 </div>
               )}
             </>
-          )}
-          
-          {/* 새 견적 작성 버튼 */}
-          {!loading && filteredEstimates.length > 0 && (
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => router.push('/estimate')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                새 견적 작성
-              </button>
-            </div>
           )}
         </div>
       </div>

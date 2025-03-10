@@ -235,6 +235,14 @@ export default function EstimateDetail({ params }) {
               </div>
             </div>
             
+            {/* 참고사항 섹션 */}
+            {estimate.notes && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold mb-4">참고사항</h2>
+                <div className="whitespace-pre-wrap text-gray-700">{estimate.notes}</div>
+              </div>
+            )}
+
             {/* 상품 목록 섹션 */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <div className="p-6 pb-0">
@@ -376,13 +384,6 @@ export default function EstimateDetail({ params }) {
               </div>
             )}
             
-            {/* 참고사항 섹션 */}
-            {estimate.notes && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">참고사항</h2>
-                <div className="whitespace-pre-wrap text-gray-700">{estimate.notes}</div>
-              </div>
-            )}
             
             {/* 최종 금액 및 생성일 섹션 */}
             <div className="bg-white rounded-lg shadow p-6">
