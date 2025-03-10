@@ -288,12 +288,17 @@ function EstimateContent() {
 
   // 구입 형태 버튼 클릭 시 호출되는 함수
   const handlePurchaseTypeSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
+    // 직접입력이 아닌 다른 옵션을 선택할 때 isCustomPurchaseType을 false로 설정
+    if (value !== '') {
+      setIsCustomPurchaseType(false);
+    }
+    
+    setCustomerInfo({
+      ...customerInfo,
       purchaseType: value,
-      purchaseTypeName: '' // 지인이 아닌 경우 이름 초기화
-    }));
-    setIsCustomPurchaseType(false); // 직접 입력 모드 해제
+      // 새로운 구입형태를 선택할 때 purchaseTypeName 초기화
+      purchaseTypeName: value === '지인' || value === '기존회원' ? customerInfo.purchaseTypeName : ''
+    });
   };
 
   // 운영체제 버튼 클릭 시 호출되는 함수
@@ -1169,6 +1174,15 @@ function EstimateContent() {
     }
   };
 
+  // 직접입력 버튼 클릭 핸들러 분리
+  const handleCustomPurchaseType = () => {
+    setIsCustomPurchaseType(true);
+    setCustomerInfo({
+      ...customerInfo,
+      purchaseType: ''
+    });
+  };
+
   // JSX 렌더링 시작
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -1433,6 +1447,18 @@ function EstimateContent() {
                     >
                       지인
                     </button>
+                    {/* 기존회원 버튼 */}
+                    <button
+                      type="button"
+                      onClick={() => handlePurchaseTypeSelect('기존회원')}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        customerInfo.purchaseType === '기존회원'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      기존회원
+                    </button>
                     <button
                       type="button"
                       onClick={() => handlePurchaseTypeSelect('해당없음')}
@@ -1446,10 +1472,7 @@ function EstimateContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsCustomPurchaseType(true);
-                        setCustomerInfo(prev => ({ ...prev, purchaseType: '' }));
-                      }}
+                      onClick={handleCustomPurchaseType}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomPurchaseType
                           ? 'bg-blue-600 text-white'
@@ -1459,21 +1482,37 @@ function EstimateContent() {
                       직접입력
                     </button>
                   </div>
+                  
+                  {/* 지인 이름 입력 필드 */}
                   {customerInfo.purchaseType === '지인' && (
                     <input
                       type="text"
                       name="purchaseTypeName"
-                      value={customerInfo.purchaseTypeName}
+                      value={customerInfo.purchaseTypeName || ''}
                       onChange={handleCustomerInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="지인 이름을 입력하세요"
                     />
                   )}
+                  
+                  {/* 기존회원 이름 입력 필드 추가 */}
+                  {customerInfo.purchaseType === '기존회원' && (
+                    <input
+                      type="text"
+                      name="purchaseTypeName"
+                      value={customerInfo.purchaseTypeName || ''}
+                      onChange={handleCustomerInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="기존회원 이름을 입력하세요"
+                    />
+                  )}
+                  
+                  {/* 직접 입력 필드 */}
                   {isCustomPurchaseType && (
                     <input
                       type="text"
                       name="purchaseType"
-                      value={customerInfo.purchaseType}
+                      value={customerInfo.purchaseType || ''}
                       onChange={handleCustomerInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="구입형태를 입력하세요"

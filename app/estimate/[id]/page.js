@@ -215,8 +215,11 @@ export default function EstimateDetail({ params }) {
                   <div className="text-sm font-medium text-gray-500">구입형태</div>
                   <div className="mt-1">
                     {estimate.customerInfo?.purchaseType || '-'}
-                    {estimate.customerInfo?.purchaseType === '지인' && estimate.customerInfo?.purchaseTypeName && (
+                    {estimate.customerInfo?.purchaseType === '지인' ? estimate.customerInfo?.purchaseTypeName && (
                       <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>
+                    ) : (
+                      estimate.customerInfo?.purchaseTypeName && (
+                      <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>)
                     )}
                   </div>
                 </div>
