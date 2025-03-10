@@ -63,7 +63,7 @@ export default function UserGuide() {
             <div className="bg-yellow-50 p-5 rounded-lg border-2 border-yellow-300 mb-6">
               <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center">
                 <span className="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">✨</span>
-                신기능! 다나와 자동 견적 가져오기
+                신기능!!!! 다나와 자동 견적 가져오기
               </h3>
               
               <div className="ml-10 space-y-3">
@@ -78,6 +78,7 @@ export default function UserGuide() {
                     <li>다나와에서 원하는 상품을 장바구니에 담기</li>
                     <li>왼쪽 상단의 <span className="font-bold text-blue-600">"WellCompro로 견적 보내기"</span> 버튼 클릭</li>
                     <li>자동으로 견적 페이지로 이동하면서 모든 상품 데이터가 입력됨</li>
+                    <li>견적 작성페이지로 이동이 되고도 데이터가 바로 안오면 다나와 페이지로 한번 갔다 오면 데이터가 입력됨</li>
                   </ol>
                 </div>
                 
@@ -85,7 +86,8 @@ export default function UserGuide() {
                   <p className="font-medium text-red-700">⚠️ 주의사항:</p>
                   <p className="text-gray-700">
                     견적서 작성 중에 다나와에서 상품을 추가하면, 기존 데이터에 추가되지 않고 
-                    <span className="font-bold"> 새 창이 열리면서</span> 그 새 창에 다나와 상품들이 저장됩니다.
+                    <span className="font-bold"> 기존 데이터 지워 버림니다!!</span> 
+                    <br/>그래서 다나와로 상품 추가후 다른 정보 입력하세요~~!!
                   </p>
                 </div>
                 

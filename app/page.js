@@ -13,7 +13,7 @@ export default function Home() {
             <span className="inline-block ml-2">🚀</span>
           </h2>
           <p className="text-md text-gray-700 mb-3">
-            다나와 PC 견적 정보를 WellCompro 견적 작성 페이지로 자동 전송하는 크롬 확장 프로그램입니다.
+            다나와 PC 견적 정보를 WellCompro 견적 작성 페이지로 자동 전송하는 <span className="font-bold text-xl">크롬 확장 프로그램</span>입니다.
           </p>
           <a 
             href="/extension.zip" 
@@ -23,7 +23,7 @@ export default function Home() {
             확장 프로그램 다운로드
           </a>
           <p className="text-sm text-gray-600 mt-2">
-            설치 방법: 다운로드 후압축 해제하고 크롬브라우저에 "chrome://extensions" 입력하시고 오른쪽위 "개발자모드" 클릭, <br/>왼쪽에 "압축 해제된 확장프로그램을 로드합니다" 클릭, 압축푼 폴더 선택하면 완료
+            설치 방법: 다운로드 후 <span className="font-bold text-lg">압축해제</span>하고 크롬브라우저에 <span className='font-bold text-lg'>"chrome://extensions"</span> 입력하시고 오른쪽위 <span className='font-bold text-lg'>"개발자모드 클릭"</span>, <br/>왼쪽에 <span className='font-bold text-lg'>"압축 해제된 확장프로그램을 로드합니다. 클릭"</span>, 압축푼 폴더 선택하면 완료
           </p>
         </div>
       </div>
