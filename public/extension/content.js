@@ -53,13 +53,15 @@ function exportEstimateData() {
     
     // 웰컴프로 견적 페이지 URL 설정
     let wellcomproUrl;
-    if (urlObj.hostname === 'localhost' || urlObj.hostname === '127.0.0.1') {
-      wellcomproUrl = 'http://localhost:3000/estimate';
-    } else if (urlObj.hostname === 'shop.danawa.com') {
-      // 다나와에서 직접 접근할 경우 로컬 URL로 설정
+    console.log(urlObj.hostname);
+    
+    // 개발 환경인지 배포 환경인지 확인하는 방법 변경
+    // 크롬 확장 프로그램에서는 환경 변수를 직접 사용할 수 없으므로 다른 방법 사용
+    const isDevelopment = false; // 개발 환경에서는 true, 배포 환경에서는 false로 설정
+    
+    if (isDevelopment) {
       wellcomproUrl = 'http://localhost:3000/estimate';
     } else {
-      // 실제 배포 환경의 URL로 변경 필요
       wellcomproUrl = 'https://wellcompro.vercel.app/estimate'; // 실제 배포 URL
     }
     
