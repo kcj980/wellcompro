@@ -635,11 +635,11 @@ export default function ConsumerQuotePage({ params }) {
                   <>
                     <span className="font-semibold text-black whitespace-pre">결제 방식: </span>
                       {estimate.paymentInfo?.paymentMethod === '카드' ? (
-                        <span className="font-semibold text-black">카드[농협 938-12-182358](소성옥)</span>
+                        <span className="font-semibold text-black">카드[부산 064-13-001200-7](김선식)</span>
                       ) : (
                         <>
                           {estimate.paymentInfo?.paymentMethod === '현금' ? (
-                            <span className="font-semibold text-black">현금[부산 064-13-001200-7](김선식)</span>
+                            <span className="font-semibold text-black">현금[농협 938-12-182358](소성옥)</span>
                           ) : (
                             <span className="font-semibold text-black">{estimate.paymentInfo?.paymentMethod}</span>
                           )}
