@@ -2958,7 +2958,7 @@ function EstimateContent() {
               value={estimateDescription}
               onChange={handleDescriptionChange}
               className="w-full h-48 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="견적에 대한 설명을 작성하세요..."
+              placeholder="견적에 대한 설명을 작성하세요...(엔터로 내용 구별)"
             ></textarea>
             <div className="mt-3 flex justify-end">
               <button

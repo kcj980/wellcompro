@@ -9,6 +9,7 @@ export default function ConsumerQuotePage({ params }) {
   const [error, setError] = useState(null);
   const [showNotes, setShowNotes] = useState(true);
   const [showStamp, setShowStamp] = useState(true);
+  const [showDescription, setShowDescription] = useState(true);
   //const [printTriggered, setPrintTriggered] = useState(false); //자동인쇄 주석처리
   const [showNotesEditor, setShowNotesEditor] = useState(false);
   const [notesContent, setNotesContent] = useState('');
@@ -306,6 +307,16 @@ export default function ConsumerQuotePage({ params }) {
                 />
                 <span className="ml-2 text-gray-700 text-sm">공지사항 필독 추가</span>
               </label>
+
+              <label className="flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={showDescription} 
+                  onChange={(e) => setShowDescription(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
+                />
+                <span className="ml-2 text-gray-700 text-sm">견적설명 표시</span>
+              </label>
               
               <label className="flex items-center cursor-pointer">
                 <input 
@@ -548,6 +559,22 @@ export default function ConsumerQuotePage({ params }) {
             </tbody>
           </table>
         </div>
+
+        {/* 견적설명 표시 */}
+        {showDescription && estimate.estimateDescription && (
+          <div className="border border-sky-200 rounded-lg mb-2 mt-1 bg-sky-50 p-1">
+            <div className="flex items-center">
+              <span className="text-sm font-bold text-blue-800 mr-2">견적설명</span>
+              <div className="flex-1 text-gray-700 text-sm p-1 bg-white border border-sky-200 rounded-md">
+                <div className="flex flex-wrap gap-x-4">
+                  {estimate.estimateDescription.split('\n').filter(line => line.trim() !== '').map((line, index) => (
+                    <span key={index}>· {line}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* 서비스 상품 데이터 표시 */}
         {estimate.serviceData && estimate.serviceData.length > 0 && (
