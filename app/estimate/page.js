@@ -172,6 +172,12 @@ function EstimateContent() {
   // 참고사항을 관리하는 상태
   const [notes, setNotes] = useState('');
 
+  // 견적설명을 관리하는 상태
+  const [estimateDescription, setEstimateDescription] = useState('');
+  
+  // 견적설명 textarea 표시 여부를 관리하는 상태
+  const [showDescriptionTextarea, setShowDescriptionTextarea] = useState(false);
+
   // 계약자 여부를 관리하는 상태
   const [isContractor, setIsContractor] = useState(false);
 
@@ -798,7 +804,16 @@ function EstimateContent() {
     setNotes(e.target.value);
   };
 
-  // 공임비 선택 버튼 클릭 시 호출되는 함수
+  // 견적설명 변경 핸들러
+  const handleDescriptionChange = (e) => {
+    setEstimateDescription(e.target.value);
+  };
+
+  // 견적설명 textarea 표시/숨김 토글 핸들러
+  const toggleDescriptionTextarea = () => {
+    setShowDescriptionTextarea(prev => !prev);
+  };
+
   const handleLaborCostSelect = (value) => {
     setPaymentInfo(prev => ({
       ...prev,
@@ -911,6 +926,7 @@ function EstimateContent() {
         },
         calculatedValues,
         notes,
+        estimateDescription, // 견적설명 추가
         isContractor // 계약자 여부 추가
       };
 
@@ -1117,6 +1133,12 @@ function EstimateContent() {
               );
               setIsCustomSetupCost(customSetupCost);
             }
+            
+            // 참고사항 설정
+            setNotes(data.estimate.notes || '');
+            
+            // 견적설명 설정
+            setEstimateDescription(data.estimate.estimateDescription || '');
           }
         } catch (error) {
           console.error('견적 데이터 로딩 오류:', error);
@@ -1337,7 +1359,7 @@ function EstimateContent() {
 
   // JSX 렌더링 시작
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* 페이지 제목 영역 */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">
@@ -2905,6 +2927,51 @@ function EstimateContent() {
           )}
         </button>
       </div>
+
+      {/* 견적설명 버튼 - 화면 오른쪽 하단에 고정 */}
+      <button
+        type="button"
+        onClick={toggleDescriptionTextarea}
+        className="fixed bottom-8 right-8 z-10 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg"
+        title="견적설명 작성"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </button>
+
+      {/* 견적설명 textarea 모달 */}
+      {showDescriptionTextarea && (
+        <div className="fixed bottom-8 right-20 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-96 p-4 relative">
+            <button
+              type="button"
+              onClick={toggleDescriptionTextarea}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h3 className="text-md font-medium text-gray-900 mb-2">견적설명 작성</h3>
+            <textarea
+              value={estimateDescription}
+              onChange={handleDescriptionChange}
+              className="w-full h-48 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="견적에 대한 설명을 작성하세요..."
+            ></textarea>
+            <div className="mt-3 flex justify-end">
+              <button
+                type="button"
+                onClick={toggleDescriptionTextarea}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

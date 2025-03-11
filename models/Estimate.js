@@ -63,6 +63,8 @@ const EstimateSchema = new mongoose.Schema({
   notes: String,
   //계약자 여부 체크
   isContractor: Boolean,
+  // 견적설명 추가
+  estimateDescription: String,
   
   // 생성 및 수정 시간
   createdAt: {

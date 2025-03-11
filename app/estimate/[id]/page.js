@@ -241,11 +241,19 @@ export default function EstimateDetail({ params }) {
                 </div>
               </div>
             </div>
+
+            {/* 견적설명 섹션 */}
+            {estimate.estimateDescription && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold mb-4">견적설명<span className="text-sm text-gray-500 ml-1">(견적서에 포함되는 내용)</span></h2>
+                <div className="whitespace-pre-wrap text-gray-700">{estimate.estimateDescription}</div>
+              </div>
+            )}
             
             {/* 참고사항 섹션 */}
             {estimate.notes && (
               <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">참고사항</h2>
+                <h2 className="text-xl font-semibold mb-4">참고사항<span className="text-sm text-gray-500 ml-1">(견적서에 포함되지 않는 내용)</span></h2>
                 <div className="whitespace-pre-wrap text-gray-700">{estimate.notes}</div>
               </div>
             )}
