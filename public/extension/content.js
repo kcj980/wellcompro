@@ -53,7 +53,6 @@ function exportEstimateData() {
     
     // 웰컴프로 견적 페이지 URL 설정
     let wellcomproUrl;
-    console.log(urlObj.hostname);
     
     // 개발 환경인지 배포 환경인지 확인하는 방법 변경
     // 크롬 확장 프로그램에서는 환경 변수를 직접 사용할 수 없으므로 다른 방법 사용
@@ -74,8 +73,8 @@ function exportEstimateData() {
         products: products
       }, '*');
       
-      alert(`${products.length}개 상품 정보를 WellCompro 견적 페이지로 전송했습니다.`);
-    }, 2000); // 페이지 로드 시간 고려
+      //alert(`${products.length}개 상품 정보를 WellCompro 견적 페이지로 전송했습니다.`);
+    }, 1100); // 페이지 로드 시간 고려
     
   } catch (error) {
     console.error('견적 데이터 추출 오류:', error);
