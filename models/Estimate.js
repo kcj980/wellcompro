@@ -11,6 +11,7 @@ const EstimateSchema = new mongoose.Schema({
     saleType: String,      // 판매형태
     purchaseType: String,  // 구입형태
     purchaseTypeName: String, // 지인 이름
+    purpose: String,       // 용도
     asCondition: String,   // AS조건
     os: String,            // 운영체계
     manager: String        // 견적담당

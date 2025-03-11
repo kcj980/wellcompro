@@ -224,6 +224,10 @@ export default function EstimateDetail({ params }) {
                   </div>
                 </div>
                 <div>
+                  <div className="text-sm font-medium text-gray-500">용도</div>
+                  <div className="mt-1">{estimate.customerInfo?.purpose || '-'}</div>
+                </div>
+                <div>
                   <div className="text-sm font-medium text-gray-500">AS조건</div>
                   <div className="mt-1">{estimate.customerInfo?.asCondition || '-'}</div>
                 </div>

@@ -67,6 +67,7 @@ function EstimateContent() {
    * saleType: 판매 형태 (기본값: 부품 조립형)
    * purchaseType: 구입 형태 (지인, 해당없음 등)
    * purchaseTypeName: 지인 이름 (purchaseType이 '지인'일 경우)
+   * purpose: 용도
    * asCondition: AS 조건
    * os: 운영체제 (win10, win11 등)
    * manager: 견적 담당자
@@ -79,6 +80,7 @@ function EstimateContent() {
     saleType: '부품 조립형',      // 판매형태
     purchaseType: '해당없음',  // 구입형태
     purchaseTypeName: '', // 지인 이름
+    purpose: '',     // 용도
     asCondition: '본인입고조건',   // AS조건
     os: 'win11',            // 운영체계
     manager: '김선식'        // 견적담당
@@ -107,6 +109,7 @@ function EstimateContent() {
   const [isCustomContractType, setIsCustomContractType] = useState(false);
   const [isCustomAsCondition, setIsCustomAsCondition] = useState(false);
   const [isCustomPurchaseType, setIsCustomPurchaseType] = useState(false);
+  const [isCustomPurpose, setIsCustomPurpose] = useState(false);
   const [isCustomOs, setIsCustomOs] = useState(false);
   const [isCustomManager, setIsCustomManager] = useState(false);
   const [isCustomLaborCost, setIsCustomLaborCost] = useState(false);
@@ -306,6 +309,23 @@ function EstimateContent() {
       setCustomerInfo(prev => ({
         ...prev,
         asCondition: value
+      }));
+    }
+  };
+
+  // 용도 버튼 클릭 시 호출되는 함수
+  const handlePurposeSelect = (value) => {
+    if (value === '직접입력') {
+      setIsCustomPurpose(true);
+      setCustomerInfo(prev => ({
+        ...prev,
+        purpose: ''
+      }));
+    } else {
+      setIsCustomPurpose(false);
+      setCustomerInfo(prev => ({
+        ...prev,
+        purpose: value
       }));
     }
   };
@@ -1004,6 +1024,12 @@ function EstimateContent() {
               setIsCustomAsCondition(true);
             }
             
+            // 용도 직접입력 확인
+            const defaultPurposes = ['게임', '문서작업', '영상/이미지편집'];
+            if (data.estimate.customerInfo?.purpose && !defaultPurposes.includes(data.estimate.customerInfo.purpose)) {
+              setIsCustomPurpose(true);
+            }
+            
             // 운영체계 직접입력 확인
             const defaultOsList = ['win10', 'win11'];
             if (data.estimate.customerInfo?.os && !defaultOsList.includes(data.estimate.customerInfo.os)) {
@@ -1626,7 +1652,7 @@ function EstimateContent() {
                       value={customerInfo.purchaseTypeName || ''}
                       onChange={handleCustomerInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                      placeholder="기존회원 이름을 입력하세요"
+                      placeholder="기존회원 이름을 입력하세요(선택)"
                     />
                   )}
                   
@@ -1639,6 +1665,71 @@ function EstimateContent() {
                       onChange={handleCustomerInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="구입형태를 입력하세요"
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* 용도 */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  용도
+                </label>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeSelect('게임')}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        customerInfo.purpose === '게임' && !isCustomPurpose
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      게임
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeSelect('문서작업')}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        customerInfo.purpose === '문서작업' && !isCustomPurpose
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      문서작업
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeSelect('영상/이미지편집')}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        customerInfo.purpose === '영상/이미지편집' && !isCustomPurpose
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      영상/이미지편집
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeSelect('직접입력')}
+                      className={`px-3 py-1 rounded-md text-sm ${
+                        isCustomPurpose
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      직접입력
+                    </button>
+                  </div>
+                  {isCustomPurpose && (
+                    <input
+                      type="text"
+                      name="purpose"
+                      value={customerInfo.purpose}
+                      onChange={handleCustomerInfoChange}
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="용도를 입력하세요"
                     />
                   )}
                 </div>
