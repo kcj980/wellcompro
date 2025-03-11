@@ -261,62 +261,107 @@ function EstimateContent() {
 
   // 판매 형태 버튼 클릭 시 호출되는 함수
   const handleSaleTypeSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
-      saleType: value
-    }));
-    setIsCustomSaleType(false); // 직접 입력 모드 해제
+    if (value === '직접입력') {
+      setIsCustomSaleType(true);
+      setCustomerInfo(prev => ({
+        ...prev,
+        saleType: ''
+      }));
+    } else {
+      setIsCustomSaleType(false);
+      setCustomerInfo(prev => ({
+        ...prev,
+        saleType: value
+      }));
+    }
   };
 
   // 계약 구분 버튼 클릭 시 호출되는 함수
   const handleContractTypeSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
-      contractType: value
-    }));
-    setIsCustomContractType(false); // 직접 입력 모드 해제
+    if (value === '직접입력') {
+      setIsCustomContractType(true);
+      setCustomerInfo(prev => ({
+        ...prev,
+        contractType: ''
+      }));
+    } else {
+      setIsCustomContractType(false);
+      setCustomerInfo(prev => ({
+        ...prev,
+        contractType: value
+      }));
+    }
   };
 
   // AS 조건 버튼 클릭 시 호출되는 함수
   const handleAsConditionSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
-      asCondition: value
-    }));
-    setIsCustomAsCondition(false); // 직접 입력 모드 해제
+    if (value === '직접입력') {
+      setIsCustomAsCondition(true);
+      setCustomerInfo(prev => ({
+        ...prev,
+        asCondition: ''
+      }));
+    } else {
+      setIsCustomAsCondition(false);
+      setCustomerInfo(prev => ({
+        ...prev,
+        asCondition: value
+      }));
+    }
   };
 
   // 구입 형태 버튼 클릭 시 호출되는 함수
   const handlePurchaseTypeSelect = (value) => {
-    // 직접입력이 아닌 다른 옵션을 선택할 때 isCustomPurchaseType을 false로 설정
-    if (value !== '') {
+    if (value === "직접입력") {
+      setIsCustomPurchaseType(true);
+      // 직접입력 선택 시 purchaseType 값을 빈 문자열로 설정하고 purchaseTypeName도 초기화
+      setCustomerInfo({
+        ...customerInfo,
+        purchaseType: '', // 빈 문자열로 설정하여 지인/기존회원 입력 필드가 표시되지 않도록 함
+        purchaseTypeName: '' // purchaseTypeName도 초기화
+      });
+    } else {
+      // 직접입력이 아닌 다른 옵션을 선택할 때 isCustomPurchaseType을 false로 설정
       setIsCustomPurchaseType(false);
+      
+      setCustomerInfo({
+        ...customerInfo,
+        purchaseType: value,
+        // 새로운 구입형태를 선택할 때 purchaseTypeName 초기화
+        purchaseTypeName: value === '지인' || value === '기존회원' ? customerInfo.purchaseTypeName : ''
+      });
     }
-    
-    setCustomerInfo({
-      ...customerInfo,
-      purchaseType: value,
-      // 새로운 구입형태를 선택할 때 purchaseTypeName 초기화
-      purchaseTypeName: value === '지인' || value === '기존회원' ? customerInfo.purchaseTypeName : ''
-    });
   };
 
   // 운영체제 버튼 클릭 시 호출되는 함수
   const handleOsSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
-      os: value
-    }));
-    setIsCustomOs(false); // 직접 입력 모드 해제
+    if (value === '직접입력') {
+      setIsCustomOs(true);
+      setCustomerInfo(prev => ({
+        ...prev,
+        os: ''
+      }));
+    } else {
+      setIsCustomOs(false);
+      setCustomerInfo(prev => ({
+        ...prev,
+        os: value
+      }));
+    }
   };
 
   // 담당자 버튼 클릭 시 호출되는 함수
   const handleManagerSelect = (value) => {
-    setCustomerInfo(prev => ({
-      ...prev,
-      manager: value
-    }));
-    setIsCustomManager(false); // 직접 입력 모드 해제
+    if (value === "직접입력") {
+      setIsCustomManager(true);
+      // 기존 값 유지
+    } else {
+      setCustomerInfo(prev => ({
+        ...prev,
+        manager: value
+      }));
+      setIsCustomManager(false); // 직접 입력 모드 해제
+    }
   };
 
   // 상품 정보 입력 필드 변경 시 호출되는 함수
@@ -934,8 +979,42 @@ function EstimateContent() {
           // 견적 데이터가 성공적으로 로드된 경우 폼에 데이터 채우기
           if (data.success && data.estimate) {
             // 견적 데이터 설정 (고객 정보, 상품 목록, 결제 정보 등)
-
             setCustomerInfo(data.estimate.customerInfo || defaultCustomerInfo);
+            
+            // 직접입력 필드 상태 설정
+            // 계약구분 직접입력 확인
+            if (data.estimate.customerInfo?.contractType && data.estimate.customerInfo.contractType !== '일반회원') {
+              setIsCustomContractType(true);
+            }
+            
+            // 판매형태 직접입력 확인
+            const defaultSaleTypes = ['부품 조립형', '본인설치', '해당없음'];
+            if (data.estimate.customerInfo?.saleType && !defaultSaleTypes.includes(data.estimate.customerInfo.saleType)) {
+              setIsCustomSaleType(true);
+            }
+            
+            // 구입형태 직접입력 확인
+            const defaultPurchaseTypes = ['지인', '기존회원', '해당없음'];
+            if (data.estimate.customerInfo?.purchaseType && !defaultPurchaseTypes.includes(data.estimate.customerInfo.purchaseType)) {
+              setIsCustomPurchaseType(true);
+            }
+            
+            // AS조건 직접입력 확인
+            if (data.estimate.customerInfo?.asCondition && data.estimate.customerInfo.asCondition !== '본인입고조건') {
+              setIsCustomAsCondition(true);
+            }
+            
+            // 운영체계 직접입력 확인
+            const defaultOsList = ['win10', 'win11'];
+            if (data.estimate.customerInfo?.os && !defaultOsList.includes(data.estimate.customerInfo.os)) {
+              setIsCustomOs(true);
+            }
+            
+            // 견적담당 직접입력 확인
+            const defaultManagers = ['김선식', '소성옥'];
+            if (data.estimate.customerInfo?.manager && !defaultManagers.includes(data.estimate.customerInfo.manager)) {
+              setIsCustomManager(true);
+            }
             
             // 상품 데이터에 고유 ID가 없는 경우를 대비해 클라이언트 ID 생성하여 추가
             const productsWithClientId = (data.estimate.tableData || []).map(item => {
@@ -1176,11 +1255,7 @@ function EstimateContent() {
 
   // 직접입력 버튼 클릭 핸들러 분리
   const handleCustomPurchaseType = () => {
-    setIsCustomPurchaseType(true);
-    setCustomerInfo({
-      ...customerInfo,
-      purchaseType: ''
-    });
+    handlePurchaseTypeSelect('직접입력');
   };
 
   // 다나와 크롬 확장 프로그램에서 데이터 수신을 위한 이벤트 리스너
@@ -1388,17 +1463,18 @@ function EstimateContent() {
                 />
               </div>
 
-              <div>
+              {/* 계약구분 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   계약구분
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col space-y-2">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => handleContractTypeSelect('일반회원')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.contractType === '일반회원'
+                        customerInfo.contractType === '일반회원' && !isCustomContractType
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1407,10 +1483,7 @@ function EstimateContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsCustomContractType(true);
-                        setCustomerInfo(prev => ({ ...prev, contractType: '' }));
-                      }}
+                      onClick={() => handleContractTypeSelect('직접입력')}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomContractType
                           ? 'bg-blue-600 text-white'
@@ -1433,11 +1506,12 @@ function EstimateContent() {
                 </div>
               </div>
 
-              <div>
+              {/* 판매형태 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   판매형태
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col space-y-2">
                   <div className="flex flex-wrap gap-2">
                     {['부품 조립형', '본인설치', '해당없음'].map((type) => (
                       <button
@@ -1445,7 +1519,7 @@ function EstimateContent() {
                         type="button"
                         onClick={() => handleSaleTypeSelect(type)}
                         className={`px-3 py-1 rounded-md text-sm ${
-                          customerInfo.saleType === type
+                          customerInfo.saleType === type && !isCustomSaleType
                             ? 'bg-blue-600 text-white'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         }`}
@@ -1455,10 +1529,7 @@ function EstimateContent() {
                     ))}
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsCustomSaleType(true);
-                        setCustomerInfo(prev => ({ ...prev, saleType: '' }));
-                      }}
+                      onClick={() => handleSaleTypeSelect('직접입력')}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomSaleType
                           ? 'bg-blue-600 text-white'
@@ -1479,19 +1550,20 @@ function EstimateContent() {
                     />
                   )}
                 </div>
-              </div>
+              </div>  
 
-              <div>
+              {/* 구입형태 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   구입형태
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col space-y-2">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => handlePurchaseTypeSelect('지인')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.purchaseType === '지인'
+                        customerInfo.purchaseType === '지인' && !isCustomPurchaseType
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1503,7 +1575,7 @@ function EstimateContent() {
                       type="button"
                       onClick={() => handlePurchaseTypeSelect('기존회원')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.purchaseType === '기존회원'
+                        customerInfo.purchaseType === '기존회원' && !isCustomPurchaseType
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1514,7 +1586,7 @@ function EstimateContent() {
                       type="button"
                       onClick={() => handlePurchaseTypeSelect('해당없음')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.purchaseType === '해당없음'
+                        customerInfo.purchaseType === '해당없음' && !isCustomPurchaseType
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1523,7 +1595,7 @@ function EstimateContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={handleCustomPurchaseType}
+                      onClick={() => handlePurchaseTypeSelect('직접입력')}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomPurchaseType
                           ? 'bg-blue-600 text-white'
@@ -1535,7 +1607,7 @@ function EstimateContent() {
                   </div>
                   
                   {/* 지인 이름 입력 필드 */}
-                  {customerInfo.purchaseType === '지인' && (
+                  {customerInfo.purchaseType === '지인' && !isCustomPurchaseType && (
                     <input
                       type="text"
                       name="purchaseTypeName"
@@ -1547,13 +1619,13 @@ function EstimateContent() {
                   )}
                   
                   {/* 기존회원 이름 입력 필드 추가 */}
-                  {customerInfo.purchaseType === '기존회원' && (
+                  {customerInfo.purchaseType === '기존회원' && !isCustomPurchaseType && (
                     <input
-                      type="text"
+                      type="text" 
                       name="purchaseTypeName"
                       value={customerInfo.purchaseTypeName || ''}
                       onChange={handleCustomerInfoChange}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                       placeholder="기존회원 이름을 입력하세요"
                     />
                   )}
@@ -1563,7 +1635,7 @@ function EstimateContent() {
                     <input
                       type="text"
                       name="purchaseType"
-                      value={customerInfo.purchaseType || ''}
+                      value={customerInfo.purchaseType}
                       onChange={handleCustomerInfoChange}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="구입형태를 입력하세요"
@@ -1572,17 +1644,18 @@ function EstimateContent() {
                 </div>
               </div>
 
-              <div>
+              {/* AS 조건 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   AS조건
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col space-y-2">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => handleAsConditionSelect('본인입고조건')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.asCondition === '본인입고조건'
+                        customerInfo.asCondition === '본인입고조건' && !isCustomAsCondition
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1591,10 +1664,7 @@ function EstimateContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsCustomAsCondition(true);
-                        setCustomerInfo(prev => ({ ...prev, asCondition: '' }));
-                      }}
+                      onClick={() => handleAsConditionSelect('직접입력')}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomAsCondition
                           ? 'bg-blue-600 text-white'
@@ -1617,17 +1687,18 @@ function EstimateContent() {
                 </div>
               </div>
 
-              <div>
+              {/* 운영체계 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   운영체계
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col space-y-2">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => handleOsSelect('win10')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.os === 'win10'
+                        customerInfo.os === 'win10' && !isCustomOs
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1638,7 +1709,7 @@ function EstimateContent() {
                       type="button"
                       onClick={() => handleOsSelect('win11')}
                       className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.os === 'win11'
+                        customerInfo.os === 'win11' && !isCustomOs
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                       }`}
@@ -1647,10 +1718,7 @@ function EstimateContent() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsCustomOs(true);
-                        setCustomerInfo(prev => ({ ...prev, os: '' }));
-                      }}
+                      onClick={() => handleOsSelect('직접입력')}
                       className={`px-3 py-1 rounded-md text-sm ${
                         isCustomOs
                           ? 'bg-blue-600 text-white'
@@ -1673,59 +1741,34 @@ function EstimateContent() {
                 </div>
               </div>
 
-              <div>
+              {/* 견적담당 - 직접입력 옵션 제거 */}
+              <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   견적담당
                 </label>
-                <div className="space-y-2">
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleManagerSelect('김선식')}
-                      className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.manager === '김선식'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      김선식
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleManagerSelect('소성옥')}
-                      className={`px-3 py-1 rounded-md text-sm ${
-                        customerInfo.manager === '소성옥'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      소성옥
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsCustomManager(true);
-                        setCustomerInfo(prev => ({ ...prev, manager: '' }));
-                      }}
-                      className={`px-3 py-1 rounded-md text-sm ${
-                        isCustomManager
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
-                    >
-                      직접입력
-                    </button>
-                  </div>
-                  {isCustomManager && (
-                    <input
-                      type="text"
-                      name="manager"
-                      value={customerInfo.manager}
-                      onChange={handleCustomerInfoChange}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="견적담당을 입력하세요"
-                    />
-                  )}
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleManagerSelect('김선식')}
+                    className={`px-3 py-1 rounded-md text-sm ${
+                      customerInfo.manager === '김선식'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    김선식
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleManagerSelect('소성옥')}
+                    className={`px-3 py-1 rounded-md text-sm ${
+                      customerInfo.manager === '소성옥'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    소성옥
+                  </button>
                 </div>
               </div>
             </div>
