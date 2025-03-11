@@ -315,7 +315,7 @@ export default function ConsumerQuotePage({ params }) {
                   onChange={(e) => setShowDescription(e.target.checked)}
                   className="form-checkbox h-5 w-5 text-sky-500 rounded border-gray-300 focus:ring-sky-500"
                 />
-                <span className="ml-2 text-gray-700 text-sm">견적설명 표시</span>
+                <span className="ml-2 text-gray-700 text-sm">견적상담 표시</span>
               </label>
               
               <label className="flex items-center cursor-pointer">
@@ -560,11 +560,11 @@ export default function ConsumerQuotePage({ params }) {
           </table>
         </div>
 
-        {/* 견적설명 표시 */}
+        {/* 견적상담 표시 */}
         {showDescription && estimate.estimateDescription && (
           <div className="border border-sky-200 rounded-lg mb-2 mt-1 bg-sky-50 p-1">
             <div className="flex items-center">
-              <span className="text-sm font-bold text-blue-800 mr-2">견적설명</span>
+              <span className="text-sm font-bold text-blue-800 mr-2">견적상담</span>
               <div className="flex-1 text-gray-700 text-sm p-1 bg-white border border-sky-200 rounded-md">
                 <div className="flex flex-wrap gap-x-4">
                   {estimate.estimateDescription.split('\n').filter(line => line.trim() !== '').map((line, index) => (
