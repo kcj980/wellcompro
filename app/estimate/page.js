@@ -2813,6 +2813,17 @@ function EstimateContent() {
                           </button>
                           <button
                             type="button"
+                            onClick={() => handlePaymentMethodSelect('카드결제 DC')}
+                            className={`px-2 py-1 rounded-md text-xs ${
+                              paymentInfo.paymentMethod === '카드결제 DC' && !isCustomPaymentMethod
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            카드결제 DC
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => handlePaymentMethodSelect('현금')}
                             className={`px-2 py-1 rounded-md text-xs ${
                               paymentInfo.paymentMethod === '현금' && !isCustomPaymentMethod
