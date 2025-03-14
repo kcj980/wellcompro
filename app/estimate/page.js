@@ -399,10 +399,16 @@ function EstimateContent() {
       // 입력값에서 콤마(,) 제거
       const numericValue = value.replace(/,/g, '');
       
-      // 숫자만 입력되었는지 확인 (빈 문자열 허용)
-      if (numericValue === '' || /^\d+$/.test(numericValue)) {
-        // 숫자 형식으로 변환하여 3자리마다 콤마 추가 (화면 표시용)
-        const formattedValue = numericValue === '' ? '' : Number(numericValue).toLocaleString();
+      // 숫자와 음수 부호(-)만 입력되었는지 확인 (빈 문자열 허용)
+      if (numericValue === '' || /^-?\d*$/.test(numericValue)) {
+        // 음수 부호(-)만 있는 경우 그대로 유지
+        let formattedValue;
+        if (numericValue === '-') {
+          formattedValue = '-';
+        } else {
+          // 숫자 형식으로 변환하여 3자리마다 콤마 추가 (화면 표시용)
+          formattedValue = numericValue === '' ? '' : Number(numericValue).toLocaleString();
+        }
         
         // 화면에 표시할 콤마가 포함된 문자열 저장
         setFormData(prev => ({
@@ -430,8 +436,10 @@ function EstimateContent() {
    */
   const multiplyPriceByQuantity = () => {
     // 입력된 현금가와 수량 가져오기 (현금가에서 콤마 제거 후 숫자로 변환)
-    const price = parseInt(formData.price.replace(/,/g, '')) || 0;
-    const quantity = parseInt(formData.quantity) || 0;
+    const priceStr = formData.price.replace(/,/g, '');
+    // '-'만 있는 경우 0으로 처리하여 계산 오류 방지
+    const price = priceStr === '-' ? 0 : Number(priceStr) || 0;
+    const quantity = Number(formData.quantity) || 0;
     
     // 수량이 0인 경우 계산하지 않음
     if (quantity === 0) {
@@ -654,7 +662,9 @@ function EstimateContent() {
     // 모든 상품의 현금가를 합산 (콤마 제거 후 숫자로 변환)
     const total = tableData.reduce((sum, item) => {
       // 현금가에서 콤마 제거 후 숫자로 변환
-      const price = parseInt(String(item.price).replace(/,/g, '')) || 0;
+      const priceStr = String(item.price).replace(/,/g, '');
+      // '-'만 있는 경우 0으로 처리
+      const price = priceStr === '-' ? 0 : Number(priceStr) || 0;
       return sum + price;  // 수량을 곱하지 않고 현금가만 더함 (이미 곱해진 금액으로 가정)
     }, 0);
     return total;
@@ -691,9 +701,9 @@ function EstimateContent() {
   const calculateTotalPurchase = () => {
     const productTotal = calculateProductTotal();
     // 숫자 값 필드 사용 (없으면 기존 방식으로 fallback)
-    const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
-    const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
-    const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
+    const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (Number(paymentInfo.laborCost) || 0);
+    const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (Number(paymentInfo.setupCost) || 0);
+    const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (Number(paymentInfo.discount) || 0);
     
     let total = productTotal + laborCost + setupCost - discount;
     
@@ -719,7 +729,7 @@ function EstimateContent() {
     // VAT 포함 옵션이 비활성화된 경우 0 반환
     if (!paymentInfo.includeVat) return 0;
     // VAT 계산 (총 구입 금액 * VAT 비율 / 100)
-    const vatRate = paymentInfo.vatRate !== undefined ? paymentInfo.vatRate : (parseInt(paymentInfo.vatRate) || 0);
+    const vatRate = paymentInfo.vatRate !== undefined ? paymentInfo.vatRate : (Number(paymentInfo.vatRate) || 0);
     return Math.floor(totalPurchase * vatRate / 100);
   };
 
