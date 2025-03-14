@@ -640,7 +640,7 @@ export default function ConsumerQuotePage({ params }) {
                 {/* 부가세(VAT) 표시 */}
                 {estimate.paymentInfo?.includeVat && (
                     <div className="border border-sky-200 rounded-md p-2 bg-white flex-1 flex justify-between items-center">
-                        <span className="font-semibold text-black">카드결재시 추가금액:</span>
+                        <span className="font-semibold text-black">카드적용가:</span>
                         <span>{estimate.calculatedValues?.vatAmount?.toLocaleString() || '0'}원</span>
                     </div>
                 )}
