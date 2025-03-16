@@ -41,7 +41,6 @@ export default function BibleVerse() {
       const data = await response.json();
       
       if (data.references && Array.isArray(data.references)) {
-        console.log('최근 구절 목록 로드:', data.references);
         setSeenReferences(data.references);
       }
       
@@ -147,7 +146,8 @@ export default function BibleVerse() {
       // DB에 저장된 시간이 있는 경우, 이를 한국 시간으로 변환하여 표시
       if (data && data.createdAt) {
         const savedTime = new Date(data.createdAt); // DB 저장 시간을 Date 객체로 변환
-        setVerseTimestamp(savedTime.toLocaleString('ko-KR', { // 한국 시간으로 변환하여 타임스탬프 설정
+        const adjustedDate = new Date(savedTime.getTime() - (9 * 60 * 60 * 1000));
+        setVerseTimestamp(adjustedDate.toLocaleString('ko-KR', { // 한국 시간으로 변환하여 타임스탬프 설정
           timeZone: 'Asia/Seoul',
           year: 'numeric',
           month: 'long',

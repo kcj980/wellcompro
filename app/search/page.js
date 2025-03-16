@@ -43,7 +43,6 @@ export default function SearchPage() {
       }
       
       const data = await response.json();
-      console.log('Loaded estimates:', data);
       
       if (!data.success) {
         throw new Error(data.message || '견적 목록을 불러오는데 실패했습니다.');
