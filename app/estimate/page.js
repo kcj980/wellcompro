@@ -114,12 +114,14 @@ function EstimateContent() {
   const [isCustomManager, setIsCustomManager] = useState(false);
   const [isCustomLaborCost, setIsCustomLaborCost] = useState(false);
   const [isCustomSetupCost, setIsCustomSetupCost] = useState(false);
+  const [isCustomTuningCost, setIsCustomTuningCost] = useState(false);
   const [isCustomPaymentMethod, setIsCustomPaymentMethod] = useState(false); // 결제 방법 직접 입력 모드 상태
 
   /**
    * 결제 정보를 관리하는 상태
    * laborCost: 공임비 (기술료)
    * setupCost: 세팅비 (OS 설치, 초기 설정 등)
+   * tuningCost: 튜닝금액
    * discount: 할인 금액
    * deposit: 계약금 (선수금)
    * includeVat: 부가가치세(VAT) 포함 여부
@@ -130,6 +132,7 @@ function EstimateContent() {
   const [paymentInfo, setPaymentInfo] = useState({
     laborCost: 0,         // 공임비
     setupCost: 0,         // 세팅비
+    tuningCost: 0,        // 튜닝금액
     discount: 0,          // 할인
     deposit: 0,           // 계약금
     includeVat: true,     // VAT 포함 여부 (기본 활성화)
@@ -143,7 +146,7 @@ function EstimateContent() {
   /**
    * 계산된 금액 값들을 저장하는 상태
    * productTotal: 상품/부품의 합계 금액
-   * totalPurchase: 총 구입 금액 (상품 합계 + 공임비 + 세팅비 - 할인)
+   * totalPurchase: 총 구입 금액 (상품 합계 + 공임비 + 세팅비 + 튜닝금액 - 할인)
    * vatAmount: VAT 금액
    * finalPayment: 최종 결제 금액 (총 구입 금액 + VAT, 버림 적용)
    */
@@ -695,7 +698,7 @@ function EstimateContent() {
 
   /**
    * 총 구입 금액 계산 함수
-   * 상품 합계 + 공임비 + 세팅비 - 할인
+   * 상품 합계 + 공임비 + 세팅비 + 튜닝금액 - 할인
    * @returns {number} 총 구입 금액
    */
   const calculateTotalPurchase = () => {
@@ -703,9 +706,10 @@ function EstimateContent() {
     // 숫자 값 필드 사용 (없으면 기존 방식으로 fallback)
     const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (Number(paymentInfo.laborCost) || 0);
     const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (Number(paymentInfo.setupCost) || 0);
+    const tuningCost = paymentInfo.tuningCost !== undefined ? paymentInfo.tuningCost : (Number(paymentInfo.tuningCost) || 0);
     const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (Number(paymentInfo.discount) || 0);
     
-    let total = productTotal + laborCost + setupCost - discount;
+    let total = productTotal + laborCost + setupCost + tuningCost - discount;
     
     // 버림 적용 (100원, 1000원 또는 10000원 단위)
     if (paymentInfo.roundingType === '100down') {
@@ -751,62 +755,22 @@ function EstimateContent() {
   // 결제 정보 변경 시 호출되는 함수
   const handlePaymentInfoChange = (e) => {
     const { name, value } = e.target;
-    
-    // 체크박스(includeVat)인 경우 그대로 처리
-    if (name === 'includeVat') {
-      const isChecked = e.target.checked;
-      setPaymentInfo(prev => ({
-        ...prev,
-        [name]: isChecked
-      }));
+    let processedValue = value;
+
+    // 금액 입력 필드의 경우 콤마 제거 후 숫자만 유지
+    if (['laborCost', 'setupCost', 'tuningCost', 'discount', 'deposit', 'shippingCost'].includes(name)) {
+      // 콤마 제거하고 숫자만 추출
+      const numericValue = value.replace(/,/g, '').replace(/[^0-9]/g, '');
       
-      // VAT 포함 체크박스 상태에 따라 결제 방법 자동 변경
-      if (isChecked) {
-        // VAT 포함이 체크되면 결제 방법을 '카드'로 설정
-        setPaymentInfo(prev => ({
-          ...prev,
-          [name]: isChecked,
-          paymentMethod: '카드'
-        }));
-        setIsCustomPaymentMethod(false); // 직접 입력 모드 해제
-      } else {
-        // VAT 포함이 체크 해제되면 결제 방법을 '현금'으로 설정
-        setPaymentInfo(prev => ({
-          ...prev,
-          [name]: isChecked,
-          paymentMethod: '현금'
-        }));
-        setIsCustomPaymentMethod(false); // 직접 입력 모드 해제
-      }
-      return;
+      // 빈 문자열이거나 유효한 숫자가 아니면 0으로 설정
+      processedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
     }
     
-    // 금액 관련 필드인 경우 (laborCost, setupCost, discount, deposit, shippingCost)
-    if (['laborCost', 'setupCost', 'discount', 'deposit', 'shippingCost'].includes(name)) {
-      // 입력값에서 콤마(,) 제거
-      const numericValue = value.replace(/,/g, '');
-      
-      // 숫자만 입력되었는지 확인 (빈 문자열 허용)
-      if (numericValue === '' || /^\d+$/.test(numericValue)) {
-        // 숫자 형식으로 변환하여 3자리마다 콤마 추가 (화면 표시용)
-        const formattedValue = numericValue === '' ? '' : Number(numericValue).toLocaleString();
-        
-        // 화면에는 콤마가 포함된 문자열로 표시하고, 내부적으로는 숫자 값으로 저장
-        setPaymentInfo(prev => ({
-          ...prev,
-          [name]: numericValue === '' ? 0 : parseInt(numericValue)
-        }));
-        
-        // 입력 필드의 값은 콤마가 포함된 문자열로 설정 (React의 제어 컴포넌트 패턴)
-        e.target.value = formattedValue;
-      }
-    } else {
-      // 금액 관련 필드가 아닌 경우 그대로 처리
-      setPaymentInfo(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    // 상태 업데이트
+    setPaymentInfo(prev => ({
+      ...prev,
+      [name]: processedValue
+    }));
   };
 
   // 참고사항 변경 시 호출되는 함수
@@ -1366,6 +1330,20 @@ function EstimateContent() {
       window.removeEventListener('message', handleDanawaExtensionData);
     };
   }, []);
+
+  // 튜닝 버튼 클릭 시 호출되는 함수
+  const handleTuningCostToggle = () => {
+    const newState = !isCustomTuningCost;
+    setIsCustomTuningCost(newState);
+    
+    if (newState) {
+      // 튜닝 모드 활성화 - 입력 필드 초기화
+      setPaymentInfo(prev => ({ ...prev, tuningCost: '' }));
+    } else {
+      // 튜닝 모드 비활성화 - 입력 값을 0으로 초기화
+      setPaymentInfo(prev => ({ ...prev, tuningCost: 0 }));
+    }
+  };
 
   // JSX 렌더링 시작
   return (
@@ -2482,6 +2460,17 @@ function EstimateContent() {
                           >
                             직접입력
                           </button>
+                          <button
+                            type="button"
+                            onClick={handleTuningCostToggle}
+                            className={`px-3 py-1 rounded-md text-sm ${
+                              isCustomTuningCost
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            튜닝
+                          </button>
                         </div>
                         {isCustomLaborCost && (
                           <input
@@ -2492,6 +2481,21 @@ function EstimateContent() {
                             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="공임비를 입력하세요"
                           />
+                        )}
+                        {isCustomTuningCost && (
+                          <div className="mt-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              튜닝금액 <span className="text-green-600">+</span>
+                            </label>
+                            <input
+                              type="text"
+                              name="tuningCost"
+                              value={paymentInfo.tuningCost ? paymentInfo.tuningCost.toLocaleString() : ''}
+                              onChange={handlePaymentInfoChange}
+                              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="튜닝금액 입력"
+                            />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -2568,7 +2572,7 @@ function EstimateContent() {
                     {/* 총 구입 금액 */}
                     <div className="p-3 bg-white rounded-md border border-gray-200">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        총 구입 금액 <span className="text-xs text-gray-500">(상품/부품+공임비+세팅비-할인)</span>
+                        총 구입 금액 <span className="text-xs text-gray-500">(상품/부품+공임비+세팅비+튜닝금액-할인)</span>
                       </label>
                       <div className="flex justify-between items-center">
                         <div className="text-lg font-semibold text-gray-900">
@@ -2584,8 +2588,9 @@ function EstimateContent() {
                               const productTotal = calculateProductTotal();
                               const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
                               const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                              const tuningCost = paymentInfo.tuningCost !== undefined ? paymentInfo.tuningCost : (parseInt(paymentInfo.tuningCost) || 0);
                               const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
-                              const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                              const totalBeforeRounding = productTotal + laborCost + setupCost + tuningCost - discount;
                               
                               // 버림 적용
                               const roundingType = '100down';
@@ -2615,8 +2620,9 @@ function EstimateContent() {
                               const productTotal = calculateProductTotal();
                               const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
                               const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                              const tuningCost = paymentInfo.tuningCost !== undefined ? paymentInfo.tuningCost : (parseInt(paymentInfo.tuningCost) || 0);
                               const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
-                              const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                              const totalBeforeRounding = productTotal + laborCost + setupCost + tuningCost - discount;
                               
                               // 버림 적용
                               const roundingType = '1000down';
@@ -2646,8 +2652,9 @@ function EstimateContent() {
                               const productTotal = calculateProductTotal();
                               const laborCost = paymentInfo.laborCost !== undefined ? paymentInfo.laborCost : (parseInt(paymentInfo.laborCost) || 0);
                               const setupCost = paymentInfo.setupCost !== undefined ? paymentInfo.setupCost : (parseInt(paymentInfo.setupCost) || 0);
+                              const tuningCost = paymentInfo.tuningCost !== undefined ? paymentInfo.tuningCost : (parseInt(paymentInfo.tuningCost) || 0);
                               const discount = paymentInfo.discount !== undefined ? paymentInfo.discount : (parseInt(paymentInfo.discount) || 0);
-                              const totalBeforeRounding = productTotal + laborCost + setupCost - discount;
+                              const totalBeforeRounding = productTotal + laborCost + setupCost + tuningCost - discount;
                               
                               // 버림 적용
                               const roundingType = '10000down';

@@ -40,6 +40,7 @@ const EstimateSchema = new mongoose.Schema({
   // 결제 정보
   paymentInfo: {
     laborCost: Number,         // 공임비
+    tuningCost: Number,        // 튜닝금액
     setupCost: Number,         // 세팅비
     discount: Number,          // 할인
     deposit: Number,           // 계약금
