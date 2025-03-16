@@ -5,14 +5,43 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// 기존 GET 방식 유지 (하위 호환성)
 export async function GET() {
+  return generateBibleVerse([]);
+}
+
+// 새로운 POST 방식 처리 (제외할 구절 목록 받기)
+export async function POST(request) {
   try {
+    const body = await request.json();
+    const excludeReferences = body.excludeReferences || [];
+    
+    return generateBibleVerse(excludeReferences);
+  } catch (error) {
+    console.error('Bible API POST error:', error);
+    return NextResponse.json(
+      { error: '성경 구절을 가져오는 데 실패했습니다.' },
+      { status: 500 }
+    );
+  }
+}
+
+// 성경 구절 생성 함수 (GET, POST 모두 사용)
+async function generateBibleVerse(excludeReferences = []) {
+  try {
+    // 제외할 구절 목록 문자열로 변환
+    const excludeList = excludeReferences.length > 0 
+      ? `다음 구절들은 제외해주세요: ${excludeReferences.join(', ')}.` 
+      : '';
+
     const prompt = `
     의미있는 성경구절을 랜덤하게 하나 선택해서 다음 포맷으로 알려주세요:
     
     1. 출처: [책 이름 장:절]
     2. 구절 내용: [성경 구절 내용]
     3. 설명: [한국어로 이 구절이 우리 삶에 주는 의미에 대한 간단한 설명]
+    
+    ${excludeList}
     
     JSON 형식으로 아래와 같이 응답해주세요:
     {

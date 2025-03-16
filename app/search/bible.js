@@ -6,17 +6,38 @@ export default function BibleVerse() {
   const [verseData, setVerseData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [cooldown, setCooldown] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  const [seenReferences, setSeenReferences] = useState([]);
 
   const fetchBibleVerse = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/bible');
+      const response = await fetch('/api/bible', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          excludeReferences: seenReferences
+        }),
+      });
+      
       if (!response.ok) {
         throw new Error('API 요청에 실패했습니다');
       }
+      
       const data = await response.json();
       setVerseData(data);
+      
+      if (data && data.reference) {
+        setSeenReferences(prev => [...prev, data.reference]);
+      }
+      
       setError(null);
+      
+      setCooldown(true);
+      setCooldownTime(35);
     } catch (err) {
       setError('성경 구절을 불러오는 데 실패했습니다. 다시 시도해 주세요.');
       console.error(err);
@@ -24,6 +45,26 @@ export default function BibleVerse() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let timer;
+    if (cooldown && cooldownTime > 0) {
+      timer = setInterval(() => {
+        setCooldownTime((prevTime) => {
+          if (prevTime <= 1) {
+            setCooldown(false);
+            clearInterval(timer);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [cooldown, cooldownTime]);
 
   useEffect(() => {
     fetchBibleVerse();
@@ -38,8 +79,10 @@ export default function BibleVerse() {
         </div>
         <button 
           onClick={fetchBibleVerse} 
-          className="px-3 py-1.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-all duration-300 shadow-sm flex items-center gap-1.5 text-xs"
-          disabled={loading}
+          className={`px-3 py-1.5 text-white rounded-full transition-all duration-300 shadow-sm flex items-center gap-1.5 text-xs
+            ${cooldown ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}
+          `}
+          disabled={loading || cooldown}
         >
           {loading ? (
             <>
@@ -48,6 +91,13 @@ export default function BibleVerse() {
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               <span>불러오는 중</span>
+            </>
+          ) : cooldown ? (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{cooldownTime}초 후 가능</span>
             </>
           ) : (
             <>
@@ -78,15 +128,11 @@ export default function BibleVerse() {
         </div>
       ) : verseData && (
         <div className="relative">
-          {/* 배경 장식 요소 - 더 작게 수정 */}
           <div className="absolute -top-2 -left-2 w-16 h-16 rounded-full bg-blue-50 opacity-30 blur-lg z-0"></div>
           <div className="absolute bottom-2 -right-2 w-16 h-16 rounded-full bg-amber-50 opacity-30 blur-lg z-0"></div>
           
-          {/* 통합된 내용 컨테이너 */}
           <div className="bg-white rounded-lg overflow-hidden shadow-md relative z-10 border border-slate-100">
-            {/* 헤더와 콘텐츠를 가로로 배치 */}
             <div className="grid grid-cols-1 md:grid-cols-4">
-              {/* 헤더 영역 - 세로 형태로 */}
               <div className="bg-gradient-to-r from-violet-500 to-fuchsia-500 p-3 text-white relative md:col-span-1">
                 <div className="absolute top-0 right-0 w-full h-full opacity-10">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -106,10 +152,8 @@ export default function BibleVerse() {
                 </div>
               </div>
 
-              {/* 내용 영역 */}
               <div className="p-3 md:col-span-3">
                 <div className="grid grid-cols-1 gap-2">
-                  {/* 성경 구절 */}
                   <div>
                     <div className="flex items-center gap-1.5 mb-1">
                       <div className="w-4 h-4 rounded-full bg-amber-100 flex items-center justify-center text-amber-500">
@@ -124,7 +168,6 @@ export default function BibleVerse() {
                     </div>
                   </div>
 
-                  {/* 설명 */}
                   <div>
                     <div className="flex items-center gap-1.5 mb-1">
                       <div className="w-4 h-4 rounded-full bg-teal-100 flex items-center justify-center text-teal-500">
@@ -138,7 +181,6 @@ export default function BibleVerse() {
                   </div>
                 </div>
 
-                {/* 푸터 텍스트 */}
                 <div className="text-right mt-2 text-slate-400 text-[10px] italic">
                   <p>하나님의 말씀이 당신의 하루에 빛이 되기를</p>
                 </div>
