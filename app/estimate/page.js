@@ -1106,6 +1106,11 @@ function EstimateContent() {
                 parseInt(data.estimate.paymentInfo.setupCost)
               );
               setIsCustomSetupCost(customSetupCost);
+              
+              // 튜닝금액이 있으면 튜닝 모드 활성화
+              if (data.estimate.paymentInfo.tuningCost && data.estimate.paymentInfo.tuningCost > 0) {
+                setIsCustomTuningCost(true);
+              }
             }
             
             // 참고사항 설정
@@ -1337,8 +1342,11 @@ function EstimateContent() {
     setIsCustomTuningCost(newState);
     
     if (newState) {
-      // 튜닝 모드 활성화 - 입력 필드 초기화
-      setPaymentInfo(prev => ({ ...prev, tuningCost: '' }));
+      // 튜닝 모드 활성화 - 기존 값이 없을 때만 초기화
+      if (!paymentInfo.tuningCost) {
+        setPaymentInfo(prev => ({ ...prev, tuningCost: '' }));
+      }
+      // 기존 값이 있으면 유지 (아무것도 하지 않음)
     } else {
       // 튜닝 모드 비활성화 - 입력 값을 0으로 초기화
       setPaymentInfo(prev => ({ ...prev, tuningCost: 0 }));
@@ -2466,7 +2474,7 @@ function EstimateContent() {
                             className={`px-3 py-1 rounded-md text-sm ${
                               isCustomTuningCost
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                : 'bg-orange-200 text-gray-700 hover:bg-orange-300'
                             }`}
                           >
                             튜닝
@@ -2572,7 +2580,7 @@ function EstimateContent() {
                     {/* 총 구입 금액 */}
                     <div className="p-3 bg-white rounded-md border border-gray-200">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        총 구입 금액 <span className="text-xs text-gray-500">(상품/부품+공임비+세팅비+튜닝금액-할인)</span>
+                        총 구입 금액 <span className="text-xs text-gray-500">(상품/부품+공임비+세팅비+튜닝비-할인)</span>
                       </label>
                       <div className="flex justify-between items-center">
                         <div className="text-lg font-semibold text-gray-900">
