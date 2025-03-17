@@ -754,16 +754,34 @@ function EstimateContent() {
 
   // 결제 정보 변경 시 호출되는 함수
   const handlePaymentInfoChange = (e) => {
-    const { name, value } = e.target;
-    let processedValue = value;
-
+    const { name, value, type, checked } = e.target;
+    let processedValue;
+    
+    // 체크박스의 경우 checked 속성 사용
+    if (type === 'checkbox') {
+      processedValue = checked;
+      
+      // VAT 포함 체크박스가 변경될 때 결제방법 자동 설정
+      if (name === 'includeVat') {
+        setPaymentInfo(prev => ({
+          ...prev,
+          [name]: processedValue,
+          // 체크하면 카드, 체크 해제하면 현금으로 설정
+          paymentMethod: checked ? '카드' : '현금'
+        }));
+        return; // 여기서 함수 종료 (아래 코드 실행 방지)
+      }
+    }
     // 금액 입력 필드의 경우 콤마 제거 후 숫자만 유지
-    if (['laborCost', 'setupCost', 'tuningCost', 'discount', 'deposit', 'shippingCost'].includes(name)) {
+    else if (['laborCost', 'setupCost', 'tuningCost', 'discount', 'deposit', 'shippingCost'].includes(name)) {
       // 콤마 제거하고 숫자만 추출
       const numericValue = value.replace(/,/g, '').replace(/[^0-9]/g, '');
       
       // 빈 문자열이거나 유효한 숫자가 아니면 0으로 설정
       processedValue = numericValue === '' ? 0 : parseInt(numericValue, 10);
+    }
+    else {
+      processedValue = value;
     }
     
     // 상태 업데이트
@@ -896,7 +914,9 @@ function EstimateContent() {
           discount: Number(paymentInfo.discount || 0),
           deposit: Number(paymentInfo.deposit || 0),
           shippingCost: Number(paymentInfo.shippingCost || 0),
-          vatRate: Number(paymentInfo.vatRate || 0)
+          vatRate: Number(paymentInfo.vatRate || 0),
+          // includeVat는 반드시 불리언 값으로 저장
+          includeVat: Boolean(paymentInfo.includeVat)
         },
         calculatedValues,
         notes,
@@ -1137,10 +1157,7 @@ function EstimateContent() {
     }
   }, [estimateId, isEditMode]);
 
-  /**
-   * 결제 정보나 상품 목록이 변경될 때마다 계산된 값 업데이트
-   * 상품 목록이 변경되거나 결제 관련 설정이 변경될 때 자동으로 금액 다시 계산
-   */
+  // paymentInfo 또는 tableData가 변경될 때마다 계산된 금액 업데이트
   useEffect(() => {
     updateCalculatedValues();
   }, [paymentInfo, tableData]);

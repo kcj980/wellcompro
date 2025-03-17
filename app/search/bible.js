@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
+//현재사용은 안하고 있음 gpt사용한거 저장용
 /**
  * BibleVerse 컴포넌트 - 성경 구절을 불러와 표시하는 컴포넌트
  * 처음 로드 시 DB에서 최신 구절을 불러오고, 새로운 구절 버튼 클릭 시 새 구절을 요청함
