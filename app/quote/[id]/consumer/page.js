@@ -605,17 +605,17 @@ export default function ConsumerQuotePage({ params }) {
             {/* 공임비(제작/조립비), 세팅비(SW), 할인 한 줄에 표시 */}
             <div className="flex gap-1">
               <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1] flex justify-between">
-                <span className="font-semibold text-black">공임비(제작비):</span>
+                <span className="font-semibold text-black">공임(제작비):</span>
                 <span>{estimate.paymentInfo?.laborCost ? `${estimate.paymentInfo.laborCost.toLocaleString()}원` : ''}</span>
               </div>
               {estimate.paymentInfo?.tuningCost > 0 && (
-                <div className="border border-sky-200 rounded-md p-1 bg-white flex-[0.7] flex justify-between">
-                  <span className="font-semibold text-black">튜닝비:</span>
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-[0.9] flex justify-between">
+                  <span className="font-semibold text-black">수냉/튜닝:</span>
                   <span>{estimate.paymentInfo?.tuningCost ? `${estimate.paymentInfo.tuningCost.toLocaleString()}원` : ''}</span>
                 </div>
               )}
               <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1] flex justify-between">
-                <span className="font-semibold text-black">세팅비(SW):</span>
+                <span className="font-semibold text-black">세팅(SW):</span>
                 <span>{estimate.paymentInfo?.setupCost ? `${estimate.paymentInfo.setupCost.toLocaleString()}원` : ''}</span>
               </div>
               {estimate.paymentInfo?.discount > 0 && (
