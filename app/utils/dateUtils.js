@@ -4,7 +4,7 @@
  */
 export function getKoreanISOString() {
   const now = new Date();
-  const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000)); // UTC+9
+  const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000); // UTC+9
   return koreaTime.toISOString();
 }
 
@@ -22,6 +22,6 @@ export function getKoreanDate() {
  * @returns {string} YYYY-MM-DD 형식의 날짜 문자열
  */
 export function formatDateToKoreanDate(date) {
-  const koreaTime = new Date(date.getTime() + (9 * 60 * 60 * 1000)); // UTC+9
+  const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000); // UTC+9
   return koreaTime.toISOString().split('T')[0];
-} 
+}

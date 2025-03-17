@@ -8,29 +8,29 @@ export default function EstimateDetail({ params }) {
   const [error, setError] = useState(null);
   const router = useRouter();
   const { id } = params;
-  
+
   // 견적 데이터를 불러오는 함수
   useEffect(() => {
     const fetchEstimate = async () => {
       try {
         setLoading(true);
-        
+
         // API를 통해 견적 데이터 불러오기
         const response = await fetch(`/api/estimates/${id}`, {
-          cache: 'no-store'
+          cache: 'no-store',
         });
-        
+
         if (!response.ok) {
           throw new Error(`서버 오류: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Loaded estimate:', data);
-        
+
         if (!data.success || !data.estimate) {
           throw new Error(data.message || '견적을 찾을 수 없습니다.');
         }
-        
+
         setEstimate(data.estimate);
         setError(null);
       } catch (err) {
@@ -40,75 +40,75 @@ export default function EstimateDetail({ params }) {
         setLoading(false);
       }
     };
-    
+
     if (id) {
       fetchEstimate();
     }
   }, [id]);
-  
+
   // 목록 페이지로 돌아가는 함수
   const handleBackClick = () => {
     router.push('/search');
   };
-  
+
   // 날짜 형식 변환 함수(견적 생성, 수정일)
-  const formatDate = (dateString) => {
+  const formatDate = dateString => {
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
-    // 날짜 형식 변환 함수(출고일자)
-    const formatDateRelease = (dateString) => {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      
-      return `${year}-${month}-${day}`;
-    };
-  
+  // 날짜 형식 변환 함수(출고일자)
+  const formatDateRelease = dateString => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
   // 견적 페이지로 이동하여 수정하는 함수
   const handleEditClick = () => {
     // 수정 페이지로 이동하면서 id 파라미터를 전달
     router.push(`/estimate?id=${id}`);
   };
-  
+
   // 견적서 페이지로 이동하는 함수
   const handleQuoteClick = () => {
     // 견적서 페이지로 이동
     router.push(`/quote/${id}`);
   };
-  
+
   // 견적 삭제 함수
   const handleDeleteClick = async () => {
     if (!window.confirm('정말로 이 견적을 삭제하시겠습니까?')) {
       return;
     }
-    
+
     try {
       setLoading(true);
-      
+
       // API를 통해 견적 삭제 요청
       const response = await fetch(`/api/estimates/${id}`, {
         method: 'DELETE',
-        cache: 'no-store'
+        cache: 'no-store',
       });
-      
+
       if (!response.ok) {
         throw new Error(`서버 오류: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (!data.success) {
         throw new Error(data.message || '견적 삭제 중 오류가 발생했습니다.');
       }
-      
+
       alert('견적이 성공적으로 삭제되었습니다.');
       router.push('/search');
     } catch (err) {
@@ -118,7 +118,7 @@ export default function EstimateDetail({ params }) {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,20 +128,42 @@ export default function EstimateDetail({ params }) {
             onClick={handleBackClick}
             className="flex items-center text-blue-600 hover:text-blue-800"
           >
-            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <svg
+              className="w-5 h-5 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             목록으로 돌아가기
           </button>
-          
+
           <div className="flex gap-2">
             <button
               onClick={handleQuoteClick}
               className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center"
               disabled={loading || error}
             >
-              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              <svg
+                className="w-5 h-5 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                />
               </svg>
               견적서
             </button>
@@ -161,16 +183,16 @@ export default function EstimateDetail({ params }) {
             </button>
           </div>
         </div>
-        
+
         <h1 className="text-2xl font-bold mb-6">견적 상세 정보</h1>
-        
+
         {/* 로딩 상태 표시 */}
         {loading && (
           <div className="flex justify-center py-10">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
           </div>
         )}
-        
+
         {/* 에러 표시 */}
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
@@ -178,7 +200,7 @@ export default function EstimateDetail({ params }) {
             <span className="block sm:inline">{error}</span>
           </div>
         )}
-        
+
         {/* 견적 데이터가 있을 때만 표시 */}
         {!loading && !error && estimate && (
           <div className="space-y-6">
@@ -186,7 +208,9 @@ export default function EstimateDetail({ params }) {
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center mb-4">
                 <h2 className="text-xl font-semibold mr-2">고객 정보</h2>
-                <div className={`px-3 py-1 rounded-full text-sm font-semibold ${estimate.isContractor ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                <div
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${estimate.isContractor ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                >
                   {estimate.isContractor ? '계약자' : '비계약자'}
                 </div>
               </div>
@@ -215,12 +239,13 @@ export default function EstimateDetail({ params }) {
                   <div className="text-sm font-medium text-gray-500">구입형태</div>
                   <div className="mt-1">
                     {estimate.customerInfo?.purchaseType || '-'}
-                    {estimate.customerInfo?.purchaseType === '지인' ? estimate.customerInfo?.purchaseTypeName && (
-                      <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>
-                    ) : (
-                      estimate.customerInfo?.purchaseTypeName && (
-                      <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>)
-                    )}
+                    {estimate.customerInfo?.purchaseType === '지인'
+                      ? estimate.customerInfo?.purchaseTypeName && (
+                          <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>
+                        )
+                      : estimate.customerInfo?.purchaseTypeName && (
+                          <span className="ml-1">({estimate.customerInfo.purchaseTypeName})</span>
+                        )}
                   </div>
                 </div>
                 <div>
@@ -245,15 +270,23 @@ export default function EstimateDetail({ params }) {
             {/* 견적설명 섹션 */}
             {estimate.estimateDescription && (
               <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">견적설명<span className="text-sm text-gray-500 ml-1">(견적서에 포함되는 내용)</span></h2>
-                <div className="whitespace-pre-wrap text-gray-700">{estimate.estimateDescription}</div>
+                <h2 className="text-xl font-semibold mb-4">
+                  견적설명
+                  <span className="text-sm text-gray-500 ml-1">(견적서에 포함되는 내용)</span>
+                </h2>
+                <div className="whitespace-pre-wrap text-gray-700">
+                  {estimate.estimateDescription}
+                </div>
               </div>
             )}
-            
+
             {/* 참고사항 섹션 */}
             {estimate.notes && (
               <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">참고사항<span className="text-sm text-gray-500 ml-1">(견적서에 포함되지 않는 내용)</span></h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  참고사항
+                  <span className="text-sm text-gray-500 ml-1">(견적서에 포함되지 않는 내용)</span>
+                </h2>
                 <div className="whitespace-pre-wrap text-gray-700">{estimate.notes}</div>
               </div>
             )}
@@ -267,36 +300,68 @@ export default function EstimateDetail({ params }) {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">분류</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">현금가</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품코드</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">총판</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">재조사</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">비고</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        분류
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        상품명
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        수량
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        현금가
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        상품코드
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        총판
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        재조사
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        비고
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {estimate.tableData?.map((item, index) => (
                       <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.category || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productName || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity || '-'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {item.price ? `${Number(String(item.price).replace(/,/g, '')).toLocaleString()}원` : '-'}
+                          {item.category || '-'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productCode || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.distributor || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.reconfirm || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.remarks || '-'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.productName || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.quantity || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.price
+                            ? `${Number(String(item.price).replace(/,/g, '')).toLocaleString()}원`
+                            : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.productCode || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.distributor || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.reconfirm || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.remarks || '-'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-            
+
             {/* 결제 정보 섹션 */}
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">결제 정보</h2>
@@ -309,19 +374,27 @@ export default function EstimateDetail({ params }) {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">공임비</div>
-                  <div className="mt-1">{estimate.paymentInfo?.laborCost?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.laborCost?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">튜닝비</div>
-                  <div className="mt-1">{estimate.paymentInfo?.tuningCost?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.tuningCost?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">세팅비</div>
-                  <div className="mt-1">{estimate.paymentInfo?.setupCost?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.setupCost?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">할인</div>
-                  <div className="mt-1">{estimate.paymentInfo?.discount?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.discount?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">총 구입 금액</div>
@@ -331,11 +404,15 @@ export default function EstimateDetail({ params }) {
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">계약금</div>
-                  <div className="mt-1">{estimate.paymentInfo?.deposit?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.deposit?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">택배비</div>
-                  <div className="mt-1">{estimate.paymentInfo?.shippingCost?.toLocaleString() || 0}원</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.shippingCost?.toLocaleString() || 0}원
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-medium text-gray-500">VAT 정보</div>
@@ -353,9 +430,13 @@ export default function EstimateDetail({ params }) {
                 <div>
                   <div className="text-sm font-medium text-gray-500">버림 설정</div>
                   <div className="mt-1">
-                    {estimate.paymentInfo?.roundingType === '100down' ? '100원 단위 버림' :
-                     estimate.paymentInfo?.roundingType === '1000down' ? '1,000원 단위 버림' :
-                     estimate.paymentInfo?.roundingType === '10000down' ? '10,000원 단위 버림' : '버림 없음'}
+                    {estimate.paymentInfo?.roundingType === '100down'
+                      ? '100원 단위 버림'
+                      : estimate.paymentInfo?.roundingType === '1000down'
+                        ? '1,000원 단위 버림'
+                        : estimate.paymentInfo?.roundingType === '10000down'
+                          ? '10,000원 단위 버림'
+                          : '버림 없음'}
                   </div>
                 </div>
                 <div>
@@ -367,13 +448,14 @@ export default function EstimateDetail({ params }) {
                 {estimate.paymentInfo?.releaseDate && (
                   <div>
                     <div className="text-sm font-medium text-gray-500">출고일자</div>
-                    <div className="mt-1">{formatDateRelease(estimate.paymentInfo.releaseDate)}</div>
+                    <div className="mt-1">
+                      {formatDateRelease(estimate.paymentInfo.releaseDate)}
+                    </div>
                   </div>
                 )}
-
               </div>
             </div>
-            
+
             {/* 서비스 물품 섹션 */}
             {estimate.serviceData && estimate.serviceData.length > 0 && (
               <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -384,17 +466,29 @@ export default function EstimateDetail({ params }) {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상품명</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수량</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">비고</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          상품명
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          수량
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          비고
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {estimate.serviceData.map((item, index) => (
                         <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.productName || '-'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.quantity || '-'}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.remarks || '-'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {item.productName || '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {item.quantity || '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {item.remarks || '-'}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -402,8 +496,7 @@ export default function EstimateDetail({ params }) {
                 </div>
               </div>
             )}
-            
-            
+
             {/* 최종 금액 및 생성일 섹션 */}
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex flex-col md:flex-row justify-between">
@@ -434,20 +527,42 @@ export default function EstimateDetail({ params }) {
             onClick={handleBackClick}
             className="flex items-center text-blue-600 hover:text-blue-800"
           >
-            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <svg
+              className="w-5 h-5 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             목록으로 돌아가기
           </button>
-          
+
           <div className="flex gap-2">
             <button
               onClick={handleQuoteClick}
               className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center"
               disabled={loading || error}
             >
-              <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              <svg
+                className="w-5 h-5 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                />
               </svg>
               견적서
             </button>
@@ -467,9 +582,7 @@ export default function EstimateDetail({ params }) {
             </button>
           </div>
         </div>
-        
       </div>
-      
     </div>
   );
-} 
+}

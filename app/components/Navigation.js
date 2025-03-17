@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 export default function Navigation() {
   const pathname = usePathname();
 
-  const isActive = (path) => {
+  const isActive = path => {
     return pathname === path;
   };
 
@@ -20,15 +20,16 @@ export default function Navigation() {
               </span>
             </Link>
           </div>
-          
+
           <div className="hidden md:block">
             <div className="flex items-center space-x-4">
               <Link
                 href="/estimate"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
-                  ${isActive('/estimate')
-                    ? 'bg-blue-700 text-white shadow-lg'
-                    : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
+                  ${
+                    isActive('/estimate')
+                      ? 'bg-blue-700 text-white shadow-lg'
+                      : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
                   }`}
               >
                 견적
@@ -36,9 +37,10 @@ export default function Navigation() {
               <Link
                 href="/search"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
-                  ${isActive('/search')
-                    ? 'bg-blue-700 text-white shadow-lg'
-                    : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
+                  ${
+                    isActive('/search')
+                      ? 'bg-blue-700 text-white shadow-lg'
+                      : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
                   }`}
               >
                 검색
@@ -46,9 +48,10 @@ export default function Navigation() {
               <Link
                 href="/"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out
-                  ${isActive('/')
-                    ? 'bg-blue-700 text-white shadow-lg'
-                    : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
+                  ${
+                    isActive('/')
+                      ? 'bg-blue-700 text-white shadow-lg'
+                      : 'text-blue-100 hover:bg-blue-700/50 hover:text-white'
                   }`}
               >
                 사용법

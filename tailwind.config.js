@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       padding: {
-        '4.5': '1.125rem', // 18px에 해당하는 값 추가
-        '2.5': '0.625rem', // 18px에 해당하는 값 추가
+        4.5: '1.125rem', // 18px에 해당하는 값 추가
+        2.5: '0.625rem', // 18px에 해당하는 값 추가
       },
       colors: {
         'sky-150': '#e6f4fa', // bg-sky-100과 bg-sky-200 사이의 색상 코드
@@ -21,4 +21,4 @@ module.exports = {
     },
   },
   plugins: [],
-} 
+};

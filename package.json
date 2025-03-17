@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -24,7 +26,9 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
+    "eslint-config-prettier": "^10.1.1",
     "postcss": "^8.4.35",
+    "prettier": "^3.5.3",
     "tailwindcss": "^3.4.1"
   }
 }

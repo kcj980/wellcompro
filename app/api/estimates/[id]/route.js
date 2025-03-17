@@ -7,35 +7,40 @@ export async function GET(request, { params }) {
   try {
     // DB 연결
     await connectToDatabase();
-    
+
     const { id } = params;
-    
+
     // ID로 견적 찾기
     const estimate = await Estimate.findById(id);
-    
+
     // 견적이 없는 경우
     if (!estimate) {
-      return NextResponse.json({ 
-        success: false, 
-        message: '견적을 찾을 수 없습니다.'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: '견적을 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
     }
-    
+
     // 성공 응답 반환
-    return NextResponse.json({ 
-      success: true, 
-      estimate 
+    return NextResponse.json({
+      success: true,
+      estimate,
     });
-    
   } catch (error) {
     console.error('Error fetching estimate:', error);
-    
+
     // 에러 응답 반환
-    return NextResponse.json({ 
-      success: false, 
-      message: '견적 조회 중 오류가 발생했습니다.',
-      error: error.message 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: '견적 조회 중 오류가 발생했습니다.',
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -44,35 +49,40 @@ export async function DELETE(request, { params }) {
   try {
     // DB 연결
     await connectToDatabase();
-    
+
     const { id } = params;
-    
+
     // ID로 견적 찾아서 삭제
     const deletedEstimate = await Estimate.findByIdAndDelete(id);
-    
+
     // 견적이 없는 경우
     if (!deletedEstimate) {
-      return NextResponse.json({ 
-        success: false, 
-        message: '삭제할 견적을 찾을 수 없습니다.'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: '삭제할 견적을 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
     }
-    
+
     // 성공 응답 반환
-    return NextResponse.json({ 
-      success: true, 
-      message: '견적이 성공적으로 삭제되었습니다.'
+    return NextResponse.json({
+      success: true,
+      message: '견적이 성공적으로 삭제되었습니다.',
     });
-    
   } catch (error) {
     console.error('Error deleting estimate:', error);
-    
+
     // 에러 응답 반환
-    return NextResponse.json({ 
-      success: false, 
-      message: '견적 삭제 중 오류가 발생했습니다.',
-      error: error.message 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: '견적 삭제 중 오류가 발생했습니다.',
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -81,58 +91,69 @@ export async function PUT(request, { params }) {
   try {
     // DB 연결
     await connectToDatabase();
-    
+
     const { id } = params;
     const data = await request.json();
-    
+
     // 업데이트 전 견적 확인
     const existingEstimate = await Estimate.findById(id);
-    
+
     // 견적이 없는 경우
     if (!existingEstimate) {
-      return NextResponse.json({ 
-        success: false, 
-        message: '업데이트할 견적을 찾을 수 없습니다.'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: '업데이트할 견적을 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
     }
-    
+
     // 수정 시간 업데이트
     data.updatedAt = Date.now();
-    
+
     // 업데이트할 데이터 로깅
-    console.log('업데이트할 데이터:', JSON.stringify({
-      customerInfo: data.customerInfo,
-      tableDataCount: data.tableData.length,
-      paymentInfo: data.paymentInfo,
-      calculatedValues: data.calculatedValues,
-      notes: data.notes,
-      hasNotes: !!data.notes
-    }, null, 2));
-    
-    // ID로 견적 찾아서 업데이트
-    const updatedEstimate = await Estimate.findByIdAndUpdate(
-      id, 
-      data,
-      { new: true, runValidators: true }
+    console.log(
+      '업데이트할 데이터:',
+      JSON.stringify(
+        {
+          customerInfo: data.customerInfo,
+          tableDataCount: data.tableData.length,
+          paymentInfo: data.paymentInfo,
+          calculatedValues: data.calculatedValues,
+          notes: data.notes,
+          hasNotes: !!data.notes,
+        },
+        null,
+        2
+      )
     );
-    
-    console.log('업데이트된 견적의 notes 필드:', updatedEstimate.notes);
-    
-    // 성공 응답 반환
-    return NextResponse.json({ 
-      success: true, 
-      message: '견적이 성공적으로 업데이트되었습니다.',
-      estimate: updatedEstimate
+
+    // ID로 견적 찾아서 업데이트
+    const updatedEstimate = await Estimate.findByIdAndUpdate(id, data, {
+      new: true,
+      runValidators: true,
     });
-    
+
+    console.log('업데이트된 견적의 notes 필드:', updatedEstimate.notes);
+
+    // 성공 응답 반환
+    return NextResponse.json({
+      success: true,
+      message: '견적이 성공적으로 업데이트되었습니다.',
+      estimate: updatedEstimate,
+    });
   } catch (error) {
     console.error('Error updating estimate:', error);
-    
+
     // 에러 응답 반환
-    return NextResponse.json({ 
-      success: false, 
-      message: '견적 업데이트 중 오류가 발생했습니다.',
-      error: error.message 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: '견적 업데이트 중 오류가 발생했습니다.',
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
-} 
+}
