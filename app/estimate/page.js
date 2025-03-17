@@ -1507,11 +1507,11 @@ function EstimateContent() {
           )}
 
           {/* 여기부터 기존 폼 코드 */}
-          <div className="flex flex-col md:flex-row w-full gap-6">
+          <div className="flex flex-col md:flex-row w-full gap-2 bg-[#f3f6de] p-2">
             {/* 고객 정보 섹션 */}
             <div className="w-full md:w-2/3">
-              <div className="bg-white shadow rounded-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">고객 정보</h2>
+              <div className="bg-white shadow rounded-lg p-3">
+                <h2 className="text-xl font-semibold mb-1">고객 정보</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
@@ -1552,7 +1552,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 계약구분 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">계약구분</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1593,7 +1593,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 판매형태 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">판매형태</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1637,7 +1637,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 구입형태 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">구입형태</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1727,7 +1727,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 용도 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">용도</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1790,7 +1790,7 @@ function EstimateContent() {
                   </div>
 
                   {/* AS 조건 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">AS조건</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1831,7 +1831,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 운영체계 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">운영체계</label>
                     <div className="flex flex-col space-y-2">
                       <div className="flex flex-wrap gap-2">
@@ -1883,7 +1883,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 견적담당 - 직접입력 옵션 제거 */}
-                  <div className="mb-4">
+                  <div className="mb-1">
                     <label className="block text-sm font-medium text-gray-700 mb-1">견적담당</label>
                     <div className="flex flex-wrap gap-2">
                       <button
@@ -1916,7 +1916,7 @@ function EstimateContent() {
 
             {/* 참고사항 섹션 */}
             <div className="w-full md:w-1/3">
-              <div className="bg-white shadow rounded-lg p-6">
+              <div className="bg-white shadow rounded-lg p-3">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">참고사항</h2>
                 <div className="text-sm text-gray-500 mb-3">
                   * 참고사항은 내부용으로 견적서에는 표시되지 않습니다.
@@ -1924,7 +1924,7 @@ function EstimateContent() {
                 <textarea
                   value={notes}
                   onChange={handleNotesChange}
-                  className="w-full h-32 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full h-64 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="견적에 대한 참고사항을 입력하세요. (선택사항)"
                 ></textarea>
               </div>
@@ -1932,11 +1932,11 @@ function EstimateContent() {
           </div>
 
           {/* 상품데이터 섹션 */}
-          <div className="flex flex-wrap w-full">
+          <div className="flex flex-wrap w-full bg-[#d9e7d3] mt-2">
             {/* 첫 번째 문단 : 상품 정보 입력창 토글 버튼*/}
-            <div className="w-full md:w-1/3 p-2">
+            <div className="w-full md:w-[30%] p-2">
               {/* 상품 정보 입력창 토글 버튼 */}
-              <div className="mb-4 flex items-center">
+              <div className="mb-2 flex items-center">
                 <button
                   type="button"
                   onClick={() => setShowForm(!showForm)}
@@ -1956,14 +1956,14 @@ function EstimateContent() {
 
               {/* 기존 개별 입력 폼 */}
               {showForm && (
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">
+                <div className="bg-white rounded-lg shadow p-2 mb-2">
+                  <h2 className="text-xl font-semibold mb-2">
                     {editingId ? '상품 정보 수정' : '상품 정보 입력'}
                   </h2>
-                  <form onSubmit={handleSubmit} className="space-y-4">
+                  <form onSubmit={handleSubmit} className="space-y-1">
                     {/* 분류 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">분류</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">분류</label>
                       <textarea
                         name="category"
                         value={formData.category}
@@ -1976,8 +1976,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 상품명 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">상품명</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">상품명</label>
                       <textarea
                         name="productName"
                         value={formData.productName}
@@ -1990,8 +1990,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 수량 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">수량</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">수량</label>
                       <textarea
                         name="quantity"
                         value={formData.quantity}
@@ -2004,8 +2004,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 현금가 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">현금가</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">현금가</label>
                       <div className="flex-1 flex items-center gap-2">
                         <textarea
                           name="price"
@@ -2021,14 +2021,14 @@ function EstimateContent() {
                           onClick={multiplyPriceByQuantity}
                           className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 whitespace-nowrap text-sm"
                         >
-                          수량 곱하기
+                          수량 곱
                         </button>
                       </div>
                     </div>
 
                     {/* 상품코드 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">상품코드</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">상품코드</label>
                       <textarea
                         name="productCode"
                         value={formData.productCode}
@@ -2040,8 +2040,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 총판 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">총판</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">총판</label>
                       <textarea
                         name="distributor"
                         value={formData.distributor}
@@ -2053,8 +2053,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 재조사 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">재조사</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">재조사</label>
                       <textarea
                         name="reconfirm"
                         value={formData.reconfirm}
@@ -2066,8 +2066,8 @@ function EstimateContent() {
                     </div>
 
                     {/* 비고 */}
-                    <div className="flex items-center gap-4">
-                      <label className="w-20 text-sm font-medium text-gray-700">비고</label>
+                    <div className="flex items-center gap-1">
+                      <label className="w-20 text-sm font-bold text-gray-700">비고</label>
                       <textarea
                         name="remarks"
                         value={formData.remarks}
@@ -2113,9 +2113,9 @@ function EstimateContent() {
               )}
 
               {/* 일괄 데이터 입력 폼 */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow p-2">
                 <h2 className="text-xl font-semibold mb-4">일괄 데이터 입력</h2>
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 gap-2">
                   {/* 다나와 입력 폼 */}
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">다나와 형식</h3>
@@ -2145,7 +2145,7 @@ function EstimateContent() {
                   </div>
 
                   {/* 견적왕 입력 폼 */}
-                  <div>
+                  <div className="border-t border-gray-300 pt-2">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">견적왕 형식</h3>
                     <form onSubmit={handleQuoteKingSubmit} className="space-y-4">
                       <div>
@@ -2175,7 +2175,7 @@ function EstimateContent() {
               </div>
             </div>
             {/* 두 번째 문단: 테이블 */}
-            <div className="w-full md:w-2/3 p-2">
+            <div className="w-full md:w-[70%] p-2">
               <div className="w-full">
                 <div className="bg-white rounded-lg shadow">
                   <div className="max-w-full">
@@ -2298,12 +2298,12 @@ function EstimateContent() {
           </div>
 
           {/* 서비스 물품 섹션 */}
-          <div className="bg-white rounded-lg shadow p-6 mt-6">
-            <h2 className="text-xl font-semibold mb-4">서비스 물품</h2>
+          <div className="bg-white rounded-lg shadow p-2 mt-2 bg-[#ebd4e8]">
+            <h2 className="text-xl font-semibold mb-2">서비스 물품</h2>
 
-            <div className="flex flex-wrap -mx-2 mb-4">
+            <div className="flex flex-wrap">
               {/* 첫 번째 문단 */}
-              <div className="w-full md:w-1/3 px-2">
+              <div className="w-full md:w-1/3 px-1">
                 {/* 서비스 물품 선택 버튼 */}
                 <div className="flex flex-wrap gap-2 pb-2">
                   <button
@@ -2551,7 +2551,7 @@ function EstimateContent() {
                             className={`px-3 py-1 rounded-md text-sm ${
                               isCustomTuningCost
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-orange-200 text-gray-700 hover:bg-orange-300'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                           >
                             튜닝
