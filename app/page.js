@@ -1,4 +1,5 @@
 import UserGuide from './components/UserGuide';
+import BibleVerse from './components/bible';
 
 export default function Home() {
   return (
@@ -27,6 +28,8 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      <BibleVerse />
 
 
       <div className="mb-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg shadow-lg p-4 text-center animate-pulse">
