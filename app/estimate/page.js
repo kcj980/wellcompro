@@ -2182,31 +2182,31 @@ function EstimateContent() {
                     <table className="w-full table-fixed divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="w-[10%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[12%] px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">작업</div>
                           </th>
-                          <th className="w-[12%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[11%] px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">분류</div>
                           </th>
-                          <th className="w-[34%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[33%] px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">상품명</div>
                           </th>
-                          <th className="w-[7%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[5%] px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">수량</div>
                           </th>
-                          <th className="w-[14%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[12%] px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate text-right">현금가</div>
                           </th>
-                          <th className="w-[12%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[12%] px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">상품코드</div>
                           </th>
-                          <th className="w-[8%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[8%] px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">총판</div>
                           </th>
-                          <th className="w-[8%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[8%] px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">재조사</div>
                           </th>
-                          <th className="w-[5%] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
+                          <th className="w-[9%] px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider overflow-hidden">
                             <div className="truncate">비고</div>
                           </th>
                         </tr>
@@ -2214,7 +2214,7 @@ function EstimateContent() {
                       <tbody className="bg-white divide-y divide-gray-200">
                         {tableData.map(row => (
                           <tr key={row.id}>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="flex gap-1">
                                 <button
                                   onClick={() => handleEdit(row)}
@@ -2230,44 +2230,44 @@ function EstimateContent() {
                                 </button>
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.category}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.productName}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
-                              <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
+                            <td className="px-1 py-2">
+                              <div className="text-sm text-center text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.quantity}
                               </div>
                             </td>
-                            <td className="px-4 py-4 text-right">
+                            <td className="px-1 py-2 text-right">
                               {' '}
                               {/* 오른쪽 정렬 추가 */}
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.price}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.productCode}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.distributor}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.reconfirm}
                               </div>
                             </td>
-                            <td className="px-4 py-4">
+                            <td className="px-1 py-2">
                               <div className="text-sm text-gray-900 break-all whitespace-pre-line overflow-hidden">
                                 {row.remarks}
                               </div>
