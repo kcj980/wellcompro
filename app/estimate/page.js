@@ -1507,10 +1507,10 @@ function EstimateContent() {
           )}
 
           {/* 여기부터 기존 폼 코드 */}
-          <div className="flex w-full">
+          <div className="flex flex-col md:flex-row w-full gap-6">
             {/* 고객 정보 섹션 */}
-            <div className="flex-5">
-              <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <div className="w-full md:w-2/3">
+              <div className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-xl font-semibold mb-4">고객 정보</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
@@ -1915,8 +1915,8 @@ function EstimateContent() {
             </div>
 
             {/* 참고사항 섹션 */}
-            <div className="flex-5">
-              <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <div className="w-full md:w-1/3">
+              <div className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">참고사항</h2>
                 <div className="text-sm text-gray-500 mb-3">
                   * 참고사항은 내부용으로 견적서에는 표시되지 않습니다.
