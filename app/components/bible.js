@@ -24,11 +24,18 @@ export default function BibleVerse() {
   // 이미 본 성경 구절 참조를 저장하는 배열 (중복 방지용)
   const [seenReferences, setSeenReferences] = useState([]);
   // 구절을 가져온/저장된 시간 표시용 상태
-  const [verseTimestamp, setVerseTimestamp] = useState(new Date().toLocaleString('ko-KR'));
+  const [verseTimestamp, setVerseTimestamp] = useState('');
   // DB에서 가져온 구절인지 여부 (true: DB에서 로드, false: API에서 새로 생성)
   const [isDBVerse, setIsDBVerse] = useState(false);
   // 최근 구절 로딩 상태
   const [recentReferencesLoaded, setRecentReferencesLoaded] = useState(true);
+  // 클라이언트 사이드 렌더링 여부를 확인하는 상태
+  const [isClient, setIsClient] = useState(false);
+
+  // 클라이언트 사이드 렌더링 확인
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   /**
    * 최근 10개 구절의 reference 불러오기
@@ -94,8 +101,10 @@ export default function BibleVerse() {
         setSeenReferences(prev => [...prev, data.reference]);
       }
 
-      // 현재 시간을 한국 시간으로 설정하여 타임스탬프 저장
-      setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+      // 클라이언트 사이드에서만 시간 설정
+      if (typeof window !== 'undefined') {
+        setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+      }
 
       // 오류 상태 초기화
       setError(null);
@@ -142,15 +151,17 @@ export default function BibleVerse() {
         setSeenReferences(prev => [...prev, data.reference]);
       }
 
-      // DB에 저장된 시간이 있는 경우, 이를 한국 시간으로 변환하여 표시
-      if (data && data.createdAt) {
-        const savedTime = new Date(data.createdAt); // DB 저장 시간을 Date 객체로 변환
-        // UTC 시간에서 9시간을 빼서 한국 시간으로 변환
-        const koreanTime = new Date(savedTime.getTime() - 9 * 60 * 60 * 1000);
-        setVerseTimestamp(koreanTime.toLocaleString('ko-KR'));
-      } else {
-        // createdAt 필드가 없는 경우 현재 시간을 사용 (fallback)
-        setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+      // 클라이언트 사이드에서만 시간 설정
+      if (typeof window !== 'undefined') {
+        if (data && data.createdAt) {
+          const savedTime = new Date(data.createdAt); // DB 저장 시간을 Date 객체로 변환
+          // UTC 시간에서 9시간을 빼서 한국 시간으로 변환
+          const koreanTime = new Date(savedTime.getTime() - 9 * 60 * 60 * 1000);
+          setVerseTimestamp(koreanTime.toLocaleString('ko-KR'));
+        } else {
+          // createdAt 필드가 없는 경우 현재 시간을 사용 (fallback)
+          setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+        }
       }
 
       // 오류 상태 초기화
@@ -165,7 +176,12 @@ export default function BibleVerse() {
         explanation:
           '이 구절은 하나님의 사랑의 깊이와 예수 그리스도를 통한 구원의 선물을 보여줍니다.',
       });
-      setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+
+      // 클라이언트 사이드에서만 시간 설정
+      if (typeof window !== 'undefined') {
+        setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+      }
+
       setError(null); // 오류 메시지 숨기기 (기본값 표시하므로)
     } finally {
       // 성공/실패 여부와 관계없이 로딩 상태 종료
@@ -231,6 +247,14 @@ export default function BibleVerse() {
     }
   }, [recentReferencesLoaded]); // recentReferencesLoaded가 변경될 때 실행
 
+  // 클라이언트 사이드에서만 시간 표시
+  useEffect(() => {
+    // 클라이언트 사이드에서만 실행
+    if (typeof window !== 'undefined') {
+      setVerseTimestamp(new Date().toLocaleString('ko-KR'));
+    }
+  }, []);
+
   // 컴포넌트 UI 반환
   return (
     // 메인 컨테이너 - 최대 너비, 자동 마진, 패딩, 배경 그라데이션, 최소 높이 설정
@@ -262,7 +286,9 @@ export default function BibleVerse() {
             <span>새 구절 조회</span>
           )}
           {/* 쿨다운 시간이 0보다 크면 남은 시간 표시 */}
-          {cooldown && cooldownTime > 0 && <span className="ml-1 text-xs">({cooldownTime}초)</span>}
+          {isClient && cooldown && cooldownTime > 0 && (
+            <span className="ml-1 text-xs">({cooldownTime}초)</span>
+          )}
         </button>
       </div>
 
@@ -290,10 +316,12 @@ export default function BibleVerse() {
           <p className="text-sm text-slate-600">{verseData.explanation}</p>
 
           {/* 타임스탬프 표시 - 저장 시간 또는 로드 시간 */}
-          <p className="text-xs text-slate-400 mt-3">
-            {isDBVerse ? '저장된 시간: ' : '구절 조회 시간: '}
-            {verseTimestamp}
-          </p>
+          {isClient && verseTimestamp && (
+            <p className="text-xs text-slate-400 mt-3">
+              {isDBVerse ? '저장된 시간: ' : '구절 조회 시간: '}
+              {verseTimestamp}
+            </p>
+          )}
         </div>
       )}
     </div>

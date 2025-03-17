@@ -1507,7 +1507,7 @@ function EstimateContent() {
           )}
 
           {/* 여기부터 기존 폼 코드 */}
-          <div className="flex flex-col md:flex-row w-full gap-2 bg-[#f3f6de] p-2">
+          <div className="flex flex-col rounded-lg shadow md:flex-row w-full gap-2 bg-[#f3f6de] p-2">
             {/* 고객 정보 섹션 */}
             <div className="w-full md:w-2/3">
               <div className="bg-white shadow rounded-lg p-3">
@@ -1932,7 +1932,7 @@ function EstimateContent() {
           </div>
 
           {/* 상품데이터 섹션 */}
-          <div className="flex flex-wrap w-full bg-[#d9e7d3] mt-2">
+          <div className="flex flex-wrap rounded-lg shadoww-full bg-[#d9e7d3] mt-2">
             {/* 첫 번째 문단 : 상품 정보 입력창 토글 버튼*/}
             <div className="w-full md:w-[30%] p-2">
               {/* 상품 정보 입력창 토글 버튼 */}
@@ -2298,7 +2298,7 @@ function EstimateContent() {
           </div>
 
           {/* 서비스 물품 섹션 */}
-          <div className="bg-white rounded-lg shadow p-2 mt-2 bg-[#ebd4e8]">
+          <div className="rounded-lg shadow p-2 mt-2 bg-[#ffe1e6]">
             <h2 className="text-xl font-semibold mb-2">서비스 물품</h2>
 
             <div className="flex flex-wrap">
