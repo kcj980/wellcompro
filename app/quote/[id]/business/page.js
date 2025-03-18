@@ -427,8 +427,8 @@ export default function ConsumerQuotePage({ params }) {
             </div>
 
             {/* 오른쪽 컨트롤 그룹 */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">공지사항 관리</h3>
+            <div className="space-y-1">
+              <h3 className="text-sm font-semibold text-gray-700 mb-1">공지사항 관리</h3>
 
               <button
                 onClick={() => {
@@ -450,15 +450,14 @@ export default function ConsumerQuotePage({ params }) {
                 공지사항 수정
               </button>
 
-              <div className="text-xs text-gray-500 italic">
+              <div className="text-xs text-gray-500">
                 공지사항을 수정하려면 위 버튼을 클릭하세요.
               </div>
 
               {/* finalPayment 금액 수정 인풋 추가 */}
               <div className="mt-4 pt-3 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">금액 수정</h3>
                 <div className="flex items-center">
-                  <span className="text-gray-700 text-sm mr-2">총액:</span>
+                  <span className="text-sm font-semibold text-gray-700">최종 금액 수정</span>
                   <input
                     type="number"
                     value={estimate.calculatedValues?.finalPayment || 0}
@@ -475,9 +474,9 @@ export default function ConsumerQuotePage({ params }) {
                     className="border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <div className="text-xs text-gray-500 italic mt-1">
-                  수정한 금액은 견적서에 즉시 반영되지만 저장되지는 않습니다.
-                </div>
+                <span className="text-xs text-gray-500 tracking-tighter2">
+                  (수정한 금액은 견적서에 즉시 반영되지만 저장되지는 않습니다.)
+                </span>
               </div>
             </div>
           </div>
@@ -764,7 +763,7 @@ export default function ConsumerQuotePage({ params }) {
                   분 &nbsp;&nbsp;류
                 </th> */}
                 <th
-                  className="border border-sky-200 text-center text-black"
+                  className="border border-sky-200 text-center text-black p-1"
                   style={{ width: '88%' }}
                 >
                   내
@@ -859,6 +858,16 @@ export default function ConsumerQuotePage({ params }) {
                 </>
               )}
 
+              <tr className="bg-white">
+                <td className="border border-sky-200 text-center"></td>
+                <td className="border border-sky-200 font-semibold text-center p-1">
+                  <div className="text-xl text-blue-600 font-bold">
+                    부산은행 [064-13-001200-7] (김선식)
+                  </div>
+                </td>
+                <td className="border border-sky-200 text-center"></td>
+              </tr>
+
               {/* 빈 행 추가 */}
               {Array.from({ length: rowEmptyAdd }).map((_, index) => (
                 <tr key={`empty-${index}`} className="bg-white">
@@ -910,6 +919,32 @@ export default function ConsumerQuotePage({ params }) {
             </div>
           </div>
         )}
+
+        {/* 감사 인사말 */}
+        <div className="mt-3 mb-1">
+          <div className="relative bg-gradient-to-r from-sky-100 to-blue-100 p-4 rounded-lg border border-sky-200 shadow-sm overflow-hidden">
+            {/* 배경 장식 요소 */}
+            <div className="absolute top-0 right-0 w-40 h-40 opacity-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-full h-full text-blue-900"
+              >
+                <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+              </svg>
+            </div>
+
+            <div className="text-center relative z-10">
+              <p className="text-xl font-bold text-blue-800 mb-1">
+                웰컴 시스템을 이용해 주셔서 감사합니다
+              </p>
+              <p className="text-sm text-blue-600">
+                고객님의 소중한 선택에 진심으로 감사드립니다. 최상의 서비스로 보답하겠습니다.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 뒤로가기 및 주요 컨트롤 */}
