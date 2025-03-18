@@ -111,7 +111,7 @@ function extractProductData() {
     pdItems.forEach(pdItem => {
       // 카테고리명 (CPU, 메인보드 등)
       const categoryTitle = pdItem.querySelector('.pd_item_title')?.textContent.trim()
-        .replace(/NEW$/, '').trim() // "NEW" 태그 제거
+        .replace(/NEW/gi, '').trim() // "NEW" 태그 제거 (대소문자 구분 없이)
         .replace(/\s*선택됨$/, '').trim(); // "선택됨" 텍스트 제거
       
       // 각 상품 처리
