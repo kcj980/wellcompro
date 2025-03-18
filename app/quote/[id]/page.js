@@ -44,7 +44,6 @@ export default function QuotePage({ params }) {
       >
         ← 돌아가기
       </button>
-      <div className="mt-6">현재 견적서(일반소비자)만 완성했어요~~~</div>
     </div>
   );
 }
