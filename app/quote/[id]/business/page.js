@@ -694,9 +694,9 @@ export default function ConsumerQuotePage({ params }) {
                   </td>
                   <td
                     style={{ width: '37%' }}
-                    className="text-left text-black font-semibold tracking-wider"
+                    className="text-left text-black font-semibold tracking-extra-wide"
                   >
-                    웰컴 시스템
+                    웰컴시스템
                   </td>
                 </tr>
                 <tr style={{ lineHeight: '18px' }}>
@@ -858,16 +858,6 @@ export default function ConsumerQuotePage({ params }) {
                 </>
               )}
 
-              <tr className="bg-white">
-                <td className="border border-sky-200 text-center"></td>
-                <td className="border border-sky-200 font-semibold text-center p-1">
-                  <div className="text-xl text-blue-600 font-bold">
-                    부산은행 [064-13-001200-7] (김선식)
-                  </div>
-                </td>
-                <td className="border border-sky-200 text-center"></td>
-              </tr>
-
               {/* 빈 행 추가 */}
               {Array.from({ length: rowEmptyAdd }).map((_, index) => (
                 <tr key={`empty-${index}`} className="bg-white">
@@ -879,8 +869,13 @@ export default function ConsumerQuotePage({ params }) {
               ))}
 
               <tr className="bg-sky-100 font-bold">
-                <td colSpan="3" className="border border-sky-200 text-right p-1 text-black">
-                  금액 합계 : {estimate.calculatedValues?.finalPayment?.toLocaleString()}
+                <td colSpan="3" className="border border-sky-200 p-1 text-black">
+                  <div className="flex justify-between">
+                    <span>부산은행 [064-13-001200-7] (웰컴시스템)</span>
+                    <span>
+                      금액 합계 : {estimate.calculatedValues?.finalPayment?.toLocaleString()}
+                    </span>
+                  </div>
                 </td>
               </tr>
             </tbody>

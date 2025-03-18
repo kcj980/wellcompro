@@ -628,9 +628,9 @@ export default function ConsumerQuotePage({ params }) {
                   </td>
                   <td
                     style={{ width: '37%' }}
-                    className="text-left text-black font-semibold tracking-wider"
+                    className="text-left text-black font-semibold tracking-extra-wide"
                   >
-                    웰컴 시스템
+                    웰컴시스템
                   </td>
                 </tr>
                 <tr style={{ lineHeight: '18px' }}>
