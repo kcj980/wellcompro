@@ -1,11 +1,13 @@
 // 페이지 로드 시 실행
 window.addEventListener('load', function() {
-  // 다나와 페이지에 버튼 추가
-  addExportButton();
+  // PC견적 페이지인 경우에만 버튼 추가
+  if (isPCEstimatePage()) {
+    addExportButton();
+  }
   
   // 페이지 변경 감지 (SPA 대응)
   const observer = new MutationObserver(() => {
-    if (!document.getElementById('wellcompro-export-btn')) {
+    if (isPCEstimatePage() && !document.getElementById('wellcompro-export-btn')) {
       addExportButton();
     }
   });
@@ -15,6 +17,14 @@ window.addEventListener('load', function() {
     subtree: true
   });
 });
+
+// PC견적 페이지인지 확인하는 함수
+function isPCEstimatePage() {
+  const currentUrl = window.location.href;
+  return currentUrl.includes('shop.danawa.com/virtualestimate') && 
+         currentUrl.includes('controller=estimateMain') && 
+         currentUrl.includes('methods=index');
+}
 
 // 다나와 페이지에 버튼 추가
 function addExportButton() {
