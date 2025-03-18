@@ -31,13 +31,6 @@ export default function QuotePage({ params }) {
         </button>
 
         <button
-          onClick={() => navigateToPrintPage('contract')}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg shadow transition-colors"
-        >
-          견적계약서
-        </button>
-
-        <button
           onClick={() => navigateToPrintPage('delivery')}
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg shadow transition-colors"
         >
