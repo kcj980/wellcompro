@@ -120,7 +120,7 @@ function extractProductData() {
         // 수량
         const quantity = parseInt(row.querySelector('.input_qnt')?.value || '1', 10);
         
-        if (productName && price > 0) {
+        if (productName) {
           products.push({
             id: productId,
             productName,
