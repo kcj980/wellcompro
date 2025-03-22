@@ -810,49 +810,44 @@ export default function ConsumerQuotePage({ params }) {
         <div className="border border-sky-200 rounded-lg px-2 mb-2 bg-sky-50">
           <div className="flex justify-between items-center mb-1 mt-1">
             <h2 className="text-lg font-bold text-blue-800 ml-1">결제 정보</h2>
-            <div
-              className="border border-sky-200 rounded-md p-1 bg-sky-350 flex justify-between"
-              style={{ width: '84%' }}
-            >
-              <span className="font-semibold text-black">상품/부품 합계:</span>
-              <span className="font-bold text-black">
-                {estimate.calculatedValues?.productTotal?.toLocaleString() || '0'}원
-              </span>
-            </div>
-          </div>
-          <div className="space-y-1">
-            {/* 공임비(제작/조립비), 세팅비(SW), 할인 한 줄에 표시 */}
-            <div className="flex gap-1">
-              <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1] flex justify-between">
-                <span className="font-semibold text-black">공임(제작비):</span>
+            <div className="flex justify-between gap-1" style={{ width: '84%' }}>
+              <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                <span className="font-semibold text-black">공임비(제작비):</span>
                 <span>
                   {estimate.paymentInfo?.laborCost
                     ? `${estimate.paymentInfo.laborCost.toLocaleString()}원`
                     : ''}
                 </span>
               </div>
-              {estimate.paymentInfo?.tuningCost > 0 && (
-                <div className="border border-sky-200 rounded-md p-1 bg-white flex-[0.9] flex justify-between">
-                  <span className="font-semibold text-black">수냉/튜닝:</span>
-                  <span>
-                    {estimate.paymentInfo?.tuningCost
-                      ? `${estimate.paymentInfo.tuningCost.toLocaleString()}원`
-                      : ''}
-                  </span>
-                </div>
-              )}
-              <div className="border border-sky-200 rounded-md p-1 bg-white flex-[1] flex justify-between">
-                <span className="font-semibold text-black">세팅(SW):</span>
+              <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                <span className="font-semibold text-black">세팅비(SW):</span>
                 <span>
                   {estimate.paymentInfo?.setupCost
                     ? `${estimate.paymentInfo.setupCost.toLocaleString()}원`
                     : ''}
                 </span>
               </div>
+            </div>
+          </div>
+          <div className="space-y-1">
+            {/* 보증관리비, 수냉/튜닝, 할인을 한 줄에 1:1:1 비율로 표시 (값이 있을 때만) */}
+            <div className="flex gap-1">
+              {estimate.paymentInfo?.warrantyFee > 0 && (
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                  <span className="font-semibold text-black">보증관리비:</span>
+                  <span>{estimate.paymentInfo.warrantyFee.toLocaleString()}원</span>
+                </div>
+              )}
+              {estimate.paymentInfo?.tuningCost > 0 && (
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
+                  <span className="font-semibold text-black">수냉/튜닝:</span>
+                  <span>{estimate.paymentInfo.tuningCost.toLocaleString()}원</span>
+                </div>
+              )}
               {estimate.paymentInfo?.discount > 0 && (
-                <div className="border border-sky-200 rounded-md p-1 bg-white flex-[0.7] flex justify-between">
+                <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
                   <span className="font-semibold text-black">할인:</span>
-                  <span>-{estimate.paymentInfo?.discount?.toLocaleString()}원</span>
+                  <span>-{estimate.paymentInfo.discount.toLocaleString()}원</span>
                 </div>
               )}
             </div>
@@ -865,12 +860,16 @@ export default function ConsumerQuotePage({ params }) {
                   <span>{estimate.paymentInfo?.deposit?.toLocaleString()}원</span>
                 </div>
               )}
-              <div className="border border-sky-400 rounded-md p-2 bg-sky-350 flex-[1.6] flex justify-between items-center">
+              <div className="border border-sky-400 rounded-md p-2 bg-sky-100 flex-[1.6] flex justify-between items-center">
                 <span className="font-semibold text-black">
-                  총 구입금액
+                  총 구매가격
                   <span className="text-xs">
                     {(() => {
                       let desc = '(공임+세팅';
+                      // 보증관리비가 있으면 추가
+                      if (estimate.paymentInfo?.warrantyFee > 0) {
+                        desc += '+보증관리';
+                      }
                       // 튜닝비가 있으면 추가
                       if (estimate.paymentInfo?.tuningCost > 0) {
                         desc += '+튜닝';
@@ -901,14 +900,13 @@ export default function ConsumerQuotePage({ params }) {
               )}
 
               {/* 최종 결제 금액 */}
-              <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-450 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
-                <div className="absolute inset-0 bg-sky-500 opacity-10 rounded"></div>
-                <span className="text-lg text-blue-900 z-10 font-bold">
+              <div className="border-2 border-sky-500 rounded-md p-3 bg-sky-350 from-sky-100 to-sky-200 flex-[1.6] flex justify-between items-center font-bold shadow-md relative overflow-hidden">
+                <span className="text-lg text-black z-10 font-bold">
                   {estimate.paymentInfo?.includeVat
                     ? '최종 결제금액(VAT포함):'
                     : '최종 결제금액(VAT별도):'}
                 </span>
-                <span className="text-xl text-blue-900 z-10 font-bold">
+                <span className="text-xl text-black z-10 font-bold">
                   {estimate.calculatedValues?.finalPayment?.toLocaleString() || '0'}원
                 </span>
               </div>

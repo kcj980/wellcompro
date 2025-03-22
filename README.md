@@ -87,10 +87,8 @@
 
 ### 개발 도구
 
-- **ESLint** - JavaScript 코드 린팅, 코드 품질 유지
-- **Prettier** - 코드 포맷팅, 일관된 코드 스타일 유지
-- **Vercel Analytics & Speed Insights** - 사용자 행동 분석 및 성능 모니터링
 - **Vercel** - 서버리스 배포 및 호스팅 플랫폼, 자동화된 CI/CD 파이프라인 제공
+- **Vercel Analytics & Speed Insights** - 사용자 행동 분석 및 성능 모니터링
 - **Cursor** - AI 기반 코드 에디터, 코드 작성 및 리팩토링 지원
 - **Git** - 버전 관리 시스템, 소스 코드 변경사항 추적 및 협업 지원
 
