@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# wellcompor
 
-## Getting Started
+컴퓨터매장에 견적관리와 견적서인쇄를 할 수 있는 사이트이다.
 
-First, run the development server:
+## 주요 기능
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **견적 작성/수정**: 견적에 필요한 데이터를 쉽고 간단하게 입력 할 수 있도록 구성(크롬확장프로그램, 체크박스등, 금액계산)
+- **견적 검색**: 고객명, 연락처, 견적 내용 등 다양한 조건으로 빠른 견적 검색
+- **견적 인쇄**: 견적서(일반소비자, 기업), 납품서 총 3가지중 원하는 형식을 인쇄가능
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 아키텍처
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+![아키텍처 화면](/public/readme/architecture.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 아키텍처 세부 구성
 
-## Learn More
+#### 1. 프론트엔드 레이어
 
-To learn more about Next.js, take a look at the following resources:
+- **페이지 기반 구조**: Next.js의 App Router를 활용한 페이지 구성
+  - `/app/estimate`: 견적 작성 및 관리 페이지
+  - `/app/search`: 견적 검색 페이지
+  - `/app/quote`: 견적서 인쇄 페이지
+- **컴포넌트 설계**:
+  - 재사용 가능한 UI 컴포넌트 (`/app/components`)
+  - React 훅을 활용한 상태 관리
+- **반응형 디자인**: Tailwind CSS를 활용한 모바일부터 데스크톱까지 최적화된 UI
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### 2. 미들웨어 및 API 레이어
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **서버리스 함수**: Next.js API Routes를 통한 백엔드 기능 구현
+  - `/api/estimates`: 견적 데이터 CRUD 작업
+  - `/api/quote`: 견적서 공지사항 데이터 CRUD 작업
+- **데이터 검증**: 요청 데이터 유효성 검사 및 필터링
 
-## Deploy on Vercel
+#### 3. 데이터베이스 레이어
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **MongoDB 스키마 설계**:
+  - `Estimate`: 견적 관련 데이터 (고객 정보, 상품 목록, 결제 정보 등)
+  - `Quote`: 공통된 견적서 공지사항 데이터
+- **데이터 모델링**: Mongoose를 활용한 객체 데이터 매핑
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 데이터 흐름
+
+1. **견적 작성 과정**:
+
+   - 사용자 → 견적 페이지 → API 요청 → MongoDB 저장
+
+1. **견적 수정 과정**:
+
+   - 사용자(수정버튼클릭) → API 요청 → MongoDB 쿼리 → 수정 페이지 → 사용자(데이터수정) → API 요청 → MongoDB 저장
+
+1. **견적 검색 과정**:
+
+   - 검색 조건 입력 → API 요청 → MongoDB 쿼리 → 결과 반환 → 페이지네이션 적용 → 사용자 인터페이스 표시
+
+1. **견적서 생성 과정**:
+   - 견적 데이터 및 공지사항데이터 로드 → 템플릿 적용 → 인쇄
+
+### 프로젝트 구조
+
+- `/app`: 주요 애플리케이션 코드
+  - `/components`: 재사용 가능한 UI 컴포넌트
+  - `/api`: Next.js 서버리스 API 라우트
+  - `/estimate`: 견적 작성/수정페이지 및 상세페이지
+  - `/search`: 견적 검색 페이지
+  - `/quote`: 견적서 인쇄 페이지
+  - `/utils`: 유틸리티 함수(시간관련 함수)
+- `/models`: MongoDB 데이터 모델 스키마
+- `/lib`: 유틸리티 함수 및 공통 로직(DB연결 함수)
+- `/public`: 정적 파일 및 리소스
+
+## 기술 스택
+
+### 프론트엔드
+
+- **Next.js** (v14.1.0) - React 기반 프레임워크, 서버 사이드 렌더링(SSR) 및 정적 사이트 생성(SSG) 지원
+- **React** (v18.2.0) - 사용자 인터페이스 구축을 위한 JavaScript 라이브러리, 컴포넌트 기반 아키텍처
+- **Tailwind CSS** - 유틸리티 기반 CSS 프레임워크, 반응형 디자인 구현
+- **Material UI** - React UI 컴포넌트 라이브러리, 세련된 UI 요소 제공
+- **React Icons** - 다양한 아이콘 세트를 제공하는 라이브러리
+
+### 백엔드
+
+- **Next.js API Routes** - 서버리스 함수, RESTful API 엔드포인트 제공
+- **MongoDB** - NoSQL 데이터베이스, 유연한 스키마로 견적 및 고객 데이터 저장
+- **Mongoose** - MongoDB ODM(Object Data Modeling), 스키마 기반 데이터 모델링 및 유효성 검사
+
+### 개발 도구
+
+- **ESLint** - JavaScript 코드 린팅, 코드 품질 유지
+- **Prettier** - 코드 포맷팅, 일관된 코드 스타일 유지
+- **Vercel Analytics & Speed Insights** - 사용자 행동 분석 및 성능 모니터링
+- **Vercel** - 서버리스 배포 및 호스팅 플랫폼, 자동화된 CI/CD 파이프라인 제공
+- **Cursor** - AI 기반 코드 에디터, 코드 작성 및 리팩토링 지원
+- **Git** - 버전 관리 시스템, 소스 코드 변경사항 추적 및 협업 지원
+
+## 사용 예시
+
+### 1. 견적 검색
+
+![견적 검색 화면](/public/readme/search.png)
+
+고객 정보나 견적 내용을 통해 기존 견적을 빠르게 검색할 수 있습니다. 날짜별, 고객명별, 제품별 등 다양한 필터를 적용하여 원하는 견적을 쉽게 찾을 수 있습니다.
+
+### 2. 견적 작성 및 수정
+
+![견적 작성 화면 1](/public/readme/estimate-1.png)
+![견적 작성 화면 2](/public/readme/estimate-2.png)
+![견적 작성 화면 3](/public/readme/estimate-3.png)
+![견적 작성 화면 4](/public/readme/estimate-4.png)
+
+맞춤형 컴퓨터 견적을 쉽고 빠르게 작성할 수 있습니다.  
+주요 특징:
+
+- **직관적인 인터페이스**: 고객 정보 입력부터 부품 선택까지 단계별로 진행
+- **실시간 계산**: 선택한 부품에 따라 총액이 자동으로 계산되어 표시
+- **손쉬운 부품 선택**: 다양한 카테고리별 컴퓨터 부품과 주변기기 선택 가능
+
+### 3. 견적 상세 보기
+
+![견적 상세 정보](/public/readme/detail.png)
+
+완성된 견적의 상세 정보를 확인할 수 있습니다. 선택된 모든 부품과 주변기기의 목록, 각 항목별 가격, 총액 등을 한눈에 볼 수 있으며 필요시 수정할 수 있습니다.
+
+### 4. 견적서 인쇄
+
+![견적서 인쇄 미리보기 1](/public/readme/quote-1.png)
+![견적서 인쇄 미리보기 2](/public/readme/quote-2.png)
+![견적서 인쇄 미리보기 3](/public/readme/quote-3.png)
+
+완성된 견적을 전문적인 형태의 견적서로 변환하여 인쇄할 수 있습니다. 매장 로고와 정보가 포함된 헤더, 고객 정보, 상세 부품 목록과 가격, 특이사항 등이 체계적으로 정리됩니다.직접 인쇄하여 고객에게 제공할 수 있습니다.
+
+### 5. 크롬 확장프로그램 활용
+
+크롬 확장프로그램을 활용하여 외부 쇼핑몰이나 판매처에서 부품 정보를 빠르게 수집할 수 있습니다.
+![다나와 1](/public/readme/danawa-1.png)
+![다나와 2](/public/readme/danawa-2.png)
+
+- **크롬 확장프로그램 기능**:
+
+  - 쇼핑몰 페이지에서 제품 정보(이름, 가격, 코드) 자동 추출
+  - 클릭 한 번으로 견적 페이지에 제품 추가
+
+이러한 도구는 견적 작성 시간을 크게 단축시키고, 보다 정확한 정보를 기반으로 전문적인 견적을 작성할 수 있도록 도와주었다.
+
+## 정리 & 마치며
+
+이 프로젝트는 "웹서비스를 혼자 만들어보자"라는 목표로 시작되었습니다. Next.js를 활용하여 웹 서비스를 제작하며 다음과 같은 것들을 배웠습니다:
+
+- **Next.js 핵심 개념** - App 라우팅 구조, Page/Layout 파일 시스템, 다이나믹 라우팅 등
+- **프론트엔드 개발** - React 컴포넌트, 상태 관리, UI/UX 설계
+- **백엔드 통합** - API 라우트, 데이터베이스 연동, 서버리스 아키텍처
+
+새롭고 유용한 정보를 찾아 적용하는 과정도 중요한 경험이었습니다. 특히 AI 도구가 코드 작성에 큰 도움이 되었지만, 생성된 코드를 이해하지 않고 넘어가면 나중에 큰 문제가 될 수 있다는 교훈을 얻었습니다.
+
+## 아쉬운점 & 향후 개선 방향
+
+이번 프로젝트에서는 주로 기능 구현과 실제 작동 여부에 초점을 맞추었습니다. 그 결과 다음과 같은 부분들이 아쉬움으로 남았습니다:
+
+- **성능 최적화** - 대용량 데이터 처리, 페이지 로딩 속도 등
+- **보안 강화** - 데이터 암호화, 접근 제어, 입력 검증 등
+- **코드 구조화** - 재사용성, 유지보수성 개선
+
+다음 프로젝트에서는 이러한 효율성과 보안 측면에 더 중점을 두어 개발해 나갈 계획입니다.
