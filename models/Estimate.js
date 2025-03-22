@@ -46,6 +46,7 @@ const EstimateSchema = new mongoose.Schema({
     laborCost: Number, // 공임비
     tuningCost: Number, // 튜닝금액
     setupCost: Number, // 세팅비
+    warrantyFee: Number, // 보증관리비
     discount: Number, // 할인
     deposit: Number, // 계약금
     includeVat: Boolean, // VAT 포함 여부

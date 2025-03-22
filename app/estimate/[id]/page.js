@@ -379,6 +379,12 @@ export default function EstimateDetail({ params }) {
                   </div>
                 </div>
                 <div>
+                  <div className="text-sm font-medium text-gray-500">보증관리비</div>
+                  <div className="mt-1">
+                    {estimate.paymentInfo?.warrantyFee?.toLocaleString() || 0}원
+                  </div>
+                </div>
+                <div>
                   <div className="text-sm font-medium text-gray-500">튜닝비</div>
                   <div className="mt-1">
                     {estimate.paymentInfo?.tuningCost?.toLocaleString() || 0}원

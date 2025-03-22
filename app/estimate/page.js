@@ -114,6 +114,7 @@ function EstimateContent() {
   const [isCustomManager, setIsCustomManager] = useState(false);
   const [isCustomLaborCost, setIsCustomLaborCost] = useState(false);
   const [isCustomSetupCost, setIsCustomSetupCost] = useState(false);
+  const [isCustomWarrantyFee, setIsCustomWarrantyFee] = useState(false); // 보증관리비 직접 입력 모드 상태
   const [isCustomTuningCost, setIsCustomTuningCost] = useState(false);
   const [isCustomPaymentMethod, setIsCustomPaymentMethod] = useState(false); // 결제 방법 직접 입력 모드 상태
 
@@ -121,6 +122,7 @@ function EstimateContent() {
    * 결제 정보를 관리하는 상태
    * laborCost: 공임비 (기술료)
    * setupCost: 세팅비 (OS 설치, 초기 설정 등)
+   * warrantyFee: 보증관리비 (warranty fee)
    * tuningCost: 튜닝금액
    * discount: 할인 금액
    * deposit: 계약금 (선수금)
@@ -132,6 +134,7 @@ function EstimateContent() {
   const [paymentInfo, setPaymentInfo] = useState({
     laborCost: 0, // 공임비
     setupCost: 0, // 세팅비
+    warrantyFee: 0, // 보증관리비
     tuningCost: 0, // 튜닝금액
     discount: 0, // 할인
     deposit: 0, // 계약금
@@ -698,7 +701,7 @@ function EstimateContent() {
 
   /**
    * 총 구입 금액 계산 함수
-   * 상품 합계 + 공임비 + 세팅비 + 튜닝금액 - 할인
+   * 상품 합계 + 공임비 + 세팅비 + 보증관리비 + 튜닝금액 - 할인
    * @returns {number} 총 구입 금액
    */
   const calculateTotalPurchase = () => {
@@ -712,6 +715,10 @@ function EstimateContent() {
       paymentInfo.setupCost !== undefined
         ? paymentInfo.setupCost
         : Number(paymentInfo.setupCost) || 0;
+    const warrantyFee =
+      paymentInfo.warrantyFee !== undefined
+        ? paymentInfo.warrantyFee
+        : Number(paymentInfo.warrantyFee) || 0;
     const tuningCost =
       paymentInfo.tuningCost !== undefined
         ? paymentInfo.tuningCost
@@ -719,7 +726,7 @@ function EstimateContent() {
     const discount =
       paymentInfo.discount !== undefined ? paymentInfo.discount : Number(paymentInfo.discount) || 0;
 
-    let total = productTotal + laborCost + setupCost + tuningCost - discount;
+    let total = productTotal + laborCost + setupCost + warrantyFee + tuningCost - discount;
 
     // 버림 적용 (100원, 1000원 또는 10000원 단위)
     if (paymentInfo.roundingType === '100down') {
@@ -785,7 +792,15 @@ function EstimateContent() {
     }
     // 금액 입력 필드의 경우 콤마 제거 후 숫자만 유지
     else if (
-      ['laborCost', 'setupCost', 'tuningCost', 'discount', 'deposit', 'shippingCost'].includes(name)
+      [
+        'laborCost',
+        'setupCost',
+        'warrantyFee',
+        'tuningCost',
+        'discount',
+        'deposit',
+        'shippingCost',
+      ].includes(name)
     ) {
       // 콤마 제거하고 숫자만 추출
       const numericValue = value.replace(/,/g, '').replace(/[^0-9]/g, '');
@@ -923,6 +938,7 @@ function EstimateContent() {
           // 문자열로 저장된 금액 필드들을 숫자로 변환
           laborCost: Number(paymentInfo.laborCost || 0),
           setupCost: Number(paymentInfo.setupCost || 0),
+          warrantyFee: Number(paymentInfo.warrantyFee || 0),
           discount: Number(paymentInfo.discount || 0),
           deposit: Number(paymentInfo.deposit || 0),
           shippingCost: Number(paymentInfo.shippingCost || 0),
@@ -1164,6 +1180,12 @@ function EstimateContent() {
                 parseInt(data.estimate.paymentInfo.setupCost)
               );
               setIsCustomSetupCost(customSetupCost);
+
+              // 보증관리비가 기본값(3만원, 5만원) 중 하나인지 체크
+              const customWarrantyFee = ![30000, 50000].includes(
+                parseInt(data.estimate.paymentInfo.warrantyFee)
+              );
+              setIsCustomWarrantyFee(customWarrantyFee);
 
               // 튜닝금액이 있으면 튜닝 모드 활성화
               if (
@@ -2642,6 +2664,62 @@ function EstimateContent() {
                       </div>
                     </div>
 
+                    {/* 보증관리비(warranty fee) */}
+                    <div className="p-2 bg-white rounded-md border border-gray-200">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        보증관리비 <span className="text-green-600">+</span>
+                      </label>
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          {[30000, 50000].map(cost => (
+                            <button
+                              key={cost}
+                              type="button"
+                              onClick={() => {
+                                setIsCustomWarrantyFee(false);
+                                setPaymentInfo(prev => ({ ...prev, warrantyFee: cost }));
+                              }}
+                              className={`px-3 py-1 rounded-md text-sm ${
+                                paymentInfo.warrantyFee === cost && !isCustomWarrantyFee
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                              }`}
+                            >
+                              {cost / 10000}만원
+                            </button>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsCustomWarrantyFee(true);
+                              setPaymentInfo(prev => ({ ...prev, warrantyFee: 0 }));
+                            }}
+                            className={`px-3 py-1 rounded-md text-sm ${
+                              isCustomWarrantyFee
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            직접입력
+                          </button>
+                        </div>
+                        {isCustomWarrantyFee && (
+                          <input
+                            type="text"
+                            name="warrantyFee"
+                            value={
+                              paymentInfo.warrantyFee
+                                ? paymentInfo.warrantyFee.toLocaleString()
+                                : ''
+                            }
+                            onChange={handlePaymentInfoChange}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="보증관리비를 입력하세요"
+                          />
+                        )}
+                      </div>
+                    </div>
+
                     {/* 할인 */}
                     <div className="p-2 bg-white rounded-md border border-gray-200">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -2667,7 +2745,7 @@ function EstimateContent() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         총 구입 금액{' '}
                         <span className="text-xs text-gray-500">
-                          (상품/부품+공임비+세팅비+튜닝비-할인)
+                          (상품/부품+공임비+세팅비+보증관리비+튜닝비-할인)
                         </span>
                       </label>
                       <div className="flex justify-between items-center">
@@ -2690,6 +2768,10 @@ function EstimateContent() {
                                 paymentInfo.setupCost !== undefined
                                   ? paymentInfo.setupCost
                                   : parseInt(paymentInfo.setupCost) || 0;
+                              const warrantyFee =
+                                paymentInfo.warrantyFee !== undefined
+                                  ? paymentInfo.warrantyFee
+                                  : parseInt(paymentInfo.warrantyFee) || 0;
                               const tuningCost =
                                 paymentInfo.tuningCost !== undefined
                                   ? paymentInfo.tuningCost
@@ -2699,7 +2781,12 @@ function EstimateContent() {
                                   ? paymentInfo.discount
                                   : parseInt(paymentInfo.discount) || 0;
                               const totalBeforeRounding =
-                                productTotal + laborCost + setupCost + tuningCost - discount;
+                                productTotal +
+                                laborCost +
+                                setupCost +
+                                warrantyFee +
+                                tuningCost -
+                                discount;
 
                               // 버림 적용
                               const roundingType = '100down';
@@ -2738,6 +2825,10 @@ function EstimateContent() {
                                 paymentInfo.setupCost !== undefined
                                   ? paymentInfo.setupCost
                                   : parseInt(paymentInfo.setupCost) || 0;
+                              const warrantyFee =
+                                paymentInfo.warrantyFee !== undefined
+                                  ? paymentInfo.warrantyFee
+                                  : parseInt(paymentInfo.warrantyFee) || 0;
                               const tuningCost =
                                 paymentInfo.tuningCost !== undefined
                                   ? paymentInfo.tuningCost
@@ -2747,7 +2838,12 @@ function EstimateContent() {
                                   ? paymentInfo.discount
                                   : parseInt(paymentInfo.discount) || 0;
                               const totalBeforeRounding =
-                                productTotal + laborCost + setupCost + tuningCost - discount;
+                                productTotal +
+                                laborCost +
+                                setupCost +
+                                warrantyFee +
+                                tuningCost -
+                                discount;
 
                               // 버림 적용
                               const roundingType = '1000down';
@@ -2786,6 +2882,10 @@ function EstimateContent() {
                                 paymentInfo.setupCost !== undefined
                                   ? paymentInfo.setupCost
                                   : parseInt(paymentInfo.setupCost) || 0;
+                              const warrantyFee =
+                                paymentInfo.warrantyFee !== undefined
+                                  ? paymentInfo.warrantyFee
+                                  : parseInt(paymentInfo.warrantyFee) || 0;
                               const tuningCost =
                                 paymentInfo.tuningCost !== undefined
                                   ? paymentInfo.tuningCost
@@ -2795,7 +2895,12 @@ function EstimateContent() {
                                   ? paymentInfo.discount
                                   : parseInt(paymentInfo.discount) || 0;
                               const totalBeforeRounding =
-                                productTotal + laborCost + setupCost + tuningCost - discount;
+                                productTotal +
+                                laborCost +
+                                setupCost +
+                                warrantyFee +
+                                tuningCost -
+                                discount;
 
                               // 버림 적용
                               const roundingType = '10000down';
