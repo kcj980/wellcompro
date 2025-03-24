@@ -17,7 +17,7 @@ export default function Home() {
             <span className="font-bold text-xl">크롬 확장 프로그램</span>입니다.
           </p>
           <a
-            href="/extension.zip"
+            href="/웰컴프로그램.zip"
             download
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors duration-300 shadow-md"
           >

@@ -809,7 +809,7 @@ export default function ConsumerQuotePage({ params }) {
         {/* 이곳에 결제 정보 표시 */}
         <div className="border border-sky-200 rounded-lg px-2 mb-2 bg-sky-50">
           <div className="flex justify-between items-center mb-1 mt-1">
-            <h2 className="text-lg font-bold text-blue-800 ml-1">결제 정보</h2>
+            <h2 className="text-lg font-bold text-blue-800 ml-1">계약 내용</h2>
             <div className="flex justify-between gap-1" style={{ width: '84%' }}>
               <div className="border border-sky-200 rounded-md p-1 bg-white flex-1 flex justify-between">
                 <span className="font-semibold text-black">공임비(제작비):</span>
