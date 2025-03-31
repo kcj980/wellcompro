@@ -140,24 +140,14 @@ export default function Statement() {
         </div>
 
         {/* 날짜 및 번호 */}
-        <div className="mb-4" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="mb-1 ml-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <input
             type="text"
             name="date"
             value={invoiceData.date}
             onChange={handleChange}
-            className="text-lg border-b border-gray-300 focus:outline-none focus:border-blue-500"
+            className="text-xs text-red-600 focus:outline-none focus:border-blue-500"
           />
-          <div className="flex items-center">
-            <span className="text-lg mr-1">No.</span>
-            <input
-              type="text"
-              name="invoiceNumber"
-              value={invoiceData.invoiceNumber}
-              onChange={handleChange}
-              className="text-lg border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            />
-          </div>
         </div>
 
         {/* 상단 정보 테이블 */}
