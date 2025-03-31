@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 export default function Statement() {
   const [invoiceData, setInvoiceData] = useState({
     date: '2025년 03월 06일',
-    invoiceNumber: '20250306-4',
     companyInfo: '여기에거래처명',
     totalAmount: '40,000',
     paymentSystem: '웰컴 시스템',
@@ -14,25 +13,10 @@ export default function Statement() {
     address: '부산광역시 동래구 온천장로 81-20 신화타워부산컴퓨터도매상가 2층 209호',
     deliveryMethod: '도소매',
     businessType: '컴퓨터및주변기기',
-    phone: '051-123-4567',
-    regNumber: '123-45-67890',
+    phone: '010-1234-5678',
+    regNumber: '607-02-70320',
     cash: '*0',
     credit: '*0',
-    items: [
-      { id: 1, name: '쿨러CPU', spec: 'RGB', quantity: 1, price: '32,000', amount: '32,000' },
-      {
-        id: 2,
-        name: 'AS수리',
-        spec: '분해청소, 재조립',
-        quantity: 1,
-        price: '8,000',
-        amount: '8,000',
-      },
-    ],
-    accountInfo: {
-      business1: '사업자(부산은행) 064-13-001200-7',
-      business2: '일반(부산은행) 033-13-000316-9',
-    },
   });
 
   // 일반 필드 변경 핸들러
@@ -364,44 +348,19 @@ export default function Statement() {
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length
-                            ? invoiceData.items[index].spec
-                              ? `${invoiceData.items[index].name} (${invoiceData.items[index].spec})`
-                              : invoiceData.items[index].name
-                            : ''
-                        }
-                        className="w-full focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
                       <input
                         type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].quantity : ''
-                        }
                         className="w-full text-center focus:outline-none text-xs"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].price : ''
-                        }
-                        className="w-full text-right focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].amount : ''
-                        }
-                        className="w-full text-right focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
                       <input type="text" className="w-full focus:outline-none text-xs" />
@@ -667,44 +626,19 @@ export default function Statement() {
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length
-                            ? invoiceData.items[index].spec
-                              ? `${invoiceData.items[index].name} (${invoiceData.items[index].spec})`
-                              : invoiceData.items[index].name
-                            : ''
-                        }
-                        className="w-full focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
                       <input
                         type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].quantity : ''
-                        }
                         className="w-full text-center focus:outline-none text-xs"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].price : ''
-                        }
-                        className="w-full text-right focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
-                      <input
-                        type="text"
-                        defaultValue={
-                          index < invoiceData.items.length ? invoiceData.items[index].amount : ''
-                        }
-                        className="w-full text-right focus:outline-none text-xs"
-                      />
+                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
                       <input type="text" className="w-full focus:outline-none text-xs" />
