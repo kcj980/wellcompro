@@ -1,117 +1,162 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Statement() {
+  // 오늘 날짜를 한국어 형식(YYYY년 MM월 DD일)으로 변환하는 함수
+  const getTodayKoreanFormat = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더함
+    const day = today.getDate();
+
+    return `${year}년 ${month.toString().padStart(2, '0')}월 ${day.toString().padStart(2, '0')}일`;
+  };
+
   const [invoiceData, setInvoiceData] = useState({
-    date: '2025년 03월 06일',
+    date: getTodayKoreanFormat(), // 오늘 날짜로 초기화
     companyInfo: '여기에거래처명',
-    totalAmount: '40,000',
+    totalAmount: '0',
     paymentSystem: '웰컴 시스템',
     customerName: '김선식',
     address: '부산광역시 동래구 온천장로 81-20 신화타워부산컴퓨터도매상가 2층 209호',
     deliveryMethod: '도소매',
     businessType: '컴퓨터및주변기기',
-    phone: '010-1234-5678',
+    phone: '010-1234-4567',
     regNumber: '607-02-70320',
     cash: '*0',
     credit: '*0',
   });
 
+  // 품목 데이터 상태 추가
+  const [items, setItems] = useState(
+    Array(14)
+      .fill()
+      .map((_, index) => ({
+        id: index + 1,
+        name: '',
+        quantity: '',
+        price: '',
+        amount: '',
+      }))
+  );
+
   // 일반 필드 변경 핸들러
   const handleChange = e => {
     const { name, value } = e.target;
+
+    // 현금과 외상 입력 시 쉼표 포맷팅 적용
+    if (name === 'cash' || name === 'credit') {
+      // * 기호 유지하기
+      const hasAsterisk = value.includes('*');
+
+      // 입력 값에서 쉼표와 별표 제거
+      const cleanValue = value.replace(/[,*]/g, '');
+
+      // 숫자만 추출
+      const numericValue = cleanValue.replace(/[^\d]/g, '');
+
+      // 천 단위 쉼표 추가 및 별표 복원
+      if (numericValue) {
+        const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        setInvoiceData(prev => ({
+          ...prev,
+          [name]: hasAsterisk ? `*${formattedValue}` : formattedValue,
+        }));
+        return;
+      }
+    }
+
+    // 그 외 필드는 기존 방식으로 처리
     setInvoiceData(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // 계좌 정보 변경 핸들러
-  const handleAccountChange = e => {
-    const { name, value } = e.target;
-    setInvoiceData(prev => ({
-      ...prev,
-      accountInfo: {
-        ...prev.accountInfo,
-        [name]: value,
-      },
-    }));
-  };
-
-  // 품목 정보 변경 핸들러
+  // 품목 데이터 변경 핸들러
   const handleItemChange = (index, field, value) => {
-    const newItems = [...invoiceData.items];
+    const newItems = [...items];
+
+    // 단가 입력 시 쉼표 포맷팅 적용
+    if (field === 'price') {
+      // 입력 값에서 쉼표 제거
+      const cleanValue = value.replace(/,/g, '');
+      // 숫자만 추출
+      const numericValue = cleanValue.replace(/[^\d]/g, '');
+      // 천 단위 쉼표 추가
+      if (numericValue) {
+        value = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      } else {
+        value = '';
+      }
+    }
+
     newItems[index] = {
       ...newItems[index],
       [field]: value,
     };
 
-    // 수량과 단가 변경 시 금액 자동 계산
+    // 수량이나 단가가 변경되면 공급가액 계산
     if (field === 'quantity' || field === 'price') {
       const quantity = field === 'quantity' ? value : newItems[index].quantity;
       const price = field === 'price' ? value : newItems[index].price;
 
       if (quantity && price) {
+        // 쉼표 제거 후 숫자로 변환
+        const cleanQuantity = quantity.toString().replace(/,/g, '');
         const cleanPrice = price.toString().replace(/,/g, '');
-        const amount = (Number(quantity) * Number(cleanPrice)).toString();
+
+        // 계산 및 천단위 쉼표 추가
+        const amount = (Number(cleanQuantity) * Number(cleanPrice)).toString();
         newItems[index].amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
     }
 
-    setInvoiceData(prev => ({
-      ...prev,
-      items: newItems,
-    }));
-
-    // 총액 재계산
+    setItems(newItems);
     calculateTotal(newItems);
   };
 
-  // 품목 추가
-  const addItem = () => {
-    const newId =
-      invoiceData.items.length > 0 ? Math.max(...invoiceData.items.map(item => item.id)) + 1 : 1;
-
-    setInvoiceData(prev => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        { id: newId, name: '', spec: '', quantity: 1, price: '0', amount: '0' },
-      ],
-    }));
-  };
-
-  // 품목 삭제
-  const removeItem = index => {
-    const newItems = [...invoiceData.items];
-    newItems.splice(index, 1);
-
-    setInvoiceData(prev => ({
-      ...prev,
-      items: newItems,
-    }));
-
-    // 총액 재계산
-    calculateTotal(newItems);
-  };
-
-  // 총액 계산
-  const calculateTotal = items => {
-    const total = items.reduce((sum, item) => {
-      const amount = item.amount.toString().replace(/,/g, '');
-      return sum + Number(amount);
+  // 총액 계산 함수
+  const calculateTotal = itemsArray => {
+    const total = itemsArray.reduce((sum, item) => {
+      if (!item.amount) return sum;
+      const cleanAmount = item.amount.toString().replace(/,/g, '');
+      return sum + Number(cleanAmount);
     }, 0);
 
+    // 천단위 쉼표 추가하여 총액 업데이트
     setInvoiceData(prev => ({
       ...prev,
       totalAmount: total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     }));
   };
 
+  // 수량의 합계를 계산하는 함수
+  const calculateTotalQuantity = itemsArray => {
+    return itemsArray.reduce((sum, item) => {
+      if (!item.quantity) return sum;
+      const cleanQuantity = item.quantity.toString().replace(/,/g, '');
+      return sum + Number(cleanQuantity);
+    }, 0);
+  };
+
   return (
     <>
+      <div className="bg-yellow-100 p-4 mb-4 border-l-4 border-yellow-500 rounded shadow-md">
+        <h3 className="text-lg font-bold text-yellow-800 mb-2">작성 안내</h3>
+        <ul className="list-disc pl-5 space-y-2">
+          <li className="text-yellow-700">
+            <span className="font-semibold">기본 정보:</span> 거래처, 현금, 외상, 연락처 정보를
+            수정하면 됩니다.
+          </li>
+          <li className="text-yellow-700">
+            <span className="font-semibold">품목 정보:</span> 품목 및 규격 입력하고, 수량과 단가를
+            입력하면 나머진 알아서 계산됩니다.
+          </li>
+        </ul>
+      </div>
       <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
         <div className="print-this-section">
           {/* 공급받는자용*/}
@@ -338,29 +383,47 @@ export default function Statement() {
               </thead>
               <tbody>
                 {/* 14개의 고정된 행 생성 */}
-                {Array.from({ length: 14 }).map((_, index) => (
+                {items.map((item, index) => (
                   <tr key={`row-${index}`}>
                     <td className="border-l border-r border-blue-500 p-0 text-center text-blue-600">
                       <input
                         type="text"
-                        defaultValue={index + 1}
+                        value={item.id}
+                        readOnly
                         className="w-full text-center focus:outline-none text-xs h-5"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1">
-                      <input type="text" className="w-full focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={e => handleItemChange(index, 'name', e.target.value)}
+                        className="w-full focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
                       <input
                         type="text"
+                        value={item.quantity}
+                        onChange={e => handleItemChange(index, 'quantity', e.target.value)}
                         className="w-full text-center focus:outline-none text-xs"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
-                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.price}
+                        onChange={e => handleItemChange(index, 'price', e.target.value)}
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
-                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.amount}
+                        readOnly
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
                       <input type="text" className="w-full focus:outline-none text-xs" />
@@ -379,7 +442,9 @@ export default function Statement() {
                       <div>합계</div>
                     </div>
                   </td>
-                  <td className="border border-blue-500 p-0.5 text-center">2</td>
+                  <td className="border border-blue-500 p-0.5 text-center">
+                    {calculateTotalQuantity(items)}
+                  </td>
                   <td className="border border-blue-500 p-0.5 text-center"></td>
                   <td className="border border-blue-500 p-0.5 text-right">
                     {invoiceData.totalAmount}
@@ -615,30 +680,48 @@ export default function Statement() {
                 </tr>
               </thead>
               <tbody>
-                {/* 14개의 고정된 행 생성 */}
-                {Array.from({ length: 14 }).map((_, index) => (
-                  <tr key={`row-${index}`}>
+                {/* 14개의 고정된 행 생성 - 공급자용도 같은 데이터 사용 */}
+                {items.map((item, index) => (
+                  <tr key={`row-red-${index}`}>
                     <td className="border-l border-r border-red-500 p-0 text-center text-red-600">
                       <input
                         type="text"
-                        defaultValue={index + 1}
+                        value={item.id}
+                        readOnly
                         className="w-full text-center focus:outline-none text-xs h-5"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1">
-                      <input type="text" className="w-full focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={e => handleItemChange(index, 'name', e.target.value)}
+                        className="w-full focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
                       <input
                         type="text"
+                        value={item.quantity}
+                        onChange={e => handleItemChange(index, 'quantity', e.target.value)}
                         className="w-full text-center focus:outline-none text-xs"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
-                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.price}
+                        onChange={e => handleItemChange(index, 'price', e.target.value)}
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
-                      <input type="text" className="w-full text-right focus:outline-none text-xs" />
+                      <input
+                        type="text"
+                        value={item.amount}
+                        readOnly
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
                       <input type="text" className="w-full focus:outline-none text-xs" />
@@ -657,7 +740,9 @@ export default function Statement() {
                       <div>합계</div>
                     </div>
                   </td>
-                  <td className="border border-red-500 p-0.5 text-center">2</td>
+                  <td className="border border-red-500 p-0.5 text-center">
+                    {calculateTotalQuantity(items)}
+                  </td>
                   <td className="border border-red-500 p-0.5 text-center"></td>
                   <td className="border border-red-500 p-0.5 text-right">
                     {invoiceData.totalAmount}
