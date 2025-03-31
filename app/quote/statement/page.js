@@ -129,7 +129,7 @@ export default function Statement() {
   return (
     <>
       <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
-        <div className="print-container">
+        <div className="print-this-section">
           {/* 공급받는자용*/}
           <div className="border border-blue-500 p-4 mb-4">
             {/* 상단 제목 */}
@@ -354,7 +354,7 @@ export default function Statement() {
               </thead>
               <tbody>
                 {/* 14개의 고정된 행 생성 */}
-                {Array.from({ length: 12 }).map((_, index) => (
+                {Array.from({ length: 14 }).map((_, index) => (
                   <tr key={`row-${index}`}>
                     <td className="border-l border-r border-blue-500 p-0 text-center text-blue-600">
                       <input
@@ -430,6 +430,8 @@ export default function Statement() {
               </tbody>
             </table>
           </div>
+
+          <hr className="border-t-2 border-gray-300 my-4" />
 
           {/* 공급자용*/}
           <div className="border border-red-500 p-4">
@@ -655,7 +657,7 @@ export default function Statement() {
               </thead>
               <tbody>
                 {/* 14개의 고정된 행 생성 */}
-                {Array.from({ length: 12 }).map((_, index) => (
+                {Array.from({ length: 14 }).map((_, index) => (
                   <tr key={`row-${index}`}>
                     <td className="border-l border-r border-red-500 p-0 text-center text-red-600">
                       <input
@@ -743,22 +745,24 @@ export default function Statement() {
           </button>
         </div>
 
+        {/* 인쇄 스타일 */}
         <style jsx global>{`
           @media print {
-            @page {
-              size: A4;
-              margin: 10mm;
+            body * {
+              visibility: hidden;
             }
-            body {
-              background-color: white;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
+            .print-this-section,
+            .print-this-section * {
+              visibility: visible;
             }
-            .print-hidden {
-              display: none;
+            .print-this-section {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
             }
-            input {
-              border: none !important;
+            .no-print {
+              display: none !important;
             }
           }
         `}</style>
