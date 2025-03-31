@@ -151,10 +151,15 @@ export default function Statement() {
         </div>
 
         {/* 상단 정보 테이블 */}
-        <table className="w-full border-collapse mb-4 text-sm">
+        <table
+          className="w-full border-collapse mb-4 text-xs"
+          style={{ borderWidth: '2px', borderColor: '#ef4444', borderStyle: 'solid' }}
+        >
           <tbody>
             <tr>
-              <td className="border border-red-500 p-1 w-20 bg-gray-100 text-center">거래처</td>
+              <td className="border border-red-500 bg-gray-100 p-1 text-center text-red-600">
+                거래처
+              </td>
               <td colSpan={3} className="border border-red-500 p-1">
                 <input
                   type="text"
@@ -164,10 +169,16 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td rowSpan={5} className="border border-red-500 p-1 w-16 text-center bg-gray-100">
-                공급자
+              <td
+                rowSpan={5}
+                className="border border-red-500 p-0.5 text-center bg-gray-100 text-red-600"
+                style={{ writingMode: 'vertical-rl' }}
+              >
+                공 급 자
               </td>
-              <td className="border border-red-500 p-1 w-20 bg-gray-100 text-center">등록번호</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                등록번호
+              </td>
               <td colSpan={3} className="border border-red-500 p-1">
                 <input
                   type="text"
@@ -179,11 +190,15 @@ export default function Statement() {
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">합계액</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                합계액
+              </td>
               <td colSpan={3} className="border border-red-500 p-1">
                 *{invoiceData.totalAmount} 원정
               </td>
-              <td className="border border-red-500 p-1 w-20 bg-gray-100 text-center">상호</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                상호
+              </td>
               <td className="border border-red-500 p-1">
                 <input
                   type="text"
@@ -193,36 +208,49 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 w-20 bg-gray-100 text-center">성명</td>
-              <td className="border border-red-500 p-1 w-32">
-                <input
-                  type="text"
-                  name="customerName"
-                  value={invoiceData.customerName}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none"
-                />{' '}
-                (인)
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                성명
+              </td>
+              <td className="border border-red-500 p-1">
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    name="customerName"
+                    value={invoiceData.customerName}
+                    onChange={handleChange}
+                    className="flex-grow focus:outline-none"
+                  />
+                  <span className="text-[9px] text-red-600 ml-1 whitespace-nowrap">(인)</span>
+                </div>
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">현금</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                현금
+              </td>
               <td className="border border-red-500 p-1">￦0</td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">외상</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                외상
+              </td>
               <td className="border border-red-500 p-1">￦0</td>
-              <td className="border border-red-500 p-1 w-20 bg-gray-100 text-center">주소</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                주소
+              </td>
               <td colSpan={3} className="border border-red-500 p-1">
-                <input
-                  type="text"
+                <textarea
                   name="address"
                   value={invoiceData.address}
                   onChange={handleChange}
-                  className="w-full focus:outline-none"
+                  className="w-full focus:outline-none resize-none"
+                  rows={2}
+                  style={{ lineHeight: '1.2' }}
                 />
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">연락처</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                연락처
+              </td>
               <td colSpan={3} className="border border-red-500 p-1">
                 <input
                   type="text"
@@ -232,7 +260,9 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">업태</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                업태
+              </td>
               <td className="border border-red-500 p-1">
                 <input
                   type="text"
@@ -242,7 +272,9 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center">종목</td>
+              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+                종목
+              </td>
               <td className="border border-red-500 p-1">
                 <input
                   type="text"
