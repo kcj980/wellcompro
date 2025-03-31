@@ -7,15 +7,17 @@ export default function Statement() {
   const [invoiceData, setInvoiceData] = useState({
     date: '2025년 03월 06일',
     invoiceNumber: '20250306-4',
-    companyInfo: '607-02-70320',
+    companyInfo: '여기에거래처명',
     totalAmount: '40,000',
     paymentSystem: '웰컴 시스템',
     customerName: '김선식',
-    address: '부산광역시 동래구 온천장로 81-20 신화타워 부산컴퓨터도매상가 2층 209호',
+    address: '부산광역시 동래구 온천장로 81-20 신화타워부산컴퓨터도매상가 2층 209호',
     deliveryMethod: '도소매',
     businessType: '컴퓨터및주변기기',
     phone: '051-123-4567',
     regNumber: '123-45-67890',
+    cash: '￦0',
+    credit: '￦0',
     items: [
       { id: 1, name: '쿨러CPU', spec: 'RGB', quantity: 1, price: '32,000', amount: '32,000' },
       {
@@ -152,22 +154,25 @@ export default function Statement() {
 
         {/* 상단 정보 테이블 */}
         <table
-          className="w-full border-collapse mb-4 text-xs"
+          className="w-full border-collapse mb-4 text-[10px]"
           style={{ borderWidth: '2px', borderColor: '#ef4444', borderStyle: 'solid' }}
         >
           <tbody>
             <tr>
-              <td className="border border-red-500 bg-gray-100 p-1 text-center text-red-600">
+              <td className="border border-red-500 bg-gray-100 p-0.5 px-0 text-center text-red-600">
                 거래처
               </td>
-              <td colSpan={3} className="border border-red-500 p-1">
-                <input
-                  type="text"
-                  name="companyInfo"
-                  value={invoiceData.companyInfo}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none"
-                />
+              <td colSpan={3} className="border border-red-500 p-0.5" style={{ width: '45%' }}>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    name="companyInfo"
+                    value={invoiceData.companyInfo}
+                    onChange={handleChange}
+                    className="flex-grow focus:outline-none text-right"
+                  />
+                  <span className="text-xs text-red-600 ml-1 whitespace-nowrap">귀하</span>
+                </div>
               </td>
               <td
                 rowSpan={5}
@@ -176,10 +181,10 @@ export default function Statement() {
               >
                 공 급 자
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 px-0 bg-gray-100 text-center text-red-600">
                 등록번호
               </td>
-              <td colSpan={3} className="border border-red-500 p-1">
+              <td colSpan={3} className="border border-red-500 p-0.5">
                 <input
                   type="text"
                   name="regNumber"
@@ -190,16 +195,16 @@ export default function Statement() {
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 합계액
               </td>
-              <td colSpan={3} className="border border-red-500 p-1">
+              <td colSpan={3} className="border border-red-500 p-0.5 text-right">
                 *{invoiceData.totalAmount} 원정
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 상호
               </td>
-              <td className="border border-red-500 p-1">
+              <td className="border border-red-500 p-0.5">
                 <input
                   type="text"
                   name="paymentSystem"
@@ -208,10 +213,10 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 성명
               </td>
-              <td className="border border-red-500 p-1">
+              <td className="border border-red-500 p-0.5">
                 <div className="flex items-center">
                   <input
                     type="text"
@@ -225,33 +230,52 @@ export default function Statement() {
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 현금
               </td>
-              <td className="border border-red-500 p-1">￦0</td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5">
+                <input
+                  type="text"
+                  name="cash"
+                  value={invoiceData.cash}
+                  onChange={handleChange}
+                  className="w-full focus:outline-none text-right"
+                />
+              </td>
+              <td
+                className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600"
+                style={{ width: '5%' }}
+              >
                 외상
               </td>
-              <td className="border border-red-500 p-1">￦0</td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5">
+                <input
+                  type="text"
+                  name="credit"
+                  value={invoiceData.credit}
+                  onChange={handleChange}
+                  className="w-full focus:outline-none text-right"
+                />
+              </td>
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 주소
               </td>
-              <td colSpan={3} className="border border-red-500 p-1">
+              <td colSpan={3} className="border border-red-500 px-1">
                 <textarea
                   name="address"
-                  value={invoiceData.address}
+                  value={invoiceData.address.replace('신화타워', '신화타워\n')}
                   onChange={handleChange}
                   className="w-full focus:outline-none resize-none"
                   rows={2}
-                  style={{ lineHeight: '1.2' }}
+                  style={{ lineHeight: '1.1', fontSize: '10px', overflow: 'hidden' }}
                 />
               </td>
             </tr>
             <tr>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 연락처
               </td>
-              <td colSpan={3} className="border border-red-500 p-1">
+              <td colSpan={3} className="border border-red-500 p-0.5">
                 <input
                   type="text"
                   name="phone"
@@ -260,10 +284,10 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 업태
               </td>
-              <td className="border border-red-500 p-1">
+              <td className="border border-red-500 p-0.5">
                 <input
                   type="text"
                   name="deliveryMethod"
@@ -272,10 +296,10 @@ export default function Statement() {
                   className="w-full focus:outline-none"
                 />
               </td>
-              <td className="border border-red-500 p-1 bg-gray-100 text-center text-red-600">
+              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
                 종목
               </td>
-              <td className="border border-red-500 p-1">
+              <td className="border border-red-500 p-0.5">
                 <input
                   type="text"
                   name="businessType"
