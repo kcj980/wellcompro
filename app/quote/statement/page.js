@@ -127,383 +127,642 @@ export default function Statement() {
   };
 
   return (
-    <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
-      <div className="border border-red-500 p-4">
-        {/* 상단 제목 */}
-        <div className="mb-1 relative">
-          <div className="text-center">
-            <span className="text-2xl font-bold text-red-600 border-b-2 border-red-600 pb-0">
-              거 래 명 세 표
-            </span>
+    <>
+      <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
+        <div className="print-container">
+          {/* 공급받는자용*/}
+          <div className="border border-blue-500 p-4 mb-4">
+            {/* 상단 제목 */}
+            <div className="mb-1 relative">
+              <div className="text-center">
+                <span className="text-2xl font-bold text-blue-600 border-b-2 border-blue-600 pb-0">
+                  거 래 명 세 표
+                </span>
+              </div>
+              <div className="absolute right-0 top-0">
+                <span className="text-xs font-normal text-blue-600">(공급받는자 보관용)</span>
+              </div>
+            </div>
+
+            {/* 날짜 및 번호 */}
+            <div className="mb-1 ml-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <input
+                type="text"
+                name="date"
+                value={invoiceData.date}
+                onChange={handleChange}
+                className="text-xs text-blue-600 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {/* 상단 정보 테이블 */}
+            <table
+              className="w-full border-collapse mb-1 text-[10px]"
+              style={{ borderWidth: '2px', borderColor: '#3b82f6', borderStyle: 'solid' }}
+            >
+              <tbody>
+                <tr>
+                  <td
+                    className="border border-blue-500 bg-gray-100 p-0.5 px-0 text-center text-blue-600"
+                    style={{ width: '6%' }}
+                  >
+                    거래처
+                  </td>
+                  <td colSpan={3} className="border border-blue-500 p-0.5" style={{ width: '45%' }}>
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        name="companyInfo"
+                        value={invoiceData.companyInfo}
+                        onChange={handleChange}
+                        className="flex-grow focus:outline-none text-right text-sm font-bold"
+                      />
+                      <span className="text-xs text-blue-600 ml-2 whitespace-nowrap">귀하</span>
+                    </div>
+                  </td>
+                  <td
+                    rowSpan={5}
+                    className="border border-blue-500 p-0.5 text-center bg-gray-100 text-blue-600"
+                    style={{ writingMode: 'vertical-rl', width: '3%' }}
+                  >
+                    <div className="text-xs">
+                      공 &nbsp;&nbsp;&nbsp;&nbsp;급 &nbsp;&nbsp;&nbsp;&nbsp;자
+                    </div>
+                  </td>
+                  <td
+                    className="border border-blue-500 p-0.5 px-0 bg-gray-100 text-center text-blue-600"
+                    style={{ width: '7%' }}
+                  >
+                    등록번호
+                  </td>
+                  <td colSpan={3} className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="regNumber"
+                      value={invoiceData.regNumber}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    합계액
+                  </td>
+                  <td colSpan={3} className="border border-blue-500 p-0.5 text-right text-sm">
+                    *{invoiceData.totalAmount}
+                    <span className="text-xs text-blue-600 ml-2 whitespace-nowrap">원정</span>
+                  </td>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    상 &nbsp;&nbsp;&nbsp;호
+                  </td>
+                  <td className="border border-blue-500 p-0.5" style={{ width: '20%' }}>
+                    <input
+                      type="text"
+                      name="paymentSystem"
+                      value={invoiceData.paymentSystem}
+                      onChange={handleChange}
+                      className="w-full text-xs focus:outline-none"
+                    />
+                  </td>
+                  <td
+                    className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600"
+                    style={{ width: '5%' }}
+                  >
+                    성 명
+                  </td>
+                  <td className="border border-blue-500 p-0.5">
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        name="customerName"
+                        value={invoiceData.customerName}
+                        onChange={handleChange}
+                        className="flex-grow focus:outline-none text-xs"
+                      />
+                      <span className="text-[9px] text-blue-600 ml-1 whitespace-nowrap">(인)</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    현 &nbsp;&nbsp;금
+                  </td>
+                  <td className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="cash"
+                      value={invoiceData.cash}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-right text-xs"
+                    />
+                  </td>
+                  <td
+                    className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600"
+                    style={{ width: '5%' }}
+                  >
+                    외 &nbsp;상
+                  </td>
+                  <td className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="credit"
+                      value={invoiceData.credit}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-right text-xs"
+                    />
+                  </td>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    주 &nbsp;&nbsp;&nbsp;소
+                  </td>
+                  <td colSpan={3} className="border border-blue-500 px-1">
+                    <textarea
+                      name="address"
+                      value={invoiceData.address.replace('신화타워', '신화타워\n')}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none resize-none"
+                      rows={2}
+                      style={{ lineHeight: '1.1', fontSize: '10px', overflow: 'hidden' }}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    연락처
+                  </td>
+                  <td colSpan={3} className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="phone"
+                      value={invoiceData.phone}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    업 &nbsp;&nbsp;&nbsp;태
+                  </td>
+                  <td className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="deliveryMethod"
+                      value={invoiceData.deliveryMethod}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                  <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
+                    종 목
+                  </td>
+                  <td className="border border-blue-500 p-0.5">
+                    <input
+                      type="text"
+                      name="businessType"
+                      value={invoiceData.businessType}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* 주요 품목 테이블 */}
+            <table className="w-full border-collapse text-xs">
+              <thead className="text-xs text-blue-600">
+                <tr>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '4%' }}>
+                    번호
+                  </th>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '40%' }}>
+                    품 &nbsp;&nbsp;목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;및
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;규 &nbsp;&nbsp;격
+                  </th>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
+                    수 량
+                  </th>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    단 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가
+                  </th>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    공 급 가 액
+                  </th>
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    비 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 14개의 고정된 행 생성 */}
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <tr key={`row-${index}`}>
+                    <td className="border-l border-r border-blue-500 p-0 text-center text-blue-600">
+                      <input
+                        type="text"
+                        defaultValue={index + 1}
+                        className="w-full text-center focus:outline-none text-xs h-5"
+                      />
+                    </td>
+                    <td className="border-l border-r border-blue-500 px-1">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length
+                            ? invoiceData.items[index].spec
+                              ? `${invoiceData.items[index].name} (${invoiceData.items[index].spec})`
+                              : invoiceData.items[index].name
+                            : ''
+                        }
+                        className="w-full focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-blue-500 px-1 text-center">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].quantity : ''
+                        }
+                        className="w-full text-center focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-blue-500 px-1 text-right">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].price : ''
+                        }
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-blue-500 px-1 text-right">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].amount : ''
+                        }
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-blue-500 px-1 text-center">
+                      <input type="text" className="w-full focus:outline-none text-xs" />
+                    </td>
+                  </tr>
+                ))}
+
+                {/* 합계 행 */}
+                <tr>
+                  <td className="border border-blue-500 p-0.5 text-blue-600" colSpan={2}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <span style={{ marginRight: '100px' }}>인도인:</span>
+                        <span>인수인:</span>
+                      </div>
+                      <div>합계</div>
+                    </div>
+                  </td>
+                  <td className="border border-blue-500 p-0.5 text-center">2</td>
+                  <td className="border border-blue-500 p-0.5 text-center"></td>
+                  <td className="border border-blue-500 p-0.5 text-right">
+                    {invoiceData.totalAmount}
+                  </td>
+                  <td className="border border-blue-500 p-0.5"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div className="absolute right-0 top-0">
-            <span className="text-xs font-normal text-red-600">(공급자 보관용)</span>
+
+          {/* 공급자용*/}
+          <div className="border border-red-500 p-4">
+            {/* 상단 제목 */}
+            <div className="mb-1 relative">
+              <div className="text-center">
+                <span className="text-2xl font-bold text-red-600 border-b-2 border-red-600 pb-0">
+                  거 래 명 세 표
+                </span>
+              </div>
+              <div className="absolute right-0 top-0">
+                <span className="text-xs font-normal text-red-600">(공급자 보관용)</span>
+              </div>
+            </div>
+
+            {/* 날짜 및 번호 */}
+            <div className="mb-1 ml-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <input
+                type="text"
+                name="date"
+                value={invoiceData.date}
+                onChange={handleChange}
+                className="text-xs text-red-600 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {/* 상단 정보 테이블 */}
+            <table
+              className="w-full border-collapse mb-1 text-[10px]"
+              style={{ borderWidth: '2px', borderColor: '#ef4444', borderStyle: 'solid' }}
+            >
+              <tbody>
+                <tr>
+                  <td
+                    className="border border-red-500 bg-gray-100 p-0.5 px-0 text-center text-red-600"
+                    style={{ width: '6%' }}
+                  >
+                    거래처
+                  </td>
+                  <td colSpan={3} className="border border-red-500 p-0.5" style={{ width: '45%' }}>
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        name="companyInfo"
+                        value={invoiceData.companyInfo}
+                        onChange={handleChange}
+                        className="flex-grow focus:outline-none text-right text-sm font-bold"
+                      />
+                      <span className="text-xs text-red-600 ml-2 whitespace-nowrap">귀하</span>
+                    </div>
+                  </td>
+                  <td
+                    rowSpan={5}
+                    className="border border-red-500 p-0.5 text-center bg-gray-100 text-red-600"
+                    style={{ writingMode: 'vertical-rl', width: '3%' }}
+                  >
+                    <div className="text-xs">
+                      공 &nbsp;&nbsp;&nbsp;&nbsp;급 &nbsp;&nbsp;&nbsp;&nbsp;자
+                    </div>
+                  </td>
+                  <td
+                    className="border border-red-500 p-0.5 px-0 bg-gray-100 text-center text-red-600"
+                    style={{ width: '7%' }}
+                  >
+                    등록번호
+                  </td>
+                  <td colSpan={3} className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="regNumber"
+                      value={invoiceData.regNumber}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    합계액
+                  </td>
+                  <td colSpan={3} className="border border-red-500 p-0.5 text-right text-sm">
+                    *{invoiceData.totalAmount}
+                    <span className="text-xs text-red-600 ml-2 whitespace-nowrap">원정</span>
+                  </td>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    상 &nbsp;&nbsp;&nbsp;호
+                  </td>
+                  <td className="border border-red-500 p-0.5" style={{ width: '20%' }}>
+                    <input
+                      type="text"
+                      name="paymentSystem"
+                      value={invoiceData.paymentSystem}
+                      onChange={handleChange}
+                      className="w-full text-xs focus:outline-none"
+                    />
+                  </td>
+                  <td
+                    className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600"
+                    style={{ width: '5%' }}
+                  >
+                    성 명
+                  </td>
+                  <td className="border border-red-500 p-0.5">
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        name="customerName"
+                        value={invoiceData.customerName}
+                        onChange={handleChange}
+                        className="flex-grow focus:outline-none text-xs"
+                      />
+                      <span className="text-[9px] text-red-600 ml-1 whitespace-nowrap">(인)</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    현 &nbsp;&nbsp;금
+                  </td>
+                  <td className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="cash"
+                      value={invoiceData.cash}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-right text-xs"
+                    />
+                  </td>
+                  <td
+                    className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600"
+                    style={{ width: '5%' }}
+                  >
+                    외 &nbsp;상
+                  </td>
+                  <td className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="credit"
+                      value={invoiceData.credit}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-right text-xs"
+                    />
+                  </td>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    주 &nbsp;&nbsp;&nbsp;소
+                  </td>
+                  <td colSpan={3} className="border border-red-500 px-1">
+                    <textarea
+                      name="address"
+                      value={invoiceData.address.replace('신화타워', '신화타워\n')}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none resize-none"
+                      rows={2}
+                      style={{ lineHeight: '1.1', fontSize: '10px', overflow: 'hidden' }}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    연락처
+                  </td>
+                  <td colSpan={3} className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="phone"
+                      value={invoiceData.phone}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    업 &nbsp;&nbsp;&nbsp;태
+                  </td>
+                  <td className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="deliveryMethod"
+                      value={invoiceData.deliveryMethod}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                  <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
+                    종 목
+                  </td>
+                  <td className="border border-red-500 p-0.5">
+                    <input
+                      type="text"
+                      name="businessType"
+                      value={invoiceData.businessType}
+                      onChange={handleChange}
+                      className="w-full focus:outline-none text-xs"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* 주요 품목 테이블 */}
+            <table className="w-full border-collapse text-xs">
+              <thead className="text-xs text-red-600">
+                <tr>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '4%' }}>
+                    번호
+                  </th>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '40%' }}>
+                    품 &nbsp;&nbsp;목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;및
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;규 &nbsp;&nbsp;격
+                  </th>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
+                    수 량
+                  </th>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    단 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가
+                  </th>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    공 급 가 액
+                  </th>
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
+                    비 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 14개의 고정된 행 생성 */}
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <tr key={`row-${index}`}>
+                    <td className="border-l border-r border-red-500 p-0 text-center text-red-600">
+                      <input
+                        type="text"
+                        defaultValue={index + 1}
+                        className="w-full text-center focus:outline-none text-xs h-5"
+                      />
+                    </td>
+                    <td className="border-l border-r border-red-500 px-1">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length
+                            ? invoiceData.items[index].spec
+                              ? `${invoiceData.items[index].name} (${invoiceData.items[index].spec})`
+                              : invoiceData.items[index].name
+                            : ''
+                        }
+                        className="w-full focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-red-500 px-1 text-center">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].quantity : ''
+                        }
+                        className="w-full text-center focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-red-500 px-1 text-right">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].price : ''
+                        }
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-red-500 px-1 text-right">
+                      <input
+                        type="text"
+                        defaultValue={
+                          index < invoiceData.items.length ? invoiceData.items[index].amount : ''
+                        }
+                        className="w-full text-right focus:outline-none text-xs"
+                      />
+                    </td>
+                    <td className="border-l border-r border-red-500 px-1 text-center">
+                      <input type="text" className="w-full focus:outline-none text-xs" />
+                    </td>
+                  </tr>
+                ))}
+
+                {/* 합계 행 */}
+                <tr>
+                  <td className="border border-red-500 p-0.5 text-red-600" colSpan={2}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <span style={{ marginRight: '100px' }}>인도인:</span>
+                        <span>인수인:</span>
+                      </div>
+                      <div>합계</div>
+                    </div>
+                  </td>
+                  <td className="border border-red-500 p-0.5 text-center">2</td>
+                  <td className="border border-red-500 p-0.5 text-center"></td>
+                  <td className="border border-red-500 p-0.5 text-right">
+                    {invoiceData.totalAmount}
+                  </td>
+                  <td className="border border-red-500 p-0.5"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        {/* 날짜 및 번호 */}
-        <div className="mb-1 ml-3" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <input
-            type="text"
-            name="date"
-            value={invoiceData.date}
-            onChange={handleChange}
-            className="text-xs text-red-600 focus:outline-none focus:border-blue-500"
-          />
+        {/* 인쇄 버튼 */}
+        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <button
+            onClick={() => window.print()}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded print:hidden"
+          >
+            인쇄하기
+          </button>
         </div>
 
-        {/* 상단 정보 테이블 */}
-        <table
-          className="w-full border-collapse mb-4 text-[10px]"
-          style={{ borderWidth: '2px', borderColor: '#ef4444', borderStyle: 'solid' }}
-        >
-          <tbody>
-            <tr>
-              <td
-                className="border border-red-500 bg-gray-100 p-0.5 px-0 text-center text-red-600"
-                style={{ width: '6%' }}
-              >
-                거래처
-              </td>
-              <td colSpan={3} className="border border-red-500 p-0.5" style={{ width: '45%' }}>
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    name="companyInfo"
-                    value={invoiceData.companyInfo}
-                    onChange={handleChange}
-                    className="flex-grow focus:outline-none text-right text-sm font-bold"
-                  />
-                  <span className="text-xs text-red-600 ml-2 whitespace-nowrap">귀하</span>
-                </div>
-              </td>
-              <td
-                rowSpan={5}
-                className="border border-red-500 p-0.5 text-center bg-gray-100 text-red-600"
-                style={{ writingMode: 'vertical-rl', width: '3%' }}
-              >
-                <div className="text-xs">
-                  공 &nbsp;&nbsp;&nbsp;&nbsp;급 &nbsp;&nbsp;&nbsp;&nbsp;자
-                </div>
-              </td>
-              <td
-                className="border border-red-500 p-0.5 px-0 bg-gray-100 text-center text-red-600"
-                style={{ width: '7%' }}
-              >
-                등록번호
-              </td>
-              <td colSpan={3} className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="regNumber"
-                  value={invoiceData.regNumber}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-sm"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                합계액
-              </td>
-              <td colSpan={3} className="border border-red-500 p-0.5 text-right text-sm">
-                *{invoiceData.totalAmount}
-                <span className="text-xs text-red-600 ml-2 whitespace-nowrap">원정</span>
-              </td>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                상 &nbsp;&nbsp;&nbsp;호
-              </td>
-              <td className="border border-red-500 p-0.5" style={{ width: '20%' }}>
-                <input
-                  type="text"
-                  name="paymentSystem"
-                  value={invoiceData.paymentSystem}
-                  onChange={handleChange}
-                  className="w-full text-xs focus:outline-none"
-                />
-              </td>
-              <td
-                className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600"
-                style={{ width: '5%' }}
-              >
-                성 명
-              </td>
-              <td className="border border-red-500 p-0.5">
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    name="customerName"
-                    value={invoiceData.customerName}
-                    onChange={handleChange}
-                    className="flex-grow focus:outline-none text-xs"
-                  />
-                  <span className="text-[9px] text-red-600 ml-1 whitespace-nowrap">(인)</span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                현 &nbsp;&nbsp;금
-              </td>
-              <td className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="cash"
-                  value={invoiceData.cash}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-right text-xs"
-                />
-              </td>
-              <td
-                className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600"
-                style={{ width: '5%' }}
-              >
-                외 &nbsp;상
-              </td>
-              <td className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="credit"
-                  value={invoiceData.credit}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-right text-xs"
-                />
-              </td>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                주 &nbsp;&nbsp;&nbsp;소
-              </td>
-              <td colSpan={3} className="border border-red-500 px-1">
-                <textarea
-                  name="address"
-                  value={invoiceData.address.replace('신화타워', '신화타워\n')}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none resize-none"
-                  rows={2}
-                  style={{ lineHeight: '1.1', fontSize: '10px', overflow: 'hidden' }}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                연락처
-              </td>
-              <td colSpan={3} className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="phone"
-                  value={invoiceData.phone}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-xs"
-                />
-              </td>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                업 &nbsp;&nbsp;&nbsp;태
-              </td>
-              <td className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="deliveryMethod"
-                  value={invoiceData.deliveryMethod}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-xs"
-                />
-              </td>
-              <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
-                종 목
-              </td>
-              <td className="border border-red-500 p-0.5">
-                <input
-                  type="text"
-                  name="businessType"
-                  value={invoiceData.businessType}
-                  onChange={handleChange}
-                  className="w-full focus:outline-none text-xs"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* 주요 품목 테이블 */}
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr>
-              <th className="border border-red-500 p-1 w-16 bg-gray-100">번호</th>
-              <th className="border border-red-500 p-1 bg-gray-100" style={{ width: '40%' }}>
-                품 목 및 규 격
-              </th>
-              <th className="border border-red-500 p-1 w-20 bg-gray-100">수 량</th>
-              <th className="border border-red-500 p-1 w-32 bg-gray-100">단 가</th>
-              <th className="border border-red-500 p-1 w-32 bg-gray-100">공급가액</th>
-              <th className="border border-red-500 p-1 w-32 bg-gray-100">세 액</th>
-              <th className="border border-red-500 p-1 w-20 bg-gray-100">관리</th>
-            </tr>
-          </thead>
-          <tbody>
-            {invoiceData.items.map((item, index) => (
-              <tr key={`item-${index}`}>
-                <td className="border border-red-500 p-1 text-center">{item.id}</td>
-                <td className="border border-red-500 p-1">
-                  <input
-                    type="text"
-                    value={item.name}
-                    onChange={e => handleItemChange(index, 'name', e.target.value)}
-                    className="w-full font-semibold focus:outline-none"
-                    placeholder="품목명"
-                  />
-                  <input
-                    type="text"
-                    value={item.spec}
-                    onChange={e => handleItemChange(index, 'spec', e.target.value)}
-                    className="w-full text-xs focus:outline-none"
-                    placeholder="규격"
-                  />
-                </td>
-                <td className="border border-red-500 p-1 text-center">
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    onChange={e => handleItemChange(index, 'quantity', e.target.value)}
-                    className="w-full text-center focus:outline-none"
-                  />
-                </td>
-                <td className="border border-red-500 p-1 text-right">
-                  <input
-                    type="text"
-                    value={item.price}
-                    onChange={e => handleItemChange(index, 'price', e.target.value)}
-                    className="w-full text-right focus:outline-none"
-                  />
-                </td>
-                <td className="border border-red-500 p-1 text-right">
-                  <input
-                    type="text"
-                    value={item.amount}
-                    onChange={e => handleItemChange(index, 'amount', e.target.value)}
-                    className="w-full text-right focus:outline-none"
-                    readOnly
-                  />
-                </td>
-                <td className="border border-red-500 p-1"></td>
-                <td className="border border-red-500 p-1 text-center">
-                  <button onClick={() => removeItem(index)} className="text-red-500 font-bold">
-                    X
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {/* 빈 행 추가 */}
-            {Array.from({ length: 9 - invoiceData.items.length }).map((_, index) => (
-              <tr key={`empty-${index}`}>
-                <td className="border border-red-500 p-1 text-center">
-                  {invoiceData.items.length + index + 1}
-                </td>
-                <td className="border border-red-500 p-1">
-                  {index === 0 ? '------- 이하여백 -------' : ''}
-                </td>
-                <td className="border border-red-500 p-1"></td>
-                <td className="border border-red-500 p-1"></td>
-                <td className="border border-red-500 p-1"></td>
-                <td className="border border-red-500 p-1"></td>
-                <td className="border border-red-500 p-1"></td>
-              </tr>
-            ))}
-
-            {/* 추가 버튼 */}
-            <tr>
-              <td colSpan={7} className="border border-red-500 p-1 text-center">
-                <button onClick={addItem} className="text-blue-500">
-                  + 품목 추가
-                </button>
-              </td>
-            </tr>
-
-            {/* 계좌 정보 */}
-            <tr>
-              <td className="border border-red-500 p-1 text-center">12</td>
-              <td className="border border-red-500 p-1" colSpan={6}>
-                <input
-                  type="text"
-                  name="business1"
-                  value={invoiceData.accountInfo.business1}
-                  onChange={handleAccountChange}
-                  className="w-full focus:outline-none"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-red-500 p-1 text-center">13</td>
-              <td className="border border-red-500 p-1" colSpan={6}>
-                <input
-                  type="text"
-                  name="business2"
-                  value={invoiceData.accountInfo.business2}
-                  onChange={handleAccountChange}
-                  className="w-full focus:outline-none"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-red-500 p-1 text-center">14</td>
-              <td className="border border-red-500 p-1" colSpan={4}></td>
-              <td className="border border-red-500 p-1 text-right" colSpan={2}></td>
-            </tr>
-
-            {/* 합계 행 */}
-            <tr>
-              <td className="border border-red-500 p-1 text-center" colSpan={2}>
-                <div style={{ display: 'flex' }}>
-                  <span style={{ marginRight: '32px' }}>인도인:</span>
-                  <span style={{ marginRight: '32px' }}>인수인:</span>
-                </div>
-              </td>
-              <td className="border border-red-500 p-1 text-center">합계</td>
-              <td className="border border-red-500 p-1 text-center">{invoiceData.items.length}</td>
-              <td className="border border-red-500 p-1"></td>
-              <td className="border border-red-500 p-1 text-right">{invoiceData.totalAmount}</td>
-              <td className="border border-red-500 p-1"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* 하단 정보 */}
-        <div style={{ display: 'flex', marginTop: '16px' }} className="text-sm">
-          <div style={{ marginRight: '32px' }}>주소:</div>
-          <div style={{ flex: '1' }}></div>
-          <div>전화:</div>
-        </div>
+        <style jsx global>{`
+          @media print {
+            @page {
+              size: A4;
+              margin: 10mm;
+            }
+            body {
+              background-color: white;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .print-hidden {
+              display: none;
+            }
+            input {
+              border: none !important;
+            }
+          }
+        `}</style>
       </div>
-
-      {/* 인쇄 버튼 */}
-      <div style={{ marginTop: '24px', textAlign: 'center' }}>
-        <button
-          onClick={() => window.print()}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded print:hidden"
-        >
-          인쇄하기
-        </button>
-      </div>
-
-      <style jsx global>{`
-        @media print {
-          @page {
-            size: A4;
-            margin: 10mm;
-          }
-          body {
-            background-color: white;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .print-hidden {
-            display: none;
-          }
-          input {
-            border: none !important;
-          }
-        }
-      `}</style>
-    </div>
+    </>
   );
 }
