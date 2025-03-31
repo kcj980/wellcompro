@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Statement() {
   // 오늘 날짜를 한국어 형식(YYYY년 MM월 DD일)으로 변환하는 함수
@@ -23,7 +24,7 @@ export default function Statement() {
     address: '부산광역시 동래구 온천장로 81-20 신화타워부산컴퓨터도매상가 2층 209호',
     deliveryMethod: '도소매',
     businessType: '컴퓨터및주변기기',
-    phone: '010-1234-4567',
+    phone: '010-0000-0000',
     regNumber: '607-02-70320',
     cash: '*0',
     credit: '*0',
@@ -33,13 +34,36 @@ export default function Statement() {
   const [items, setItems] = useState(
     Array(14)
       .fill()
-      .map((_, index) => ({
-        id: index + 1,
-        name: '',
-        quantity: '',
-        price: '',
-        amount: '',
-      }))
+      .map((_, index) => {
+        // 12번과 13번 품목에 계좌 정보 미리 설정
+        if (index === 13) {
+          // 12번 항목 (인덱스는 0부터 시작하므로 11)
+          return {
+            id: index + 1,
+            name: '일반(농협)938-12-182358(소성옥)',
+            quantity: '',
+            price: '',
+            amount: '',
+          };
+        } else if (index === 12) {
+          // 13번 항목
+          return {
+            id: index + 1,
+            name: '사업자(부산)064-13-001200-7(김선식)',
+            quantity: '',
+            price: '',
+            amount: '',
+          };
+        } else {
+          return {
+            id: index + 1,
+            name: '',
+            quantity: '',
+            price: '',
+            amount: '',
+          };
+        }
+      })
   );
 
   // 일반 필드 변경 핸들러
@@ -142,11 +166,68 @@ export default function Statement() {
     }, 0);
   };
 
+  // 품목 목록에서 마지막으로 입력된 품목의 인덱스를 찾는 함수
+  const findLastFilledItemIndex = () => {
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (
+        items[i].name &&
+        items[i].name !== '사업자(부산)064-13-001200-7(김선식)' &&
+        items[i].name !== '일반(농협)938-12-182358(소성옥)'
+      ) {
+        return i;
+      }
+    }
+    return -1; // 모든 품목이 비어있거나 계좌 정보만 있는 경우
+  };
+
+  // 인쇄 준비 함수
+  const handlePrint = () => {
+    const lastItemIndex = findLastFilledItemIndex();
+    const tempItems = [...items];
+
+    // 마지막 품목 다음 행에 여백 표시 추가
+    if (lastItemIndex !== -1 && lastItemIndex < items.length - 1) {
+      tempItems[lastItemIndex + 1] = {
+        ...tempItems[lastItemIndex + 1],
+        name: '------------이하여백------------',
+        quantity: '',
+        price: '',
+        amount: '',
+      };
+
+      setItems(tempItems);
+
+      // 잠시 후 인쇄 시작
+      setTimeout(() => {
+        window.print();
+
+        // 인쇄 후 여백 표시 제거
+        setTimeout(() => {
+          tempItems[lastItemIndex + 1] = {
+            ...tempItems[lastItemIndex + 1],
+            name: '',
+            quantity: '',
+            price: '',
+            amount: '',
+          };
+          setItems(tempItems);
+        }, 500);
+      }, 100);
+    } else {
+      // 해당하는 행이 없으면 바로 인쇄
+      window.print();
+    }
+  };
+
   return (
     <>
       <div className="bg-yellow-100 p-4 mb-4 border-l-4 border-yellow-500 rounded shadow-md">
         <h3 className="text-lg font-bold text-yellow-800 mb-2">작성 안내</h3>
         <ul className="list-disc pl-5 space-y-2">
+          <li className="text-yellow-700">
+            <span className="font-semibold">날짜:</span> 오늘 날짜가 자동으로 들어가고, 직접 수정도
+            가능합니다.
+          </li>
           <li className="text-yellow-700">
             <span className="font-semibold">기본 정보:</span> 거래처, 현금, 외상, 연락처 정보를
             수정하면 됩니다.
@@ -155,7 +236,28 @@ export default function Statement() {
             <span className="font-semibold">품목 정보:</span> 품목 및 규격 입력하고, 수량과 단가를
             입력하면 나머진 알아서 계산됩니다.
           </li>
+          <li className="text-yellow-700">
+            <span className="font-semibold">한곳만 수정하면 다른쪽도 같이 수정됩니다.</span>
+          </li>
+          <li className="text-yellow-700">
+            <span className="font-semibold">인쇄 버튼</span>을 눌리면 자동으로 "----이하여백-----"이
+            추가됨니다.
+          </li>
+          <li className="text-yellow-700">
+            <span className="font-semibold">
+              인쇄 미리보기에 왼쪽에 세로 줄이 안보이는데 인쇄해보면 정상적으로 출력 됨니다.
+            </span>
+          </li>
         </ul>
+      </div>
+      {/* 인쇄 버튼 */}
+      <div style={{ marginTop: '24px', textAlign: 'center' }}>
+        <button
+          onClick={handlePrint}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded print:hidden"
+        >
+          인쇄하기
+        </button>
       </div>
       <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
         <div className="print-this-section">
@@ -269,7 +371,23 @@ export default function Statement() {
                         onChange={handleChange}
                         className="flex-grow focus:outline-none text-xs"
                       />
-                      <span className="text-[9px] text-blue-600 ml-1 whitespace-nowrap">(인)</span>
+                      <div className="relative">
+                        <span className="text-[9px] text-blue-600 mr-1 whitespace-nowrap">
+                          (인)
+                        </span>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                          <img
+                            src="/stamp.png"
+                            alt="도장"
+                            style={{
+                              maxWidth: '40px',
+                              height: 'auto',
+                              opacity: 0.9,
+                              objectFit: 'contain',
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -567,7 +685,21 @@ export default function Statement() {
                         onChange={handleChange}
                         className="flex-grow focus:outline-none text-xs"
                       />
-                      <span className="text-[9px] text-red-600 ml-1 whitespace-nowrap">(인)</span>
+                      <div className="relative">
+                        <span className="text-[9px] text-red-600 mr-1 whitespace-nowrap">(인)</span>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                          <img
+                            src="/stamp.png"
+                            alt="도장"
+                            style={{
+                              maxWidth: '40px',
+                              height: 'auto',
+                              opacity: 0.9,
+                              objectFit: 'contain',
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -757,7 +889,7 @@ export default function Statement() {
         {/* 인쇄 버튼 */}
         <div style={{ marginTop: '24px', textAlign: 'center' }}>
           <button
-            onClick={() => window.print()}
+            onClick={handlePrint}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded print:hidden"
           >
             인쇄하기
