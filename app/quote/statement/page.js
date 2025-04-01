@@ -32,7 +32,7 @@ export default function Statement() {
 
   // 품목 데이터 상태 추가
   const [items, setItems] = useState(
-    Array(14)
+    Array(15)
       .fill()
       .map((_, index) => {
         // 12번과 13번 품목에 계좌 정보 미리 설정
@@ -258,7 +258,7 @@ export default function Statement() {
       <div className="p-8 bg-white" style={{ width: '800px', margin: '0 auto' }}>
         <div className="print-this-section">
           {/* 공급받는자용*/}
-          <div className="border border-blue-500 p-4 mb-4">
+          <div className="border border-blue-500 p-4">
             {/* 상단 제목 */}
             <div className="mb-1 relative">
               <div className="text-center">
@@ -499,13 +499,13 @@ export default function Statement() {
               <tbody>
                 {/* 14개의 고정된 행 생성 */}
                 {items.map((item, index) => (
-                  <tr key={`row-${index}`}>
+                  <tr key={`row-${index}`} className="text-sm">
                     <td className="border-l border-r border-blue-500 p-0 text-center text-blue-600">
                       <input
                         type="text"
                         value={item.id}
                         readOnly
-                        className="w-full text-center focus:outline-none text-xs h-5"
+                        className="w-full text-center focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1">
@@ -513,7 +513,7 @@ export default function Statement() {
                         type="text"
                         value={item.name}
                         onChange={e => handleItemChange(index, 'name', e.target.value)}
-                        className="w-full focus:outline-none text-xs"
+                        className="w-full focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
@@ -521,7 +521,7 @@ export default function Statement() {
                         type="text"
                         value={item.quantity}
                         onChange={e => handleItemChange(index, 'quantity', e.target.value)}
-                        className="w-full text-center focus:outline-none text-xs"
+                        className="w-full text-center focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
@@ -529,7 +529,7 @@ export default function Statement() {
                         type="text"
                         value={item.price}
                         onChange={e => handleItemChange(index, 'price', e.target.value)}
-                        className="w-full text-right focus:outline-none text-xs"
+                        className="w-full text-right focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-right">
@@ -537,11 +537,11 @@ export default function Statement() {
                         type="text"
                         value={item.amount}
                         readOnly
-                        className="w-full text-right focus:outline-none text-xs"
+                        className="w-full text-right focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-blue-500 px-1 text-center">
-                      <input type="text" className="w-full focus:outline-none text-xs" />
+                      <input type="text" className="w-full focus:outline-none" />
                     </td>
                   </tr>
                 ))}
@@ -570,7 +570,7 @@ export default function Statement() {
             </table>
           </div>
 
-          <hr className="border-t-2 border-gray-300 my-4" />
+          <hr className="border-t-2 border-gray-300 my-3" />
 
           {/* 공급자용*/}
           <div className="border border-red-500 p-4">
@@ -812,13 +812,13 @@ export default function Statement() {
               <tbody>
                 {/* 14개의 고정된 행 생성 - 공급자용도 같은 데이터 사용 */}
                 {items.map((item, index) => (
-                  <tr key={`row-red-${index}`}>
+                  <tr key={`row-red-${index}`} className="text-sm">
                     <td className="border-l border-r border-red-500 p-0 text-center text-red-600">
                       <input
                         type="text"
                         value={item.id}
                         readOnly
-                        className="w-full text-center focus:outline-none text-xs h-5"
+                        className="w-full text-center focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1">
@@ -826,7 +826,7 @@ export default function Statement() {
                         type="text"
                         value={item.name}
                         onChange={e => handleItemChange(index, 'name', e.target.value)}
-                        className="w-full focus:outline-none text-xs"
+                        className="w-full focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
@@ -834,7 +834,7 @@ export default function Statement() {
                         type="text"
                         value={item.quantity}
                         onChange={e => handleItemChange(index, 'quantity', e.target.value)}
-                        className="w-full text-center focus:outline-none text-xs"
+                        className="w-full text-center focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
@@ -842,7 +842,7 @@ export default function Statement() {
                         type="text"
                         value={item.price}
                         onChange={e => handleItemChange(index, 'price', e.target.value)}
-                        className="w-full text-right focus:outline-none text-xs"
+                        className="w-full text-right focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-right">
@@ -850,11 +850,11 @@ export default function Statement() {
                         type="text"
                         value={item.amount}
                         readOnly
-                        className="w-full text-right focus:outline-none text-xs"
+                        className="w-full text-right focus:outline-none"
                       />
                     </td>
                     <td className="border-l border-r border-red-500 px-1 text-center">
-                      <input type="text" className="w-full focus:outline-none text-xs" />
+                      <input type="text" className="w-full focus:outline-none" />
                     </td>
                   </tr>
                 ))}
