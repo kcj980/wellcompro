@@ -20,7 +20,7 @@ export default function Statement() {
     companyInfo: '여기에거래처명',
     totalAmount: '0',
     paymentSystem: '웰컴 시스템',
-    customerName: '김선식',
+    customerName: '김 선 식',
     address: '부산광역시 동래구 온천장로 81-20 신화타워부산컴퓨터도매상가 2층 209호',
     deliveryMethod: '도소매',
     businessType: '컴퓨터및주변기기',
@@ -40,7 +40,7 @@ export default function Statement() {
           // 12번 항목 (인덱스는 0부터 시작하므로 11)
           return {
             id: index + 1,
-            name: '일반(농협)938-12-182358(소성옥)',
+            name: '',
             quantity: '',
             price: '',
             amount: '',
@@ -49,7 +49,7 @@ export default function Statement() {
           // 13번 항목
           return {
             id: index + 1,
-            name: '사업자(부산)064-13-001200-7(김선식)',
+            name: '',
             quantity: '',
             price: '',
             amount: '',
@@ -169,11 +169,7 @@ export default function Statement() {
   // 품목 목록에서 마지막으로 입력된 품목의 인덱스를 찾는 함수
   const findLastFilledItemIndex = () => {
     for (let i = items.length - 1; i >= 0; i--) {
-      if (
-        items[i].name &&
-        items[i].name !== '사업자(부산)064-13-001200-7(김선식)' &&
-        items[i].name !== '일반(농협)938-12-182358(소성옥)'
-      ) {
+      if (items[i].name) {
         return i;
       }
     }
@@ -240,7 +236,7 @@ export default function Statement() {
             <span className="font-semibold">한곳만 수정하면 다른쪽도 같이 수정됩니다.</span>
           </li>
           <li className="text-yellow-700">
-            <span className="font-semibold">인쇄 버튼</span>을 눌리면 자동으로 "----이하여백-----"이
+            <span className="font-semibold">인쇄 버튼</span>을 눌리면 "----이하여백-----"이
             추가됨니다.
           </li>
           <li className="text-yellow-700">
@@ -332,7 +328,7 @@ export default function Statement() {
                       name="regNumber"
                       value={invoiceData.regNumber}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-sm"
+                      className="w-full focus:outline-none text-sm text-center tracking-extra-widetitler"
                     />
                   </td>
                 </tr>
@@ -353,7 +349,7 @@ export default function Statement() {
                       name="paymentSystem"
                       value={invoiceData.paymentSystem}
                       onChange={handleChange}
-                      className="w-full text-xs focus:outline-none"
+                      className="w-full text-xs focus:outline-none text-center tracking-extra-wide"
                     />
                   </td>
                   <td
@@ -369,7 +365,7 @@ export default function Statement() {
                         name="customerName"
                         value={invoiceData.customerName}
                         onChange={handleChange}
-                        className="flex-grow focus:outline-none text-xs"
+                        className="flex-grow focus:outline-none text-xs text-center tracking-extra-widetitler2"
                       />
                       <div className="relative">
                         <span className="text-[9px] text-blue-600 mr-1 whitespace-nowrap">
@@ -455,7 +451,7 @@ export default function Statement() {
                       name="deliveryMethod"
                       value={invoiceData.deliveryMethod}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-xs"
+                      className="w-full focus:outline-none text-xs text-center tracking-extra-widetitler"
                     />
                   </td>
                   <td className="border border-blue-500 p-0.5 bg-gray-100 text-center text-blue-600">
@@ -467,7 +463,7 @@ export default function Statement() {
                       name="businessType"
                       value={invoiceData.businessType}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-xs"
+                      className="w-full focus:outline-none text-xs text-center tracking-extra-widetitle"
                     />
                   </td>
                 </tr>
@@ -482,20 +478,21 @@ export default function Statement() {
                     번호
                   </th>
                   <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '40%' }}>
-                    품 &nbsp;&nbsp;목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;및
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;규 &nbsp;&nbsp;격
+                    상
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;품
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;명
                   </th>
                   <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
                     수 량
                   </th>
-                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    단 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '13%' }}>
+                    판 &nbsp;&nbsp;&nbsp;&nbsp;매 &nbsp;&nbsp;&nbsp;&nbsp;가
                   </th>
-                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    공 급 가 액
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '13%' }}>
+                    판 매 가 합 계
                   </th>
-                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    비 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고
+                  <th className="border border-blue-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
+                    비 &nbsp;고
                   </th>
                 </tr>
               </thead>
@@ -646,7 +643,7 @@ export default function Statement() {
                       name="regNumber"
                       value={invoiceData.regNumber}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-sm"
+                      className="w-full focus:outline-none text-sm text-center tracking-extra-widetitler"
                     />
                   </td>
                 </tr>
@@ -667,7 +664,7 @@ export default function Statement() {
                       name="paymentSystem"
                       value={invoiceData.paymentSystem}
                       onChange={handleChange}
-                      className="w-full text-xs focus:outline-none"
+                      className="w-full text-xs focus:outline-none text-center tracking-extra-wide"
                     />
                   </td>
                   <td
@@ -683,7 +680,7 @@ export default function Statement() {
                         name="customerName"
                         value={invoiceData.customerName}
                         onChange={handleChange}
-                        className="flex-grow focus:outline-none text-xs"
+                        className="flex-grow focus:outline-none text-xs text-center tracking-extra-widetitler2"
                       />
                       <div className="relative">
                         <span className="text-[9px] text-red-600 mr-1 whitespace-nowrap">(인)</span>
@@ -767,7 +764,7 @@ export default function Statement() {
                       name="deliveryMethod"
                       value={invoiceData.deliveryMethod}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-xs"
+                      className="w-full focus:outline-none text-xs text-center tracking-extra-widetitler"
                     />
                   </td>
                   <td className="border border-red-500 p-0.5 bg-gray-100 text-center text-red-600">
@@ -779,7 +776,7 @@ export default function Statement() {
                       name="businessType"
                       value={invoiceData.businessType}
                       onChange={handleChange}
-                      className="w-full focus:outline-none text-xs"
+                      className="w-full focus:outline-none text-xs text-center tracking-extra-widetitle"
                     />
                   </td>
                 </tr>
@@ -794,20 +791,21 @@ export default function Statement() {
                     번호
                   </th>
                   <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '40%' }}>
-                    품 &nbsp;&nbsp;목 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;및
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;규 &nbsp;&nbsp;격
+                    상
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;품
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;명
                   </th>
                   <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
                     수 량
                   </th>
-                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    단 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '13%' }}>
+                    판 &nbsp;&nbsp;&nbsp;&nbsp;매 &nbsp;&nbsp;&nbsp;&nbsp;가
                   </th>
-                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    공 급 가 액
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '13%' }}>
+                    판 매 가 합 계
                   </th>
-                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '10%' }}>
-                    비 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고
+                  <th className="border border-red-500 p-0.5 bg-gray-100" style={{ width: '5%' }}>
+                    비 &nbsp;고
                   </th>
                 </tr>
               </thead>

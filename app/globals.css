@@ -12,6 +12,9 @@
   .tracking-extra-widetitler {
     letter-spacing: 0.73em; /* 원하는 자간 값으로 조정 */
   }
+  .tracking-extra-widetitler2 {
+    letter-spacing: 0.9em; /* 원하는 자간 값으로 조정 */
+  }
   .tracking-extra-wide2 {
     letter-spacing: 1em; /* 원하는 자간 값으로 조정 */
   }
