@@ -229,7 +229,7 @@ export default function Statement() {
             수정하면 됩니다.
           </li>
           <li className="text-yellow-700">
-            <span className="font-semibold">품목 정보:</span> 품목 및 규격 입력하고, 수량과 단가를
+            <span className="font-semibold">상품 정보:</span> 상품명 입력하고, 수량과 판매가를
             입력하면 나머진 알아서 계산됩니다.
           </li>
           <li className="text-yellow-700">
